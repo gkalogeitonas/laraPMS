@@ -8,4 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Room extends Model
 {
     use HasFactory;
+
+    // Define the relationship to Hotel
+    public function hotel()
+    {
+        return $this->belongsTo(Hotel::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
