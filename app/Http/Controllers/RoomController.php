@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Room; // Import the Room model
+use Inertia\Inertia;
 
 class RoomController extends Controller
 {
@@ -11,7 +13,9 @@ class RoomController extends Controller
      */
     public function index()
     {
-        //
+        $rooms = Room::all(); // Fetch all rooms from the database
+        //return response()->json($rooms); // Return the rooms as a JSON response
+        return Inertia::render('Rooms/Index', ['rooms' => $rooms]);
     }
 
     /**
