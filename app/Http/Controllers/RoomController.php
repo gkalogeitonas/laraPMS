@@ -13,8 +13,7 @@ class RoomController extends Controller
      */
     public function index()
     {
-        $rooms = Room::all(); // Fetch all rooms from the database
-        //return response()->json($rooms); // Return the rooms as a JSON response
+        $rooms = Room::where('user_id', auth()->id())->get(); // Fetch all rooms belonging to the currently authenticated user
         return Inertia::render('Rooms/Index', ['rooms' => $rooms]);
     }
 
