@@ -38,6 +38,11 @@ const showingNavigationDropdown = ref(false);
                                     My Rooms
                                 </NavLink>
                             </div>
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('calendar')" :active="route().current('calendar')">
+                                    Calendar
+                                </NavLink>
+                            </div>
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
