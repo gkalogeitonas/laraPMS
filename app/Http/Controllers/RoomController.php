@@ -62,6 +62,7 @@ class RoomController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Room::where('id', $id)->delete();
+        return redirect()->route('rooms.index');
     }
 }
