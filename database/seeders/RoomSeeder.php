@@ -13,7 +13,7 @@ class RoomSeeder extends Seeder
     public function run(): void
     {
         Room::factory()->count(10)->create([
-            'hotel_id' => 1, // Default to the first hotel
+            'property_id' => 1, // Default to the first hotel
             'user_id' => 1, // Default to the first user
         ]);
     }

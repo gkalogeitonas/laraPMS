@@ -5,18 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Room extends Model
+class Customer extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'property_id', 'name', 'description', 'price', 'status',
+        'name', 'email', 'phone', 'address',
     ];
-
-    public function property()
-    {
-        return $this->belongsTo(Property::class);
-    }
 
     public function bookings()
     {

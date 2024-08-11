@@ -5,18 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Hotel extends Model
+class Property extends Model
 {
     use HasFactory;
 
-    public function rooms()
-    {
-        return $this->hasMany(Room::class);
-    }
+    protected $fillable = [
+        'user_id', 'name', 'address', 'description', 'type',
+    ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+    public function rooms()
+    {
+        return $this->hasMany(Room::class);
+    }
 }

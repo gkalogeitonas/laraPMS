@@ -17,7 +17,7 @@ class RoomFactory extends Factory
     public function definition(): array
     {
         return [
-            'hotel_id' => 1, // Default to the first hotel
+            'property_id' => 1, // Default to the first hotel
             'user_id' => 1, // Default to the first user
             'number' => $this->faker->unique()->numberBetween(100, 500),
             'type' => $this->faker->randomElement(['single', 'double', 'triple', 'apartment']),
