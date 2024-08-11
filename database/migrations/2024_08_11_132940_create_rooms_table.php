@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('property_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
+            $table->text('description')->nullable();
             $table->enum('type', ['single', 'double', 'triple', 'apartment']);
             $table->enum('status', ['available', 'booked', 'out of service'])->default('available');
             $table->timestamps();

@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Property;
+use App\Models\User;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Room>
@@ -17,11 +19,12 @@ class RoomFactory extends Factory
     public function definition(): array
     {
         return [
-            'property_id' => 1, // Default to the first hotel
-            'user_id' => 1, // Default to the first user
-            'number' => $this->faker->unique()->numberBetween(100, 500),
-            'type' => $this->faker->randomElement(['single', 'double', 'triple', 'apartment']),
-            'status' => $this->faker->randomElement(['available', 'booked', 'out of service']),
+            'property_id' => Property::factory(),
+            'user_id' => User::factory(),
+            'name' => 'Room ' . $this->faker->unique()->numberBetween(1, 100),
+            'description' => $this->faker->paragraph,
+            'status' => 'available',
         ];
     }
 }
+

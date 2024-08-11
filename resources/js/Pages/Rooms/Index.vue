@@ -28,7 +28,7 @@ const props = defineProps({
                         <thead class="bg-gray-50">
                             <tr>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Room Number
+                                    Room Name
                                 </th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Type
@@ -44,7 +44,7 @@ const props = defineProps({
                         <tbody class="bg-white divide-y divide-gray-200">
                             <tr v-for="room in props.rooms" :key="room.id">
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    {{ room.number }}
+                                    {{ room.name }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     {{ room.type }}
