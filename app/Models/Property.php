@@ -10,7 +10,7 @@ class Property extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'name', 'address', 'description', 'type',
+        'user_id', 'name', 'address', 'description', 'type', 'tenant_id'
     ];
 
     public function user()
@@ -21,5 +21,10 @@ class Property extends Model
     public function rooms()
     {
         return $this->hasMany(Room::class);
+    }
+
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
     }
 }

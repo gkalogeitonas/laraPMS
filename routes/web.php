@@ -5,6 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\PropertyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +49,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/rooms/{room}/edit', [RoomController::class, 'edit'])->name('rooms.edit');
     Route::patch('/rooms/{room}', [RoomController::class, 'update'])->name('rooms.update');
     Route::delete('/rooms/{room}', [RoomController::class, 'destroy'])->name('rooms.destroy');
+
+    Route::get('/properties', [PropertyController::class, 'index'])->name('properties.index');
+    Route::get('/properties/create', [PropertyController::class, 'create'])->name('properties.create');
+    Route::post('/properties', [PropertyController::class, 'store'])->name('properties.store');
+    Route::get('/properties/{room}', [PropertyController::class, 'show'])->name('properties.show');
+    Route::get('/properties/{room}/edit', [PropertyController::class, 'edit'])->name('properties.edit');
+    Route::patch('/properties/{room}', [PropertyController::class, 'update'])->name('properties.update');
+    Route::delete('/properties/{room}', [PropertyController::class, 'destroy'])->name('properties.destroy');
 });
 
 

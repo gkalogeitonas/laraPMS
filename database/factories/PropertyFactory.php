@@ -17,8 +17,10 @@ class PropertyFactory extends Factory
      */
     public function definition(): array
     {
+        $user = User::factory()->create();
         return [
-            'user_id' => User::factory(),
+            'user_id' =>  $user->id,
+            'tenant_id' => $user->tenant_id,
             'name' => $this->faker->company,
             'address' => $this->faker->address,
             'description' => $this->faker->paragraph,

@@ -20,7 +20,6 @@ class RoomFactory extends Factory
     {
         return [
             'property_id' => Property::factory(),
-            'user_id' => User::factory(),
             'name' => 'Room ' . $this->faker->unique()->numberBetween(1, 100),
             'description' => $this->faker->paragraph,
             'status' => 'available',

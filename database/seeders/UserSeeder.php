@@ -15,19 +15,12 @@ class UserSeeder extends Seeder
     public function run()
     {
         // Create the first user
-        User::create([
-            'id' => 1,
-            'name' => 'gkalog',
-            'email' => 'gkalog2@gmail.com',
-            'password' => Hash::make('37014'),
-        ]);
-
-        // Create the second user
-        User::create([
-            'id' => 2,
-            'name' => 'Chrisanthi Studios',
-            'email' => 'info@chrisanthi-studios.gr',
-            'password' => Hash::make('37014'),
-        ]);
+        // User::create([
+        //     'id' => 1,
+        //     'name' => 'gkalog',
+        //     'email' => 'gkalog2@gmail.com',
+        //     'password' => Hash::make('37014'),
+        //     'tenant_id' => Tenant::factory(),
+        // ]);
     }
 }
