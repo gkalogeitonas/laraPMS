@@ -3,8 +3,55 @@
 // tests/Feature/PropertyTest.php
 use App\Models\User;
 use App\Models\Property;
+use function Pest\Laravel\get;
+use function Pest\Laravel\actingAs;
+use function Pest\Laravel\post;
+use function Pest\Laravel\delete;
 
 
+it('allow user to show a property', function () {
+    $user = User::factory()->create();
+    $property = Property::factory()->create([
+        'user_id' => $user->id,
+        'name' => 'Chrisanthi Studios',
+    ]);
+
+    actingAs($user);
+    $response = get("/properties/{$property->id}");
+    $response->assertOk();
+    $response->assertSee('Chrisanthi Studios');
+});
+
+
+it('allows a user to create a property', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $response = post('/properties', [
+        'name' => 'chrisanthi-studios',
+        'address' => '123 Main St',
+        'description' => 'Beautiful studios.',
+        'type' => 'bnb'
+    ]);
+
+    $response->assertOk();
+    $this->assertDatabaseHas('properties', ['name' => 'chrisanthi-studios']);
+});
+
+it('only allows owner to delete their property', function () {
+    $user = User::factory()->create();
+    $otherUser = User::factory()->create();
+    $property = Property::factory()->create(['user_id' => $otherUser->id]);
+
+    actingAs($user);
+    $response = delete("/properties/{$property->id}");
+    $response->assertStatus(403);
+
+    actingAs($otherUser);
+    $response = delete("/properties/{$property->id}");
+    $response->assertStatus(200);
+    $this->assertDatabaseMissing('properties', ['id' => $property->id]);
+});
 
 // it('a user can create a property', function () {
 //     $tenant = Tenant::factory()->create();
