@@ -9,8 +9,9 @@ use function Pest\Laravel\post;
 use function Pest\Laravel\delete;
 
 
-it('allow user to show a property', function () {
+it('only allows owner to show their property', function () {
     $user = User::factory()->create();
+    $otherUser = User::factory()->create();
     $property = Property::factory()->create([
         'user_id' => $user->id,
         'name' => 'Chrisanthi Studios',
@@ -20,6 +21,9 @@ it('allow user to show a property', function () {
     $response = get("/properties/{$property->id}");
     $response->assertOk();
     $response->assertSee('Chrisanthi Studios');
+    actingAs($otherUser);
+    $response = get("/properties/{$property->id}");
+    $response->assertStatus(403);
 });
 
 

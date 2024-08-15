@@ -54,7 +54,9 @@ class PropertyController extends Controller
      * Display the specified resource.
      */
     public function show(Property $property)
-    {
+    {   if (Auth::user()->id !== $property->user_id) {
+            abort(403);
+        }
         return Inertia::render('Properties/Show', [
             'property' => $property
         ]);
