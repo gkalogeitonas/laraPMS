@@ -22,7 +22,7 @@ it('only allows owner to show their property', function () {
     $response->assertOk();
     $response->assertSee('Chrisanthi Studios');
     actingAs($otherUser);
-    $response = get("/properties/{$property->id}");
+    $response = get(route('properties.show', $property));
     $response->assertStatus(403);
 });
 
@@ -48,11 +48,11 @@ it('only allows owner to delete their property', function () {
     $property = Property::factory()->create(['user_id' => $otherUser->id]);
 
     actingAs($user);
-    $response = delete("/properties/{$property->id}");
+    $response = delete(route('properties.destroy', $property));
     $response->assertStatus(403);
 
     actingAs($otherUser);
-    $response = delete("/properties/{$property->id}");
+    $response = delete(route('properties.destroy', $property));
     $response->assertStatus(200);
     $this->assertDatabaseMissing('properties', ['id' => $property->id]);
 });
