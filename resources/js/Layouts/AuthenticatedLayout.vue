@@ -32,6 +32,8 @@ const showingNavigationDropdown = ref(false);
                 <ResponsiveNavLink  :href="route('calendar')" :active="route().current('calendar')">
                      Calendar
                 </ResponsiveNavLink>
+            </div>
+            <div class="mt-auto  py-4">
                 <ResponsiveNavLink :href="route('logout')" method="post"  as="button">
                     Log Out
                 </ResponsiveNavLink>
