@@ -42,7 +42,6 @@ class PropertyController extends Controller
         //dd( auth()->user()->id);
         //create a new property
         $property = new Property($attributes);
-        $property->user_id = Auth::id(); // Set user_id to the ID of the current user
         $property->tenant_id = Auth::user()->tenant_id; // Set tenant_id to the tenant_id of the current user
 
         $property->save();
@@ -54,8 +53,10 @@ class PropertyController extends Controller
      * Display the specified resource.
      */
     public function show(Property $property)
-    {   if (Auth::user()->id !== $property->user_id) {
-            abort(403);
+    {
+        // Check if the authenticated user's tenant ID matches the property's tenant ID
+        if (Auth::user()->tenant->id !== $property->tenant->id) {
+            abort(403); // If not, abort with a 403 Forbidden status
         }
         return Inertia::render('Properties/Show', [
             'property' => $property
@@ -82,12 +83,13 @@ class PropertyController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Property $property)
     {
         //delete the property
-        if (Auth::user()->id !== Property::find($id)->user_id) {
-            abort(403);
+        if (Auth::user()->tenant->id !== $property->tenant->id) {
+            abort(403); // If not, abort with a 403 Forbidden status
         }
-        Property::destroy($id);
+
+        Property::destroy($property->id);
     }
 }

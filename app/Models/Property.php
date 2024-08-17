@@ -13,10 +13,6 @@ class Property extends Model
         'user_id', 'name', 'address', 'description', 'type', 'tenant_id'
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public function rooms()
     {

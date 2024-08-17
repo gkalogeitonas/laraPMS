@@ -19,7 +19,6 @@ class PropertyFactory extends Factory
     {
         $user = User::factory()->create();
         return [
-            'user_id' =>  $user->id,
             'tenant_id' => $user->tenant_id,
             'name' => $this->faker->company,
             'address' => $this->faker->address,
