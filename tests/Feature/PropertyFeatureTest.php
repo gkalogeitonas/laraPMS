@@ -20,7 +20,8 @@ it('only allows owner to show their tenants properties', function () {
     // Acting as the owner, they should be able to see the property
     $this->actingAs($owner)
         ->get(route('properties.show', $property))
-        ->assertStatus(200);
+        ->assertStatus(200)
+        ->assertSee($property->name);
 
     // Acting as a non-owner, they should not be able to see the property
     $this->actingAs($nonOwner)
@@ -61,6 +62,51 @@ it('only allows user to delete their property', function () {
 
 
 
-it('only allows owner to update their properties', function () {
+it('allows owner to update their properties', function () {
+    // Create an owner (user) and a property for the tenant associated with that user
+    $owner = User::factory()->create();
+    $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
 
+    // Data to update the property
+    $updateData = [
+        'name' => 'Updated Property Name',
+        'address' => 'Updated Property Address',
+    ];
+
+    // Acting as the owner, they should be able to update the property
+    $this->actingAs($owner)
+        ->patch(route('properties.update', $property), $updateData)
+        ->assertStatus(200);
+
+    // Refresh the property instance and check if the update was successful
+    $property->refresh();
+    expect($property->name)->toBe('Updated Property Name');
+    expect($property->address)->toBe('Updated Property Address');
+
+});
+
+
+it('not allows not owner to update a properties', function () {
+    // Create an owner (user) and a property for the tenant associated with that user
+    $owner = User::factory()->create();
+    $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
+
+    // Create another user who is not the owner
+    $nonOwner = User::factory()->create();
+
+    // Data to update the property
+    $updateData = [
+        'name' => 'Updated Property Name',
+        'address' => 'Updated Property Address',
+    ];
+
+    // Acting as a non-owner, they should not be able to update the property
+    $this->actingAs($nonOwner)
+        ->patch(route('properties.update', $property), $updateData)
+        ->assertStatus(403);
+
+    // Ensure the property was not updated by the non-owner
+    $property->refresh();
+    expect($property->name)->not->toBe('Updated Property Name');
+    expect($property->address)->not->toBe('Updated Property Address');
 });

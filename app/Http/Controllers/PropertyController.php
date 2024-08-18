@@ -38,9 +38,6 @@ class PropertyController extends Controller
             'type' => 'required|string|min:3|max:255',
         ]);
 
-        //dd( auth()->user()->tenant);
-        //dd( auth()->user()->id);
-        //create a new property
         $property = new Property($attributes);
         $property->tenant_id = Auth::user()->tenant_id; // Set tenant_id to the tenant_id of the current user
 
@@ -77,7 +74,21 @@ class PropertyController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $property = Property::findOrFail($id);
+        if (Auth::user()->tenant->id !== $property->tenant->id) {
+            abort(403); // If not, abort with a 403 Forbidden status
+        }
+        //validate the request
+        $attributes = $request->validate([
+            'name' => 'required|string|min:5|max:255',
+            'address' => 'nullable|string|min:5|max:255',
+            'description' => 'nullable|string|min:5|max:255',
+            'type' => 'nullable|string|min:3|max:255',
+        ]);
+
+        //update the property
+        $property->update($attributes);
+
     }
 
     /**
