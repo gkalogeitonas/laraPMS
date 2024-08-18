@@ -26,6 +26,9 @@ const showingNavigationDropdown = ref(false);
                 <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                     Dashboard
                 </ResponsiveNavLink>
+                <ResponsiveNavLink  :href="route('properties.index')" :active="route().current('properties')">
+                      My Properties
+                </ResponsiveNavLink>
                 <ResponsiveNavLink  :href="route('rooms.index')" :active="route().current('rooms')">
                       My Rooms
                 </ResponsiveNavLink>
@@ -40,13 +43,21 @@ const showingNavigationDropdown = ref(false);
             </div>
         </div>
 
+                <!-- Page Heading-->
+
+
         <!-- Main Content -->
         <div class="flex-1">
-            <div class="flex justify-between items-center p-4 bg-gray-100">
+            <header class="bg-white shadow" v-if="$slots.header">
+                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    <slot name="header" />
+                </div>
+            </header>
+            <!-- <div class="flex justify-between items-center p-4 bg-gray-100">
                 <button @click="showingNavigationDropdown = !showingNavigationDropdown">
                     <svg class="h-6 w-6 text-gray-500" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></svg>
                 </button>
-            </div>
+            </div> -->
             <div class="p-4">
                 <slot />
             </div>
