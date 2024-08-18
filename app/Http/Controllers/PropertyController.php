@@ -14,7 +14,10 @@ class PropertyController extends Controller
      */
     public function index()
     {
-        //
+        $properties = Property::where('tenant_id', Auth::user()->tenant_id)->get();
+        return Inertia::render('Properties/Index', [
+            'properties' => $properties
+        ]);
     }
 
     /**

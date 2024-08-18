@@ -9,6 +9,27 @@ use function Pest\Laravel\post;
 use function Pest\Laravel\delete;
 
 
+it('owners can see a list of their properties', function () {
+    // Create an owner (user) and a property for the tenant associated with that user
+    $owner = User::factory()->create();
+    $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
+
+    // Create another user who is not the owner
+    $nonOwner = User::factory()->create();
+
+    // Acting as the owner, they should be able to see the property
+    $this->actingAs($owner)
+        ->get(route('properties.index'))
+        ->assertStatus(200)
+        ->assertSee($property->name);
+
+    // Acting as a non-owner, they should not be able to see the property
+    $this->actingAs($nonOwner)
+        ->get(route('properties.index'))
+        ->assertStatus(200)
+        ->assertDontSee($property->name);
+});
+
 it('only allows owner to show their tenants properties', function () {
     // Create an owner (user) and a property for the tenant associated with that user
     $owner = User::factory()->create();
@@ -110,3 +131,19 @@ it('not allows not owner to update a properties', function () {
     expect($property->name)->not->toBe('Updated Property Name');
     expect($property->address)->not->toBe('Updated Property Address');
 });
+
+it('a property requires a name', function () {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $response = post('/properties', [
+        'name' => '',
+        'address' => '123 Main St',
+        'description' => 'Beautiful studios.',
+        'type' => 'bnb'
+    ]);
+
+    $response->assertSessionHasErrors('name');
+});
+
+
