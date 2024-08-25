@@ -81,7 +81,9 @@ it('only allows user to delete their property', function () {
 
     actingAs($otherUser);
     $response = delete(route('properties.destroy', $property));
-    $response->assertStatus(200);
+    //$response->assertStatus(200);
+    $response->assertRedirect(route('properties.index'));
+    $response->assertSessionHas('success', 'Property deleted successfully.');
     $this->assertDatabaseMissing('properties', ['id' => $property->id]);
 });
 

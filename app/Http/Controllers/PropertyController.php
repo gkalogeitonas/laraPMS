@@ -108,5 +108,6 @@ class PropertyController extends Controller
         }
 
         Property::destroy($property->id);
+        return redirect()->route('properties.index')->with('success', 'Property deleted successfully.');
     }
 }
