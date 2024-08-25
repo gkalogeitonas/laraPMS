@@ -6,6 +6,7 @@ import { useForm } from "@inertiajs/vue3";
 
 // Import the DangerButton component
 import DangerButton from '@/Components/DangerButton.vue';
+import DeleteButton from '@/Components/DeleteButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
@@ -66,14 +67,16 @@ let submit = () => {
                             <InputError class="mt-2" :message="form.errors.type" />
                         </div>
                     </div>
-                    <div class="flex items-center justify-end mt-4">
-                        <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                            Update Property
-                        </PrimaryButton>
-                        <NavLink href="/properties" class="ms-4">Cancel</NavLink>
-                        <DangerButton as="button" :href="route('properties.destroy', property.id)" method="delete">
-                           Delete
-                        </DangerButton>
+                    <div class="flex items-center justify-between -mb-8 -mr-6 p-8">
+                        <NavLink href="/properties" class="">Cancel</NavLink>
+                        <div class="flex items-center">
+                            <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                                Update Property
+                            </PrimaryButton>
+                            <DeleteButton class="ml-3" :href="route('properties.destroy', property.id)">
+                                Delete
+                            </DeleteButton>
+                        </div>
                     </div>
                 </form>
             </div>
