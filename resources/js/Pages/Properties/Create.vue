@@ -10,6 +10,7 @@ import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import NavLink from '@/Components/NavLink.vue';
 
 
 
@@ -64,6 +65,7 @@ let submit = () => {
                         </div>
                     </div>
                     <div class="flex items-center justify-end mt-4">
+                        <NavLink :href="route('properties.index')" class="">Cancel</NavLink>
                         <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                             Create Property
                         </PrimaryButton>

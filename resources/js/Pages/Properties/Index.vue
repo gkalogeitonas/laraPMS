@@ -20,7 +20,7 @@ const props = defineProps({
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">My Properties</h2>
-            <a href="/properties/create" class="text-green-600 hover:text-green-900">Create New Property</a>
+            <NavLink :href="route('properties.create')" class="text-green-600 hover:text-green-900">Create New Property</NavLink>
         </template>
 
         <div class="py-12">
@@ -37,7 +37,7 @@ const props = defineProps({
                         <tbody class="bg-white divide-y divide-gray-200">
                             <tr v-for="property in props.properties" :key="property.id">
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <a :href="route('properties.edit', property.id)">{{ property.name }}</a>
+                                    <NavLink :href="route('properties.show', property.id)">{{ property.name }}</NavLink>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <NavLink :href="route('properties.edit', property.id)" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150 m-5">Edit</NavLink>
