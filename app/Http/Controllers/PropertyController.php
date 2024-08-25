@@ -67,9 +67,12 @@ class PropertyController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Property $property)
     {
-        //
+        return Inertia::render('Properties/Edit', [
+            'property' => $property
+        ]);
+
     }
 
     /**
@@ -91,7 +94,7 @@ class PropertyController extends Controller
 
         //update the property
         $property->update($attributes);
-
+        return redirect()->route('properties.index')->with('success', 'Property updated successfully.');
     }
 
     /**

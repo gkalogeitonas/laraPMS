@@ -101,7 +101,8 @@ it('allows owner to update their properties', function () {
     // Acting as the owner, they should be able to update the property
     $this->actingAs($owner)
         ->patch(route('properties.update', $property), $updateData)
-        ->assertStatus(200);
+        ->assertStatus(302)
+        ->assertRedirect(route('properties.index'));
 
     // Refresh the property instance and check if the update was successful
     $property->refresh();
@@ -111,7 +112,7 @@ it('allows owner to update their properties', function () {
 });
 
 
-it('not allows not owner to update a properties', function () {
+it('Do not allows not owner to update a properties', function () {
     // Create an owner (user) and a property for the tenant associated with that user
     $owner = User::factory()->create();
     $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
