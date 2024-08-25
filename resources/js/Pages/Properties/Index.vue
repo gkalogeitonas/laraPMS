@@ -18,7 +18,7 @@ const props = defineProps({
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">My Properties</h2>
-            <a href="/rooms/create" class="text-green-600 hover:text-green-900">Create New Property</a>
+            <a href="/properties/create" class="text-green-600 hover:text-green-900">Create New Property</a>
         </template>
 
         <div class="py-12">
