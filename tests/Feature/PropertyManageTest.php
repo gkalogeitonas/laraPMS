@@ -51,7 +51,7 @@ it('only allows owner to show their tenants properties', function () {
 });
 
 
-it('allows a user to create a property', function () {
+it('allows a user to create a property and redirect to properties index', function () {
     $user = User::factory()->create();
     $this->actingAs($user);
 
@@ -62,9 +62,13 @@ it('allows a user to create a property', function () {
         'type' => 'bnb'
     ]);
 
-    $response->assertOk();
+    //$response->assertOk();
     $this->assertDatabaseHas('properties', ['name' => 'chrisanthi-studios']);
+    $response->assertRedirect(route('properties.index'));
+    $response->assertSessionHas('success', 'Property created successfully.');
 });
+
+
 
 it('only allows user to delete their property', function () {
     $user = User::factory()->create();

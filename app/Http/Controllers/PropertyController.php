@@ -45,8 +45,8 @@ class PropertyController extends Controller
         $property->tenant_id = Auth::user()->tenant_id; // Set tenant_id to the tenant_id of the current user
 
         $property->save();
-
-        //redirect to the properties index
+        //redirect to the properties index with a success message
+        return redirect()->route('properties.index')->with('success', 'Property created successfully.');
     }
 
     /**
