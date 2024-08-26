@@ -9,7 +9,7 @@ use function Pest\Laravel\post;
 use function Pest\Laravel\delete;
 
 
-it('owners can see a list of their properties', function () {
+it('allows owners to see a list of their properties', function () {
     // Create an owner (user) and a property for the tenant associated with that user
     $owner = User::factory()->create();
     $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
@@ -30,7 +30,7 @@ it('owners can see a list of their properties', function () {
         ->assertDontSee($property->name);
 });
 
-it('only allows owner to show their tenants properties', function () {
+it('allows only the owner to view their tenant\'s property', function () {
     // Create an owner (user) and a property for the tenant associated with that user
     $owner = User::factory()->create();
     $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
@@ -70,7 +70,7 @@ it('allows a user to create a property and redirect to properties index', functi
 
 
 
-it('only allows user to delete their property', function () {
+it('allows only owner to delete their property', function () {
     $user = User::factory()->create();
     $otherUser = User::factory()->create();
     $property = Property::factory()->create(['tenant_id' => $otherUser->tenant->id]);
@@ -114,7 +114,7 @@ it('allows owner to update their properties', function () {
 });
 
 
-it('Do not allows not owner to update a properties', function () {
+it('prevents non-owner from updating a property', function () {
     // Create an owner (user) and a property for the tenant associated with that user
     $owner = User::factory()->create();
     $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
@@ -139,7 +139,7 @@ it('Do not allows not owner to update a properties', function () {
     expect($property->address)->not->toBe('Updated Property Address');
 });
 
-it('a property requires a name', function () {
+it('requires a property to have a name', function () {
     $user = User::factory()->create();
     actingAs($user);
 
