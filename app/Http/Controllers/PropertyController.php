@@ -9,6 +9,11 @@ use Inertia\Inertia;
 
 class PropertyController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->authorizeResource(Property::class, 'property');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -49,10 +54,7 @@ class PropertyController extends Controller
      */
     public function show(Property $property)
     {
-        // Check if the authenticated user's tenant ID matches the property's tenant ID
-        if (Auth::user()->tenant->id !== $property->tenant->id) {
-            abort(403); // If not, abort with a 403 Forbidden status
-        }
+
         return Inertia::render('Properties/Show', [
             'property' => $property
         ]);
@@ -73,12 +75,8 @@ class PropertyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Property $property)
     {
-        $property = Property::findOrFail($id);
-        if (Auth::user()->tenant->id !== $property->tenant->id) {
-            abort(403); // If not, abort with a 403 Forbidden status
-        }
         //validate the request
         $attributes = $this->validateProperty($request);
 
@@ -92,10 +90,6 @@ class PropertyController extends Controller
      */
     public function destroy(Property $property)
     {
-        //delete the property
-        if (Auth::user()->tenant->id !== $property->tenant->id) {
-            abort(403); // If not, abort with a 403 Forbidden status
-        }
 
         Property::destroy($property->id);
         return redirect()->route('properties.index')->with('success', 'Property deleted successfully.');
