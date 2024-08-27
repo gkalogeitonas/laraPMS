@@ -10,7 +10,13 @@ class Room extends Model
     use HasFactory;
 
     protected $fillable = [
-        'property_id', 'name', 'description', 'price', 'status',
+        'name',
+        'description',
+        'type', // Ensure 'type' is also fillable if it's a column in your table
+        'price',
+        'status',
+        'property_id',
+        'tenant_id',
     ];
 
     public function property()
@@ -22,4 +28,11 @@ class Room extends Model
     {
         return $this->hasMany(Booking::class);
     }
+
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
+    }
+
+
 }

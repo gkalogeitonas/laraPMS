@@ -42,13 +42,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Room routes
-    Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');
-    Route::get('/rooms/create', [RoomController::class, 'create'])->name('rooms.create');
-    Route::post('/rooms', [RoomController::class, 'store'])->name('rooms.store');
-    Route::get('/rooms/{room}', [RoomController::class, 'show'])->name('rooms.show');
-    Route::get('/rooms/{room}/edit', [RoomController::class, 'edit'])->name('rooms.edit');
-    Route::patch('/rooms/{room}', [RoomController::class, 'update'])->name('rooms.update');
-    Route::delete('/rooms/{room}', [RoomController::class, 'destroy'])->name('rooms.destroy');
+    //Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');
+    //Route::get('/rooms/create', [RoomController::class, 'create'])->name('rooms.create');
+    //Route::post('/rooms', [RoomController::class, 'store'])->name('rooms.store');
+    Route::get('properties/{property}/rooms', [RoomController::class, 'index'])->name('properties.rooms.index');
+    Route::get('properties/{property}/rooms/create', [RoomController::class, 'create'])->name('properties.rooms.create');
+    Route::post('properties/{property}/rooms', [RoomController::class, 'store'])->name('properties.rooms.store');
+    Route::get('rooms/{room}', [RoomController::class, 'show'])->name('rooms.show');
+    Route::get('rooms/{room}/edit', [RoomController::class, 'edit'])->name('rooms.edit');
+    Route::patch('rooms/{room}', [RoomController::class, 'update'])->name('rooms.update');
+    Route::delete('rooms/{room}', [RoomController::class, 'destroy'])->name('rooms.destroy');
+
 
     Route::get('/properties', [PropertyController::class, 'index'])->name('properties.index');
     Route::get('/properties/create', [PropertyController::class, 'create'])->name('properties.create');

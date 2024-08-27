@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Room; // Import the Room model
+use App\Models\Property; // Import the Property model
 use Inertia\Inertia;
+
 
 class RoomController extends Controller
 {
@@ -28,11 +30,19 @@ class RoomController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Property $property)
     {
-        //
-    }
+        if ($property->tenant_id !== auth()->user()->tenant->id) {
+            abort(403);
+        }
+        $attributes = $this->validateRoom($request);
+        $attributes['property_id'] = $property->id;
+        $attributes['tenant_id'] = auth()->user()->tenant->id;
 
+        Room::create($attributes);
+
+        return redirect()->route('properties.show', $property)->with('success', 'Room created successfully.');
+    }
     /**
      * Display the specified resource.
      */
@@ -64,5 +74,16 @@ class RoomController extends Controller
     {
         Room::where('id', $id)->delete();
         return redirect()->route('rooms.index');
+    }
+
+
+    private function validateRoom(Request $request)
+    {
+        return $request->validate([
+            'name' => 'required|string|min:3|max:255',
+            'description' => 'nullable|string|min:5|max:255',
+            'type' => 'required|in:single,double,triple,apartment',
+            //'property_id' => 'required|exists:properties,id',
+        ]);
     }
 }
