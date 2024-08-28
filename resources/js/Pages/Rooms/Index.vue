@@ -4,6 +4,7 @@ import { Head } from '@inertiajs/vue3';
 
 // Import the DangerButton component
 import DangerButton from '@/Components/DangerButton.vue';
+import NavLink from '@/Components/NavLink.vue';
 
 // Assuming rooms are passed as a prop
 const props = defineProps({
@@ -44,7 +45,7 @@ const props = defineProps({
                         <tbody class="bg-white divide-y divide-gray-200">
                             <tr v-for="room in props.rooms" :key="room.id">
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    {{ room.name }}
+                                    <NavLink :href="route('rooms.show', room.id)"> {{ room.name }}</NavLink>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     {{ room.type }}

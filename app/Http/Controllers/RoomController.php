@@ -46,9 +46,9 @@ class RoomController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Room $room)
     {
-        //
+        return Inertia::render('Rooms/Show', ['room' => $room]);
     }
 
     /**

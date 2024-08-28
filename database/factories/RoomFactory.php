@@ -23,6 +23,7 @@ class RoomFactory extends Factory
             'name' => 'Room ' . $this->faker->unique()->numberBetween(1, 100),
             'description' => $this->faker->paragraph,
             'status' => 'available',
+            'type' => $this->faker->randomElement(['single', 'double', 'triple', 'apartment']),
         ];
     }
 }

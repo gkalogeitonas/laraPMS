@@ -4,11 +4,13 @@ import { Head } from '@inertiajs/vue3';
 import DeleteButton from '@/Components/DeleteButton.vue';
 import NavLink from '@/Components/NavLink.vue';
 
+
 // Import the DangerButton component
 
 // Assuming rooms are passed as a prop
 const props = defineProps({
   property: Array,
+  rooms: Array,
 });
 
 </script>
@@ -31,6 +33,16 @@ const props = defineProps({
                 <NavLink :href="route('properties.edit', property.id)" class="mr-4">Edit</NavLink>
                 <DeleteButton :href="route('properties.destroy', property.id)" class="ml-auto">Delete</DeleteButton>
             </div>
+            <h2 class="text-xl font-bold mt-8 mb-4">Rooms</h2>
+            <ul>
+                <li v-for="room in rooms" :key="room.id">
+                    <p class="mb-2"><strong>Name:</strong> {{ room.name }}</p>
+                    <div class="mt-4 flex ">
+                        <NavLink :href="route('rooms.edit', room.id)" class="mr-4">Edit</NavLink>
+                        <DeleteButton :href="route('rooms.destroy', room.id)" class="ml-auto">Delete</DeleteButton>
+                    </div>
+                </li>
+            </ul>
         </div>
     </AuthenticatedLayout>
 </template>

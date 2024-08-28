@@ -56,7 +56,8 @@ class PropertyController extends Controller
     {
 
         return Inertia::render('Properties/Show', [
-            'property' => $property
+            'property' => $property,
+            'rooms' => $property->rooms
         ]);
     }
 

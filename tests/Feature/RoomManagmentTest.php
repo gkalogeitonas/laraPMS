@@ -108,3 +108,43 @@ it('prevents a non-owner from deleting a room', function () {
 
     // $response->assertStatus(403);
 });
+
+
+it('allows a user to view a room', function () {
+    $user = User::factory()->create();
+    $property = Property::factory()->create(['tenant_id' => $user->tenant->id]);
+    $room = Room::factory()->create([
+        'property_id' => $property->id,
+        'tenant_id' => $user->tenant->id
+    ]);
+
+    actingAs($user);
+
+    $response = get(route('rooms.show', $room));
+
+    $response->assertStatus(200);
+    $response->assertSee($room->name);
+    $response->assertSee($room->description);
+    $response->assertSee($room->type);
+});
+
+
+
+it('allows a user to view rooms from the property show page', function () {
+    $user = User::factory()->create();
+    $property = Property::factory()->create(['tenant_id' => $user->tenant->id]);
+    $rooms = Room::factory()->count(3)->create([
+        'property_id' => $property->id,
+        'tenant_id' => $user->tenant->id
+    ]);
+
+    actingAs($user);
+
+    $response = get(route('properties.show', $property));
+
+    $response->assertStatus(200)
+            ->assertSee($rooms[0]->name)
+            ->assertSee($rooms[1]->name)
+            ->assertSee($rooms[2]->name);
+
+});
