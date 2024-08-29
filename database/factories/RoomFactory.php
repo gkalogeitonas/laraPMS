@@ -18,8 +18,10 @@ class RoomFactory extends Factory
      */
     public function definition(): array
     {
+        $property = Property::factory()->create();
         return [
-            'property_id' => Property::factory(),
+            'property_id' =>  $property,
+            'tenant_id' =>  $property->tenant_id,
             'name' => 'Room ' . $this->faker->unique()->numberBetween(1, 100),
             'description' => $this->faker->paragraph,
             'status' => 'available',
