@@ -5,6 +5,7 @@ import { Head } from '@inertiajs/vue3';
 // Import the DangerButton component
 import DangerButton from '@/Components/DangerButton.vue';
 import NavLink from '@/Components/NavLink.vue';
+import EditButton from '@/Components/EditButton.vue';
 
 // Assuming rooms are passed as a prop
 const props = defineProps({
@@ -54,7 +55,9 @@ const props = defineProps({
                                     {{ room.status }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="#" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150 m-5">Edit</a>
+                                    <EditButton :href="route('rooms.edit', room.id)">
+                                      Edit
+                                    </EditButton>
                                     <DangerButton as="button" :href="route('rooms.destroy', room.id)" method="delete">
                                        Delete
                                     </DangerButton>

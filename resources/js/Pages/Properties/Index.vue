@@ -4,9 +4,9 @@ import { Head } from '@inertiajs/vue3';
 
 // Import the DangerButton component
 import DangerButton from '@/Components/DangerButton.vue';
-import DeleteButton from '@/Components/DeleteButton.vue';
 import NavLink from '@/Components/NavLink.vue';
-import EditButton from '@/Components/EditButton.vue';
+import AddButton from '@/Components/AddButton.vue';
+import ActionButtons from '@/Components/ActionButtons.vue';
 
 // Assuming rooms are passed as a prop
 const props = defineProps({
@@ -21,7 +21,7 @@ const props = defineProps({
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">My Properties</h2>
-            <NavLink :href="route('properties.create')" class="text-green-600 hover:text-green-900">Create New Property</NavLink>
+            <AddButton :href="route('properties.create')">Create New Property</AddButton>
         </template>
 
         <div class="py-12">
@@ -41,12 +41,12 @@ const props = defineProps({
                                     <NavLink :href="route('properties.show', property.id)">{{ property.name }}</NavLink>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <EditButton :href="route('properties.edit', property.id)">
-                                      Edit
-                                    </EditButton>
-                                    <DeleteButton :href="route('properties.destroy', property.id)">
-                                      Delete
-                                    </DeleteButton>
+                                    <div class="flex justify-end space-x-4 mt-4">
+                                        <ActionButtons
+                                        :editUrl="route('properties.edit', property.id)"
+                                        :deleteUrl="route('properties.destroy', property.id)"
+                                        />
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
