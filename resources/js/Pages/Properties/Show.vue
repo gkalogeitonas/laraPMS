@@ -38,7 +38,10 @@ const props = defineProps({
                     <EditButton :href="route('properties.edit', property.id)" class="mr-4">Edit</EditButton>
                     <DeleteButton :href="route('properties.destroy', property.id)">Delete</DeleteButton>
                 </div>
-                <h2 class="text-xl font-bold mt-8 mb-4">Rooms</h2>
+                    <div class="flex justify-between items-center mt-7 border-t border-black pt-1">
+                    <h2 class="text-xl font-bold">Rooms</h2>
+                    <AddButton :href="route('rooms.create', property.id)">Add Room</AddButton>
+                    </div>
                 <ul>
                     <li v-for="room in rooms" :key="room.id">
                         <RoomCard :room="room" />
