@@ -6,6 +6,7 @@ import NavLink from '@/Components/NavLink.vue';
 import EditButton from '@/Components/EditButton.vue';
 import AddButton from '@/Components/AddButton.vue';
 import ActionButtons from '@/Components/ActionButtons.vue';
+import RoomCard from '@/Pages/Rooms/RoomCard.vue';
 
 
 // Import the DangerButton component
@@ -40,11 +41,7 @@ const props = defineProps({
                 <h2 class="text-xl font-bold mt-8 mb-4">Rooms</h2>
                 <ul>
                     <li v-for="room in rooms" :key="room.id">
-                        <p class="mb-2"><strong>Name:</strong> {{ room.name }}</p>
-                        <ActionButtons
-                            :editUrl="route('rooms.edit', room.id)"
-                            :deleteUrl="route('rooms.destroy', room.id)"
-                        />
+                        <RoomCard :room="room" />
                     </li>
                 </ul>
             </div>
