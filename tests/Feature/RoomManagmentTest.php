@@ -10,6 +10,7 @@ use function Pest\Laravel\delete;
 use function Pest\Laravel\patch;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
+use Inertia\Testing\AssertableInertia as Assert;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -31,21 +32,56 @@ it('allows the owner to create a room', function () {
     assertDatabaseHas('rooms', ['name' => 'Room 101']);
 });
 
-// test('The create method returns the room create form', function () {
-//     $owner = User::factory()->create();
-//     $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
+test('The create method returns the room create form', function () {
+    $owner = User::factory()->create();
+    $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
 
-//     actingAs($owner);
+    actingAs($owner);
 
-//     $response = get(route('properties.rooms.create', $property));
+    $response = get(route('properties.rooms.create', $property));
 
-//     $response->assertStatus(200);
-//     $response->assertSee('Create Room');
-//     $response->assertSee('Name');
-//     $response->assertSee('Description');
-//     $response->assertSee('Type');
-//     $response->assertSee('Status');
-// });
+    $response->assertStatus(200);
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Rooms/Create')
+        ->has('types')
+        ->has('statuses')
+        ->where('types', config('room.types'))
+        ->where('statuses', config('room.statuses'))
+    );
+});
+
+test('The edit method returns the room edit form', function () {
+    $owner = User::factory()->create();
+    $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
+    $room = Room::factory()->create([
+        'property_id' => $property->id,
+        'tenant_id' => $property->tenant->id
+    ]);
+
+    actingAs($owner);
+
+    $response = get(route('rooms.edit', $room));
+
+    $response->assertStatus(200);
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Rooms/Edit')
+        ->has('room', function (Assert $page) use ($room) {
+            $page->where('id', $room->id)
+                ->where('name', $room->name)
+                ->where('description', $room->description)
+                ->where('type', $room->type)
+                ->where('status', $room->status)
+                ->where('property_id', $room->property_id)
+                ->where('tenant_id', $room->tenant_id)
+                ->where('created_at', $room->created_at->toISOString())
+                ->where('updated_at', $room->updated_at->toISOString());
+        })
+        ->has('types')
+        ->has('statuses')
+        ->where('types', config('room.types'))
+        ->where('statuses', config('room.statuses'))
+    );
+});
 
 it('prevents a non-owner from creating a room', function () {
     $owner = User::factory()->create();

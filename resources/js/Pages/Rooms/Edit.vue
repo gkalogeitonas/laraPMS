@@ -13,17 +13,19 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import NavLink from '@/Components/NavLink.vue';
 import RoomForm from '@/Pages/Rooms/RoomForm.vue';
 
+
+
+const props = defineProps(['room','types', 'statuses']);
+
 const form = useForm({
-  name: '',
-  type: '',
-  status: 'available',
-  description: ''
+    name: props.room.name,
+    type: props.room.type,
+    status: props.room.status,
+    description: props.room.description,
 });
 
-const props = defineProps(['property','types', 'statuses']);
-
 let submit = () => {
-  form.post(route('properties.rooms.store',props.property.id));
+  form.patch(route('rooms.update',props.room.id));
 };
 
 
@@ -38,15 +40,12 @@ let submit = () => {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <form @submit.prevent="submit">
-
                     <RoomForm :form="form" :types="types" :statuses="statuses" />
 
-
-
                     <div class="flex items-center justify-end mt-4">
-                        <NavLink :href="route('properties.show', props.property.id)" class="">Cancel</NavLink>
+                        <NavLink :href="route('properties.show', props.room.property_id)" class="">Cancel</NavLink>
                         <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                            Create Room
+                            Edit Room
                         </PrimaryButton>
                     </div>
                 </form>

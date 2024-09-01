@@ -60,7 +60,11 @@ class RoomController extends Controller
      */
     public function edit(Room $room)
     {
-        return $room;
+        return Inertia::render('Rooms/Edit', [
+            'room' => $room,
+            'types' => config('room.types'),
+            'statuses' => config('room.statuses')
+        ]);
     }
 
     /**
