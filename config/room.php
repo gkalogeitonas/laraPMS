@@ -10,6 +10,7 @@ return [
     'statuses' => [
         'available',
         'booked',
+        'occupied',
         'out of service',
     ],
 ];

@@ -32,7 +32,7 @@ let submit = () => {
 <Head title="Dashboard" />
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Create New Room</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Create Room</h2>
         </template>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -62,6 +62,7 @@ let submit = () => {
                         <textarea id="description" v-model="form.description" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" rows="3"></textarea>
                         <InputError :message="form.errors.description" class="mt-2" />
                     </div>
+
 
                     <div class="flex items-center justify-end mt-4">
                         <NavLink :href="route('properties.show', props.property.id)" class="">Cancel</NavLink>

@@ -66,18 +66,28 @@ class RoomController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Room $room)
     {
-        //
+        if ($room->tenant_id !== auth()->user()->tenant->id) {
+            abort(403);
+        }
+        $attributes = $this->validateRoom($request);
+        $room->update($attributes);
+        return redirect()->route('properties.show', $room->property)->with('success', 'Room updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Room $room)
     {
-        Room::where('id', $id)->delete();
-        return redirect()->route('rooms.index');
+
+        if ($room->tenant_id !== auth()->user()->tenant->id) {
+            abort(403);
+        }
+        $property = $room->property;
+        $room->delete();
+        return redirect()->route('properties.show', $property)->with('success', 'Room deleted successfully.');
     }
 
 
@@ -86,8 +96,10 @@ class RoomController extends Controller
         return $request->validate([
             'name' => 'required|string|min:3|max:255',
             'description' => 'nullable|string|min:5|max:255',
-            'type' => 'required|in:single,double,triple,apartment',
-            //'property_id' => 'required|exists:properties,id',
+            'type' => 'required|in:' . implode(',', config('room.types')),
+            'status' => 'required|in:' . implode(',', config('room.statuses')),
+            ///'property_id' => 'required|exists:properties,id',
         ]);
     }
+
 }

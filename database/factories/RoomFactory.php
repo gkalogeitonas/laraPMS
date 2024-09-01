@@ -18,14 +18,14 @@ class RoomFactory extends Factory
      */
     public function definition(): array
     {
-        $property = Property::factory()->create();
+        $property =   Property::factory()->create();
         return [
             'property_id' =>  $property,
             'tenant_id' =>  $property->tenant_id,
             'name' => 'Room ' . $this->faker->unique()->numberBetween(1, 100),
             'description' => $this->faker->paragraph,
             'status' => 'available',
-            'type' => $this->faker->randomElement(['single', 'double', 'triple', 'apartment']),
+            'type' => $this->faker->randomElement(config('room.types')),
         ];
     }
 }

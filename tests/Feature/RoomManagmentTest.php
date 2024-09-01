@@ -24,11 +24,28 @@ it('allows the owner to create a room', function () {
         'name' => 'Room 101',
         'description' => 'A cozy room',
         'type' => 'single',
+        'status' => 'available'
     ]);
 
     //$response->assertRedirect(route('properties.show', $property));
     assertDatabaseHas('rooms', ['name' => 'Room 101']);
 });
+
+// test('The create method returns the room create form', function () {
+//     $owner = User::factory()->create();
+//     $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
+
+//     actingAs($owner);
+
+//     $response = get(route('properties.rooms.create', $property));
+
+//     $response->assertStatus(200);
+//     $response->assertSee('Create Room');
+//     $response->assertSee('Name');
+//     $response->assertSee('Description');
+//     $response->assertSee('Type');
+//     $response->assertSee('Status');
+// });
 
 it('prevents a non-owner from creating a room', function () {
     $owner = User::factory()->create();
@@ -40,7 +57,6 @@ it('prevents a non-owner from creating a room', function () {
     $response = post(route('properties.rooms.store', $property), [
         'name' => 'Room 101',
         'description' => 'A cozy room',
-        'price' => 100,
         'status' => 'available',
     ]);
 
@@ -48,65 +64,73 @@ it('prevents a non-owner from creating a room', function () {
 });
 
 it('allows the owner to update a room', function () {
-    // $owner = User::factory()->create();
-    // $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
-    // $room = Room::factory()->create(['property_id' => $property->id]);
+    $owner = User::factory()->create(['name' => 'Room Name',]);
+    $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
+    $room = Room::factory()->create([
+        'property_id' => $property->id,
+        'tenant_id' => $property->tenant->id
+    ]);
 
-    // actingAs($owner);
+    actingAs($owner);
 
-    // $response = patch(route('properties.rooms.update', [$property, $room]), [
-    //     'name' => 'Updated Room Name',
-    //     'description' => 'Updated description',
-    //     'price' => 150,
-    //     'status' => 'occupied',
-    // ]);
+    $response = patch(route('rooms.update', [$room]), [
+        'name' => 'Updated Room Name',
+        'description' => 'Updated description',
+        'status' => 'occupied',
+        'type' => 'single',
+    ]);
 
-    // $response->assertRedirect(route('properties.show', $property));
-    // assertDatabaseHas('rooms', ['name' => 'Updated Room Name']);
+    $response->assertRedirect(route('properties.show', $property));
+    assertDatabaseHas('rooms', ['name' => 'Updated Room Name']);
 });
 
 it('prevents a non-owner from updating a room', function () {
-    // $owner = User::factory()->create();
-    // $nonOwner = User::factory()->create();
-    // $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
-    // $room = Room::factory()->create(['property_id' => $property->id]);
+    $owner = User::factory()->create();
+    $nonOwner = User::factory()->create();
+    $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
+    $room = Room::factory()->create([
+        'property_id' => $property->id,
+        'tenant_id' => $property->tenant->id
+    ]);
 
-    // actingAs($nonOwner);
+    actingAs($nonOwner);
 
-    // $response = patch(route('properties.rooms.update', [$property, $room]), [
-    //     'name' => 'Updated Room Name',
-    //     'description' => 'Updated description',
-    //     'price' => 150,
-    //     'status' => 'occupied',
-    // ]);
+    $response = patch(route('rooms.update', [$property, $room]), [
+        'name' => 'Updated Room Name',
+        'description' => 'Updated description',
+        'price' => 150,
+        'status' => 'occupied',
+    ]);
 
-    // $response->assertStatus(403);
+    $response->assertStatus(403);
 });
 
 it('allows the owner to delete a room', function () {
-    // $owner = User::factory()->create();
-    // $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
-    // $room = Room::factory()->create(['property_id' => $property->id]);
+    $owner = User::factory()->create();
+    $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
+    $room = Room::factory()->create([
+        'property_id' => $property->id,
+        'tenant_id' => $property->tenant->id
+    ]);
 
-    // actingAs($owner);
+    actingAs($owner);
+    $response = delete(route('rooms.destroy', [$room]));
 
-    // $response = delete(route('properties.rooms.destroy', [$property, $room]));
-
-    // $response->assertRedirect(route('properties.show', $property));
-    // assertDatabaseMissing('rooms', ['id' => $room->id]);
+    $response->assertRedirect(route('properties.show', $property));
+    assertDatabaseMissing('rooms', ['id' => $room->id]);
 });
 
 it('prevents a non-owner from deleting a room', function () {
-    // $owner = User::factory()->create();
-    // $nonOwner = User::factory()->create();
-    // $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
-    // $room = Room::factory()->create(['property_id' => $property->id]);
+    $owner = User::factory()->create();
+    $nonOwner = User::factory()->create();
+    $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
+    $room = Room::factory()->create(['property_id' => $property->id]);
 
-    // actingAs($nonOwner);
+    actingAs($nonOwner);
 
-    // $response = delete(route('properties.rooms.destroy', [$property, $room]));
+    $response = delete(route('rooms.destroy', [$room]));
 
-    // $response->assertStatus(403);
+    $response->assertStatus(403);
 });
 
 
