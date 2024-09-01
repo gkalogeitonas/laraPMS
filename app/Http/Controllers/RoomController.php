@@ -15,8 +15,8 @@ class RoomController extends Controller
      */
     public function index()
     {
-        $rooms = Room::all();
-        return Inertia::render('Rooms/Index', ['rooms' => $rooms]);
+        // $rooms = Room::where('tenant_id', auth()->user()->tenant->id)->get();
+        // return Inertia::render('Rooms/Index', ['rooms' => $rooms]);
     }
 
     /**
@@ -52,6 +52,9 @@ class RoomController extends Controller
      */
     public function show(Room $room)
     {
+        if ($room->tenant_id !== auth()->user()->tenant->id) {
+            abort(403);
+        }
         return Inertia::render('Rooms/Show', ['room' => $room]);
     }
 
@@ -60,6 +63,9 @@ class RoomController extends Controller
      */
     public function edit(Room $room)
     {
+        if ($room->tenant_id !== auth()->user()->tenant->id) {
+            abort(403);
+        }
         return Inertia::render('Rooms/Edit', [
             'room' => $room,
             'types' => config('room.types'),

@@ -83,6 +83,22 @@ test('The edit method returns the room edit form', function () {
     );
 });
 
+it('prevents a user to access edit from of a rooms that is not owned by the user', function () {
+    $owner = User::factory()->create();
+    $nonOwner = User::factory()->create();
+    $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
+    $room = Room::factory()->create([
+        'property_id' => $property->id,
+        'tenant_id' => $property->tenant->id
+    ]);
+
+    actingAs($nonOwner);
+
+    $response = get(route('rooms.edit', $room));
+
+    $response->assertStatus(403);
+});
+
 it('prevents a non-owner from creating a room', function () {
     $owner = User::factory()->create();
     $nonOwner = User::factory()->create();
@@ -186,6 +202,22 @@ it('allows a user to view a room', function () {
     $response->assertSee($room->name);
     $response->assertSee($room->description);
     $response->assertSee($room->type);
+});
+
+it('prevents a user from viewing a room that is not owned by the user', function () {
+    $user = User::factory()->create();
+    $nonOwner = User::factory()->create();
+    $property = Property::factory()->create(['tenant_id' => $user->tenant->id]);
+    $room = Room::factory()->create([
+        'property_id' => $property->id,
+        'tenant_id' => $user->tenant->id
+    ]);
+
+    actingAs($nonOwner);
+
+    $response = get(route('rooms.show', $room));
+
+    $response->assertStatus(403);
 });
 
 
