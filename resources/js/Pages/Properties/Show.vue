@@ -40,7 +40,7 @@ const props = defineProps({
                 </div>
                     <div class="flex justify-between items-center mt-7 border-t border-black pt-1">
                     <h2 class="text-xl font-bold">Rooms</h2>
-                    <AddButton :href="route('rooms.create', property.id)">Add Room</AddButton>
+                    <AddButton :href="route('properties.rooms.create', property.id)">Add Room</AddButton>
                     </div>
                 <ul>
                     <li v-for="room in rooms" :key="room.id">

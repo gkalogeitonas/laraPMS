@@ -17,8 +17,8 @@ return new class extends Migration
             $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->text('description')->nullable();
-            $table->enum('type', ['single', 'double', 'triple', 'apartment']);
-            $table->enum('status', ['available', 'booked', 'out of service'])->default('available');
+            $table->string('type');
+            $table->string('status')->default('available');
             $table->timestamps();
         });
     }

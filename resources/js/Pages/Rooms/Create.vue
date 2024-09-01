@@ -19,10 +19,10 @@ const form = useForm({
   description: ''
 });
 
-const props = defineProps(['property']);
+const props = defineProps(['property','types', 'statuses']);
 
 let submit = () => {
-  form.post(route('rooms.store',props.property.id));
+  form.post(route('properties.rooms.store',props.property.id));
 };
 
 
@@ -45,15 +45,15 @@ let submit = () => {
                     </div>
                     <div class="mb-4">
                         <InputLabel for="type" value="Room Type" />
-                        <input type="text" id="type" v-model="form.type" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                        <select id="type" v-model="form.type" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                            <option v-for="type in types" :key="type" :value="type">{{ type }}</option>
+                        </select>
                         <InputError :message="form.errors.type" class="mt-2" />
                     </div>
                     <div class="mb-4">
                         <InputLabel for="status" value="Room Status" />
                         <select id="status" v-model="form.status" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
-                        <option value="available">Available</option>
-                        <option value="occupied">Occupied</option>
-                        <option value="maintenance">Maintenance</option>
+                            <option v-for="status in statuses" :key="status" :value="status">{{ status }}</option>
                         </select>
                         <InputError :message="form.errors.status" class="mt-2" />
                     </div>
@@ -64,7 +64,7 @@ let submit = () => {
                     </div>
 
                     <div class="flex items-center justify-end mt-4">
-                        <NavLink :href="route('rooms.index')" class="">Cancel</NavLink>
+                        <NavLink :href="route('properties.show', props.property.id)" class="">Cancel</NavLink>
                         <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                             Create Room
                         </PrimaryButton>

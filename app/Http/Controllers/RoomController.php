@@ -24,7 +24,11 @@ class RoomController extends Controller
      */
     public function create(Property $property)
     {
-        return Inertia::render('Rooms/Create', ['property' => $property]);
+        return Inertia::render('Rooms/Create', [
+            'property' => $property,
+            'types' => config('room.types'),
+            'statuses' => config('room.statuses')
+        ]);
     }
 
     /**
