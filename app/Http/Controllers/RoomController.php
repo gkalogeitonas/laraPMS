@@ -10,6 +10,11 @@ use Inertia\Inertia;
 
 class RoomController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->authorizeResource(Room::class, 'room');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -24,6 +29,7 @@ class RoomController extends Controller
      */
     public function create(Property $property)
     {
+        $this->authorize('update', $property);
         return Inertia::render('Rooms/Create', [
             'property' => $property,
             'types' => config('room.types'),
@@ -36,9 +42,7 @@ class RoomController extends Controller
      */
     public function store(Request $request, Property $property)
     {
-        if ($property->tenant_id !== auth()->user()->tenant->id) {
-            abort(403);
-        }
+        $this->authorize('update', $property);
         $attributes = $this->validateRoom($request);
         $attributes['property_id'] = $property->id;
         $attributes['tenant_id'] = auth()->user()->tenant->id;
@@ -52,9 +56,6 @@ class RoomController extends Controller
      */
     public function show(Room $room)
     {
-        if ($room->tenant_id !== auth()->user()->tenant->id) {
-            abort(403);
-        }
         return Inertia::render('Rooms/Show', ['room' => $room]);
     }
 
@@ -78,9 +79,6 @@ class RoomController extends Controller
      */
     public function update(Request $request, Room $room)
     {
-        if ($room->tenant_id !== auth()->user()->tenant->id) {
-            abort(403);
-        }
         $attributes = $this->validateRoom($request);
         $room->update($attributes);
         return redirect()->route('properties.show', $room->property)->with('success', 'Room updated successfully.');
@@ -91,10 +89,6 @@ class RoomController extends Controller
      */
     public function destroy(Room $room)
     {
-
-        if ($room->tenant_id !== auth()->user()->tenant->id) {
-            abort(403);
-        }
         $property = $room->property;
         $room->delete();
         return redirect()->route('properties.show', $property)->with('success', 'Room deleted successfully.');
