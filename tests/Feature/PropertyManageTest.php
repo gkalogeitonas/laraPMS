@@ -3,6 +3,7 @@
 // tests/Feature/PropertyTest.php
 use App\Models\User;
 use App\Models\Property;
+use App\Models\Tenant;
 use function Pest\Laravel\get;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\post;
@@ -11,8 +12,15 @@ use function Pest\Laravel\delete;
 
 it('allows owners to see a list of their properties', function () {
     // Create an owner (user) and a property for the tenant associated with that user
+    $tenant = Tenant::factory()->create();
+
+    // Create an owner (user) and associate them with the tenant
     $owner = User::factory()->create();
-    $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
+    $owner->tenants()->attach($tenant->id);
+
+    // Create a property for the tenant
+    $property = Property::factory()->create(['tenant_id' => $tenant->id]);
+
 
     // Create another user who is not the owner
     $nonOwner = User::factory()->create();
@@ -32,8 +40,14 @@ it('allows owners to see a list of their properties', function () {
 
 it('allows only the owner to view their tenant\'s property', function () {
     // Create an owner (user) and a property for the tenant associated with that user
+    $tenant = Tenant::factory()->create();
+
+    // Create an owner (user) and associate them with the tenant
     $owner = User::factory()->create();
-    $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
+    $owner->tenants()->attach($tenant->id);
+
+    // Create a property for the tenant
+    $property = Property::factory()->create(['tenant_id' => $tenant->id]);
 
     // Create another user who is not the owner
     $nonOwner = User::factory()->create();
@@ -53,6 +67,8 @@ it('allows only the owner to view their tenant\'s property', function () {
 
 it('allows a user to create a property and redirect to properties index', function () {
     $user = User::factory()->create();
+    $tenant = Tenant::factory()->create();
+    $user->tenants()->attach($tenant->id);
     $this->actingAs($user);
 
     $response = post('/properties', [
@@ -71,15 +87,24 @@ it('allows a user to create a property and redirect to properties index', functi
 
 
 it('allows only owner to delete their property', function () {
-    $user = User::factory()->create();
-    $otherUser = User::factory()->create();
-    $property = Property::factory()->create(['tenant_id' => $otherUser->tenant->id]);
+    // Create an owner (user) and a property for the tenant associated with that user
+    $tenant = Tenant::factory()->create();
 
-    actingAs($user);
+    // Create an owner (user) and associate them with the tenant
+    $owner = User::factory()->create();
+    $owner->tenants()->attach($tenant->id);
+
+    // Create a property for the tenant
+    $property = Property::factory()->create(['tenant_id' => $tenant->id]);
+
+    // Create another user who is not the owner
+    $nonOwner = User::factory()->create();
+
+    actingAs($nonOwner);
     $response = delete(route('properties.destroy', $property));
     $response->assertStatus(403);
 
-    actingAs($otherUser);
+    actingAs($owner);
     $response = delete(route('properties.destroy', $property));
     //$response->assertStatus(200);
     $response->assertRedirect(route('properties.index'));
@@ -91,8 +116,14 @@ it('allows only owner to delete their property', function () {
 
 it('allows owner to update their properties', function () {
     // Create an owner (user) and a property for the tenant associated with that user
+    $tenant = Tenant::factory()->create();
+
+    // Create an owner (user) and associate them with the tenant
     $owner = User::factory()->create();
-    $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
+    $owner->tenants()->attach($tenant->id);
+
+    // Create a property for the tenant
+    $property = Property::factory()->create(['tenant_id' => $tenant->id]);
 
     // Data to update the property
     $updateData = [
@@ -116,8 +147,14 @@ it('allows owner to update their properties', function () {
 
 it('prevents non-owner from updating a property', function () {
     // Create an owner (user) and a property for the tenant associated with that user
+    $tenant = Tenant::factory()->create();
+
+    // Create an owner (user) and associate them with the tenant
     $owner = User::factory()->create();
-    $property = Property::factory()->create(['tenant_id' => $owner->tenant->id]);
+    $owner->tenants()->attach($tenant->id);
+
+    // Create a property for the tenant
+    $property = Property::factory()->create(['tenant_id' => $tenant->id]);
 
     // Create another user who is not the owner
     $nonOwner = User::factory()->create();

@@ -13,17 +13,17 @@ class RoomPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
-    {
-        //
-    }
+    // public function viewAny(User $user): bool
+    // {
+    //     //
+    // }
 
     /**
      * Determine whether the user can view the model.
      */
     public function view(User $user, Room $room)
     {
-        return $user->tenant->id === $room->tenant_id;
+        return $user->tenants->contains($room->tenant_id);
     }
 
     /**
@@ -39,7 +39,7 @@ class RoomPolicy
      */
     public function update(User $user, Room $room): bool
     {
-        return $user->tenant->id === $room->tenant_id;
+        return $user->tenants->contains($room->tenant_id);
     }
 
     /**
@@ -47,22 +47,22 @@ class RoomPolicy
      */
     public function delete(User $user, Room $room): bool
     {
-        return $user->tenant->id === $room->tenant_id;
+        return $user->tenants->contains($room->tenant_id);
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Room $room): bool
-    {
-        //
-    }
+    // public function restore(User $user, Room $room): bool
+    // {
+    //     //
+    // }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Room $room): bool
-    {
-        //
-    }
+    // /**
+    //  * Determine whether the user can permanently delete the model.
+    //  */
+    // public function forceDelete(User $user, Room $room): bool
+    // {
+    //     //
+    // }
 }

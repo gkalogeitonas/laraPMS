@@ -46,11 +46,14 @@ class User extends Authenticatable
 
     public function properties()
     {
-        return $this->tenant->properties();
+        return $this->belongsToMany(Property::class, 'tenant_user', 'user_id', 'tenant_id')
+                    ->withPivot('tenant_id')
+                    ->join('properties as p', 'tenant_user.tenant_id', '=', 'p.tenant_id')
+                    ->select('p.*', 'tenant_user.user_id as pivot_user_id', 'tenant_user.tenant_id as pivot_tenant_id');
     }
 
-    public function tenant()
+    public function tenants()
     {
-        return $this->belongsTo(Tenant::class);
+        return $this->belongsToMany(Tenant::class, 'tenant_user');
     }
 }

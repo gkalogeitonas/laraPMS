@@ -17,10 +17,20 @@ it('a property belongs to a tenant', function () {
     expect($property->tenant->id)->toBe($tenant->id);
 });
 
+
 it('a property can be accessed through a user', function () {
+    // Create a tenant
     $tenant = Tenant::factory()->create();
-    $user = User::factory()->create(['tenant_id' => $tenant->id]);
+
+    // Create a user and associate them with the tenant
+    $user = User::factory()->create();
+    $user->tenants()->attach($tenant->id);
+
+    // Create a property for the tenant
     $property = Property::factory()->create(['tenant_id' => $tenant->id]);
+
+    // Refresh the user to ensure the relationship is loaded
+    $user->load('properties');
 
     expect($user->properties->contains($property))->toBeTrue();
 });
