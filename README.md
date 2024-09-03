@@ -1,6 +1,6 @@
 # LARAPMS
 
-PropertyManager Pro is a web application designed to help you manage properties, tenants, and rooms with ease. It provides a user-friendly interface for property management tasks, making it simple to keep track of your real estate assets.
+LARAPMS is a web application designed to help you manage properties, tenants, and rooms with ease. It provides a user-friendly interface for property management tasks, making it simple to keep track of your real estate assets.
 
 ## Running the Development Environment
 
