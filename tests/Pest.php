@@ -46,3 +46,18 @@ function something()
 {
     // ..
 }
+
+function createOwnerAndProperty()
+{
+    // Create a tenant
+    $tenant = \App\Models\Tenant::factory()->create();
+
+    // Create an owner (user) and associate them with the tenant
+    $owner = \App\Models\User::factory()->create();
+    $owner->tenants()->attach($tenant->id);
+
+    // Create a property for the tenant
+    $property = \App\Models\Property::factory()->create(['tenant_id' => $tenant->id]);
+
+    return compact('tenant', 'owner', 'property');
+}
