@@ -13,7 +13,7 @@ class Tenant extends Model
 
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsToMany(User::class, 'tenant_user');
     }
 
     public function properties()

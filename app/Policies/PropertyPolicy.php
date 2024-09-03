@@ -27,7 +27,7 @@ class PropertyPolicy
      */
     public function view(User $user, Property $property)
     {
-        return $user->tenant->id === $property->tenant->id;
+        return $user->tenants->contains($property->tenant_id);
     }
 
     /**
@@ -44,7 +44,7 @@ class PropertyPolicy
     public function update(User $user, Property $property)
     {
 
-        return $user->tenant->id === $property->tenant->id;
+        return $user->tenants->contains($property->tenant_id);
     }
 
     /**
@@ -52,7 +52,7 @@ class PropertyPolicy
      */
     public function delete(User $user, Property $property)
     {
-        return $user->tenant->id === $property->tenant->id;
+        return $user->tenants->contains($property->tenant_id);
     }
 
     // /**

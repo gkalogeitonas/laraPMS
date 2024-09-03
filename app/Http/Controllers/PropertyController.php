@@ -38,15 +38,30 @@ class PropertyController extends Controller
      */
     public function store(Request $request)
     {
-        //validate the request
+        // Validate the request
         $attributes = $this->validateProperty($request);
 
-        $property = new Property($attributes);
-        $property->tenant_id = Auth::user()->tenant_id; // Set tenant_id to the tenant_id of the current user
+        // Get the authenticated user
+        $user = Auth::user();
 
-        $property->save();
-        //redirect to the properties index with a success message
-        return redirect()->route('properties.index')->with('success', 'Property created successfully.');
+        // Check if the user is associated with any tenants
+        if ($user->tenants()->exists()) {
+            // Get the first tenant associated with the user
+            $tenant = $user->tenants()->first();
+
+            // Create a new property with the validated attributes and set the tenant_id
+            $property = new Property($attributes);
+            $property->tenant_id = $tenant->id;
+
+            // Save the property
+            $property->save();
+
+            // Redirect to the properties index with a success message
+            return redirect()->route('properties.index')->with('success', 'Property created successfully.');
+        }
+
+        // If the user is not associated with any tenants, return an error response
+        return redirect()->route('properties.index')->with('error', 'User is not associated with any tenants.');
     }
 
     /**

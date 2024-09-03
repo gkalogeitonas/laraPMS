@@ -10,10 +10,20 @@ it('can create a user', function () {
 });
 
 
+
 it('a user has properties through tenant', function () {
+    // Create a tenant
     $tenant = Tenant::factory()->create();
-    $user = User::factory()->create(['tenant_id' => $tenant->id]);
+
+    // Create a user and associate them with the tenant
+    $user = User::factory()->create();
+    $user->tenants()->attach($tenant->id);
+
+    // Create a property for the tenant
     $property = Property::factory()->create(['tenant_id' => $tenant->id]);
+
+    // Refresh the user to ensure the relationship is loaded
+    $user->load('properties');
 
     expect($user->properties->contains($property))->toBeTrue();
 });
