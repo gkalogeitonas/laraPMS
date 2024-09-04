@@ -55,6 +55,8 @@ function createOwnerAndProperty()
     // Create an owner (user) and associate them with the tenant
     $owner = \App\Models\User::factory()->create();
     $owner->tenants()->attach($tenant->id);
+    // Set the owner's active tenant
+    $owner->setActiveTenant($tenant);
 
     // Create a property for the tenant
     $property = \App\Models\Property::factory()->create(['tenant_id' => $tenant->id]);
