@@ -20,33 +20,34 @@ class PropertySeeder extends Seeder
             'name' => 'gkalog',
             'email' => 'gkalog2@gmail.com',
             'password' => Hash::make('37014'),
-            'tenant_id' => $tenant->id,
         ]);
+        $myUser->tenants()->attach($tenant->id);
         echo "User created with id: " . $myUser->id . "\n";
         echo "Tenant created with id: " . $myUser->tenant_id . "\n";
 
         // Create the first property with 8 rooms for user 2
         $property = Property::factory()->create([
             'name' => 'Chrisanthi Studios',
-            'tenant_id' => $myUser->tenant_id,
+            'tenant_id' => $tenant->id,
         ]);
 
         Room::factory()->count(8)->create([
             'property_id' => $property->id,
-            'tenant_id' => $myUser->tenant_id,
+            'tenant_id' => $tenant->id,
         ]);
 
-        // Create 5 more properties with 10 rooms each for new users
+        //Create 5 more properties with 10 rooms each for new users
         for ($j = 1; $j <= 5; $j++) {
             $user = User::factory()->create();
+            $tenant = Tenant::factory()->create();
 
             $property = Property::factory()->create([
-                'tenant_id' => $user->tenant_id,
+                'tenant_id' => $tenant->id,
             ]);
 
             Room::factory()->count(10)->create([
                 'property_id' => $property->id,
-                'tenant_id' => $user->tenant_id,
+                'tenant_id' => $tenant->id,
             ]);
         }
     }
