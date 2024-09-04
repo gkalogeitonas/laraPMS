@@ -58,6 +58,7 @@ it('allows a user to create a property and redirect to properties index', functi
     $user = User::factory()->create();
     $tenant = Tenant::factory()->create();
     $user->tenants()->attach($tenant->id);
+    $user->setActiveTenant($tenant);
     $this->actingAs($user);
 
     $response = post('/properties', [

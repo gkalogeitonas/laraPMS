@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Property;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Models\User;
+use App\Models\Tenant;
 
 class PropertyController extends Controller
 {
@@ -44,24 +46,19 @@ class PropertyController extends Controller
         // Get the authenticated user
         $user = Auth::user();
 
-        // Check if the user is associated with any tenants
-        if ($user->tenants()->exists()) {
-            // Get the first tenant associated with the user
-            $tenant = $user->tenants()->first();
+        $tenant = $user->getActiveTenant();
+        // Create a new property with the validated attributes and set the tenant_id
+        $property = new Property($attributes);
+        $property->tenant_id = $tenant->id;
 
-            // Create a new property with the validated attributes and set the tenant_id
-            $property = new Property($attributes);
-            $property->tenant_id = $tenant->id;
+        // Save the property
+        $property->save();
 
-            // Save the property
-            $property->save();
-
-            // Redirect to the properties index with a success message
-            return redirect()->route('properties.index')->with('success', 'Property created successfully.');
-        }
+        // Redirect to the properties index with a success message
+        return redirect()->route('properties.index')->with('success', 'Property created successfully.');
 
         // If the user is not associated with any tenants, return an error response
-        return redirect()->route('properties.index')->with('error', 'User is not associated with any tenants.');
+        //return redirect()->route('properties.index')->with('error', 'User is not associated with any tenants.');
     }
 
     /**

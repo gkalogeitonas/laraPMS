@@ -56,4 +56,15 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Tenant::class, 'tenant_user');
     }
+
+    public function setActiveTenant(Tenant $tenant)
+    {
+        session(['active_tenant_id' => $tenant->id]);
+    }
+
+    public function getActiveTenant()
+    {
+        $tenantId = session('active_tenant_id');
+        return Tenant::find($tenantId);
+    }
 }

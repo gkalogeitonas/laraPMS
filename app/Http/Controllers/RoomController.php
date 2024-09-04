@@ -45,7 +45,7 @@ class RoomController extends Controller
         $this->authorize('update', $property);
         $attributes = $this->validateRoom($request);
         $attributes['property_id'] = $property->id;
-        $attributes['tenant_id'] = auth()->user()->tenant->id;
+        $attributes['tenant_id'] = auth()->user()->getActiveTenant()->id;;
 
         Room::create($attributes);
 
@@ -64,9 +64,7 @@ class RoomController extends Controller
      */
     public function edit(Room $room)
     {
-        if ($room->tenant_id !== auth()->user()->tenant->id) {
-            abort(403);
-        }
+
         return Inertia::render('Rooms/Edit', [
             'room' => $room,
             'types' => config('room.types'),
