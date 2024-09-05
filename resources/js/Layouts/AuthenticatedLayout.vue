@@ -7,6 +7,7 @@ import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import FlashMessages from '@/Components/FlashMessages.vue';
 import { Link } from '@inertiajs/vue3';
+import TenantSwitcher from '@/Components/TenantSwitcher.vue';
 
 const showingNavigationDropdown = ref(false);
 </script>
@@ -54,6 +55,12 @@ const showingNavigationDropdown = ref(false);
                     <slot name="header" />
                 </div>
             </header>
+            <div class="max-w-7xl mx-auto py-2 px-4 sm:px-6 lg:px-8   flex justify-end">
+                <TenantSwitcher
+                :tenants="$page.props.auth.tenants"
+                :activeTenant="$page.props.auth.activeTenant"
+                />
+            </div>
 
             <!-- Flash Messages Component -->
             <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
