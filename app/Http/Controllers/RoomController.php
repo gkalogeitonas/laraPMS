@@ -20,8 +20,8 @@ class RoomController extends Controller
      */
     public function index()
     {
-        // $rooms = Room::where('tenant_id', auth()->user()->tenant->id)->get();
-        // return Inertia::render('Rooms/Index', ['rooms' => $rooms]);
+         $rooms = Room::where('tenant_id', auth()->user()->getActiveTenant()->id)->get();
+        return Inertia::render('Rooms/Index', ['rooms' => $rooms]);
     }
 
     /**
