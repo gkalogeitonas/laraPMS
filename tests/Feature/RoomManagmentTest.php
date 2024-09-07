@@ -15,10 +15,53 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
+test('a user can see their active tenant rooms in rooms index', function () {
+    $data = createOwnerAndProperty();
+    $owner = $data['owner'];
+    $property = $data['property'];
+    $tenant = $data['tenant'];
+    $room = Room::factory()->create([
+        'property_id' => $property->id,
+        'tenant_id' => $tenant->id
+    ]);
+    $owner->setActiveTenant($tenant);
+
+    actingAs($owner);
+
+    $response = get(route('rooms.index'));
+
+    $response->assertStatus(200);
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Rooms/Index')
+        ->has('rooms')
+    );
+    // user can see the room
+    $response->assertSee($room->name)
+        ->assertSee($room->description)
+        ->assertSee($room->type)
+        ->assertSee($room->status);
+});
+
+test('a user with no active tenant see empty rooms index', function () {
+    $otherUser = User::factory()->create();
+    $room = Room::factory()->create();
+
+    actingAs($otherUser);
+
+    $response = get(route('rooms.index'));
+
+    $response->assertStatus(200);
+    $response->assertDontSee($room->name );
+
+});
+
+
+
 it('allows the owner to create a room', function () {
     $data = createOwnerAndProperty();
     $owner = $data['owner'];
     $property = $data['property'];
+
 
     actingAs($owner);
 

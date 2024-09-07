@@ -10,21 +10,35 @@ use function Pest\Laravel\post;
 use function Pest\Laravel\delete;
 
 
-it('allows owners to see a list of their properties', function () {
+it('allows owners to see a list of their current tenant properties', function () {
 
     $data = createOwnerAndProperty();
     $owner = $data['owner'];
     $property = $data['property'];
+    $tenant = $data['tenant'];
+    $owner->setActiveTenant($tenant);
 
-
-    // Create another user who is not the owner
-    $nonOwner = User::factory()->create();
 
     // Acting as the owner, they should be able to see the property
     $this->actingAs($owner)
         ->get(route('properties.index'))
         ->assertStatus(200)
         ->assertSee($property->name);
+
+});
+it('prevents user to see a list  others tenants properties', function () {
+
+    $data = createOwnerAndProperty();
+    $owner = $data['owner'];
+    $property = $data['property'];
+    $tenant = $data['tenant'];
+
+
+    // Create another user who is not the owner
+    $nonOwner = User::factory()->create();
+    $otherTenant = Tenant::factory()->create();
+    $nonOwner->tenants()->attach($otherTenant->id);
+    $nonOwner->setActiveTenant($otherTenant);
 
     // Acting as a non-owner, they should not be able to see the property
     $this->actingAs($nonOwner)

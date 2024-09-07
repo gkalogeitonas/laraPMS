@@ -51,6 +51,14 @@ class User extends Authenticatable
                     ->select('p.*', 'tenant_user.user_id as pivot_user_id', 'tenant_user.tenant_id as pivot_tenant_id');
     }
 
+    public function getActiveProperties()
+    {
+        if (!$this->getActiveTenant()) {
+            return collect();
+        }
+        return $this->getActiveTenant()->properties;
+    }
+
     public function tenants()
     {
         return $this->belongsToMany(Tenant::class, 'tenant_user');
@@ -65,5 +73,10 @@ class User extends Authenticatable
     {
         $tenantId = session('active_tenant_id');
         return Tenant::find($tenantId);
+    }
+
+    public function hasActiveTenant()
+    {
+        return session()->has('active_tenant_id');
     }
 }

@@ -63,3 +63,40 @@ test('setActiveTenant stores the tenant in the session', function () {
 });
 
 
+
+test('a user has active properities', function () {
+    // Create a tenant
+    $tenant = Tenant::factory()->create();
+
+    // Create a user and associate them with the tenant
+    $user = User::factory()->create();
+    $user->tenants()->attach($tenant->id);
+
+    // Create a property for the tenant
+    $property = Property::factory()->create(['tenant_id' => $tenant->id]);
+
+    // Set the user's active tenant
+    $user->setActiveTenant($tenant);
+
+    // Get the user's active properties
+    $activeProperties = $user->getActiveProperties();
+
+    expect($activeProperties->contains($property))->toBeTrue();
+});
+
+
+
+it('returns true if the user has an active tenant', function () {
+    $user = User::factory()->create();
+    $tenant = Tenant::factory()->create();
+    $user->setActiveTenant($tenant);
+
+    expect($user->hasActiveTenant())->toBeTrue();
+});
+
+it('returns false if the user does not have an active tenant', function () {
+    $user = User::factory()->create();
+
+    expect($user->hasActiveTenant())->toBeFalse();
+});
+

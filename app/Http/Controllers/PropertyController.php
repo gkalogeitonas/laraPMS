@@ -21,7 +21,7 @@ class PropertyController extends Controller
      */
     public function index()
     {
-        $properties = Auth::user()->properties;
+        $properties = Auth::user()->getActiveProperties();
         return Inertia::render('Properties/Index', [
             'properties' => $properties
         ]);
