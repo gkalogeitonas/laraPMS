@@ -39,7 +39,7 @@ const switchTenant = () => {
 <template>
   <div>
     <form @submit.prevent="switchTenant">
-        <label for="tenant-switcher">Switch Tenant:</label>
+        <label for="tenant-switcher">Switch Company: </label>
         <select id="tenant-switcher" v-model="selectedTenant" @change="switchTenant">
         <option v-for="tenant in tenants" :key="tenant.id" :value="tenant.id">
             {{ tenant.name }}
