@@ -17,4 +17,8 @@ class Customer extends Model
     {
         return $this->hasMany(Booking::class);
     }
+
+    public function tenant(){
+        return $this->belongsTo(Tenant::class);
+    }
 }
