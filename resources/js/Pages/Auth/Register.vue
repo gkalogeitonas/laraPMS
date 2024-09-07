@@ -11,6 +11,8 @@ const form = useForm({
     email: '',
     password: '',
     password_confirmation: '',
+    createTenant: false,
+    tenant_name: '',
 });
 
 const submit = () => {
@@ -84,6 +86,28 @@ const submit = () => {
                 />
 
                 <InputError class="mt-2" :message="form.errors.password_confirmation" />
+            </div>
+
+            <!-- New fields for company creation -->
+            <div class="mt-4">
+                <label class="flex items-center">
+                    <input type="checkbox" v-model="form.createTenant" />
+                    <span class="ml-2 text-sm text-gray-600">Create a company</span>
+                </label>
+            </div>
+
+            <div v-if="form.createTenant" class="mt-4">
+                <InputLabel for="tenant_name" value="Company Name" />
+
+                <TextInput
+                    id="tenant_name"
+                    type="text"
+                    class="mt-1 block w-full"
+                    v-model="form.tenant_name"
+                    required
+                />
+
+                <InputError class="mt-2" :message="form.errors.tenant_name" />
             </div>
 
             <div class="flex items-center justify-end mt-4">

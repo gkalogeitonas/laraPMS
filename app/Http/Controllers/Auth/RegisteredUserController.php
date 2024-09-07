@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Tenant;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -42,6 +43,16 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+
+        if ($request->createTenant && $request->tenant_name) {
+            // Create the tenant
+            $tenant = Tenant::create([
+                'name' => $request->tenant_name,
+            ]);
+            $user->tenants()->attach($tenant->id);
+        }
+
 
         event(new Registered($user));
 
