@@ -10,6 +10,11 @@ use Illuminate\Validation\Rule;
 
 class CustomerController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->authorizeResource(Customer::class, 'customer');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -57,9 +62,7 @@ class CustomerController extends Controller
      */
     public function edit(Customer $customer)
     {
-        if ($customer->tenant_id !== auth()->user()->getActiveTenant()->id) {
-            abort(403);
-        }
+        //
     }
 
     /**
@@ -67,9 +70,6 @@ class CustomerController extends Controller
      */
     public function update(Request $request, Customer $customer)
     {
-        if ($customer->tenant_id !== auth()->user()->getActiveTenant()->id) {
-            abort(403);
-        }
         $attributes = $this->validateCustomer($request, $customer);
         $customer->update($attributes);
     }
@@ -79,9 +79,6 @@ class CustomerController extends Controller
      */
     public function destroy(Customer $customer)
     {
-        if ($customer->tenant_id !== auth()->user()->getActiveTenant()->id) {
-            abort(403);
-        }
         $customer->delete();
     }
 

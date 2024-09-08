@@ -6,6 +6,8 @@ use App\Models\Property;
 use App\Policies\PropertyPolicy;
 use App\Models\Room;
 use App\Policies\RoomPolicy;
+use App\Models\Customer;
+use App\Policies\CustomerPolicy;
 // use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -19,6 +21,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         Property::class => PropertyPolicy::class,
         Room::class => RoomPolicy::class,
+        Customer::class => CustomerPolicy::class,
     ];
 
     /**
