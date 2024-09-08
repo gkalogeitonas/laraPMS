@@ -10,7 +10,7 @@ class Customer extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'email', 'phone', 'address',
+        'name', 'email', 'phone', 'address', 'tenant_id'
     ];
 
     public function bookings()

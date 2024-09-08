@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\TenantSwitchController;
 
 /*
@@ -63,6 +64,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/properties/{property}', [PropertyController::class, 'destroy'])->name('properties.destroy');
 
     Route::post('/switch-tenant', [TenantSwitchController::class, 'switch']);
+
+    Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
+    Route::get('/customers/create', [CustomerController::class, 'create'])->name('customers.create');
+    Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
+    Route::get('/customers/{customer}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
+    Route::patch('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
+    Route::delete('/customers/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy');
+
 });
 
 
