@@ -33,7 +33,7 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Customers/Create');
     }
 
     /**
@@ -42,7 +42,6 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $attributes = $this->validateCustomer($request);
-
         $attributes['tenant_id'] = auth()->user()->getActiveTenant()->id;
         Customer::create($attributes);
         return redirect()->route('customers.index')->with('success', 'Customer created successfully.');

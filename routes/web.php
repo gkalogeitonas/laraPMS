@@ -66,6 +66,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/switch-tenant', [TenantSwitchController::class, 'switch']);
 
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
+    Route::get('/customers{customer}', [CustomerController::class, 'index'])->name('customers.show');
     Route::get('/customers/create', [CustomerController::class, 'create'])->name('customers.create');
     Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
     Route::get('/customers/{customer}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
