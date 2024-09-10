@@ -10,38 +10,50 @@ import { Link } from '@inertiajs/vue3';
 import TenantSwitcher from '@/Components/TenantSwitcher.vue';
 
 const showingNavigationDropdown = ref(false);
+const isSidebarOpen = ref(false);
 </script>
 
 <template>
     <div class="flex h-screen">
         <!-- Sidebar -->
         <div class="w-64 bg-gray-800 text-white flex flex-col">
-            <div class="px-4 py-4">
-                <a :href="route('profile.edit')" class="block px-4 py-4">
-                    <div class="font-medium text-base text-gray-100">
-                        {{ $page.props.auth.user.name }}
-                    </div>
-                    <div class="font-medium text-sm text-gray-400">{{ $page.props.auth.user.email }}</div>
-                </a>
-            </div>
-            <div class="mt-3 space-y-1">
-                <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                    Dashboard
-                </ResponsiveNavLink>
-                <ResponsiveNavLink  :href="route('properties.index')" :active="route().current('properties')">
-                      My Properties
-                </ResponsiveNavLink>
-                <ResponsiveNavLink  :href="route('rooms.index')" :active="route().current('rooms')">
-                      My Rooms
-                </ResponsiveNavLink>
-                <ResponsiveNavLink  :href="route('calendar')" :active="route().current('calendar')">
-                     Calendar
-                </ResponsiveNavLink>
-            </div>
-            <div class="mt-auto  py-4">
-                <ResponsiveNavLink :href="route('logout')" method="post"  as="button">
-                    Log Out
-                </ResponsiveNavLink>
+            <!-- Toggle Button for Small Screens -->
+            <button @click="isSidebarOpen = !isSidebarOpen" class="md:hidden p-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+            <div :class="{'block': isSidebarOpen, 'hidden': !isSidebarOpen}" class="w-64 bg-gray-800 text-white flex flex-col md:block">
+                <div class="px-4 py-4">
+                    <a :href="route('profile.edit')" class="block px-4 py-4">
+                        <div class="font-medium text-base text-gray-100">
+                            {{ $page.props.auth.user.name }}
+                        </div>
+                        <div class="font-medium text-sm text-gray-400">{{ $page.props.auth.user.email }}</div>
+                    </a>
+                </div>
+                <div class="mt-3 space-y-1">
+                    <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
+                        Dashboard
+                    </ResponsiveNavLink>
+                    <ResponsiveNavLink  :href="route('properties.index')" :active="route().current('properties')">
+                            Properties
+                    </ResponsiveNavLink>
+                    <ResponsiveNavLink  :href="route('rooms.index')" :active="route().current('rooms')">
+                            Rooms
+                    </ResponsiveNavLink>
+                    <ResponsiveNavLink  :href="route('customers.index')" :active="route().current('rooms')">
+                            Customers
+                    </ResponsiveNavLink>
+                    <ResponsiveNavLink  :href="route('calendar')" :active="route().current('calendar')">
+                        Calendar
+                    </ResponsiveNavLink>
+                </div>
+                <div class="mt-auto  py-4">
+                    <ResponsiveNavLink :href="route('logout')" method="post"  as="button">
+                        Log Out
+                    </ResponsiveNavLink>
+                </div>
             </div>
         </div>
 
@@ -67,11 +79,6 @@ const showingNavigationDropdown = ref(false);
                 <FlashMessages />
             </div>
 
-            <!-- <div class="flex justify-between items-center p-4 bg-gray-100">
-                <button @click="showingNavigationDropdown = !showingNavigationDropdown">
-                    <svg class="h-6 w-6 text-gray-500" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></svg>
-                </button>
-            </div> -->
             <div class="p-4">
                 <slot />
             </div>
