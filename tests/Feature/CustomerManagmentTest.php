@@ -96,3 +96,25 @@ it('prevents a user from managing others tenants customer', function () {
     $response = $this->delete(route('customers.destroy', $customer));
     $response->assertStatus(403);
 });
+
+
+it('allows a user to view a customer of the active tenant', function () {
+    $customer = Customer::factory()->create(['tenant_id' => $this->tenant->id]);
+
+    $response = $this->get(route('customers.show', $customer));
+
+    $response->assertStatus(200);
+    $response->assertSee($customer->name);
+    $response->assertSee($customer->email); // Assuming the customer has an email field
+});
+
+
+it('allows a user to edit a customer of the active tenant', function () {
+    $customer = Customer::factory()->create(['tenant_id' => $this->tenant->id]);
+
+    $response = $this->get(route('customers.edit', $customer));
+
+    $response->assertStatus(200);
+    $response->assertSee($customer->name);
+    $response->assertSee($customer->email); // Assuming the customer has an email field
+});

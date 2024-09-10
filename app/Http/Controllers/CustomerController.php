@@ -51,9 +51,9 @@ class CustomerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Customer $customer)
     {
-        //
+        return Inertia::render('Customers/Show', ['customer' => $customer]);
     }
 
     /**
@@ -61,7 +61,7 @@ class CustomerController extends Controller
      */
     public function edit(Customer $customer)
     {
-        //
+        return Inertia::render('Customers/Edit', ['customer' => $customer]);
     }
 
     /**
@@ -71,6 +71,7 @@ class CustomerController extends Controller
     {
         $attributes = $this->validateCustomer($request, $customer);
         $customer->update($attributes);
+        return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
     }
 
     /**

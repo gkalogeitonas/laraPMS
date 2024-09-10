@@ -36,15 +36,15 @@ const props = defineProps({
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            <tr v-for="property in props.customers" :key="property.id">
+                            <tr v-for="customer in props.customers" :key="customer.id">
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <NavLink :href="route('customers.show', property.id)">{{ property.name }}</NavLink>
+                                    <NavLink :href="route('customers.show', customer.id)">{{ customer.name }}</NavLink>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex justify-end space-x-4 mt-4">
                                         <ActionButtons
-                                        :editUrl="route('customers.edit', property.id)"
-                                        :deleteUrl="route('customers.destroy', property.id)"
+                                        :editUrl="route('customers.edit', customer.id)"
+                                        :deleteUrl="route('customers.destroy', customer.id)"
                                         />
                                     </div>
                                 </td>
