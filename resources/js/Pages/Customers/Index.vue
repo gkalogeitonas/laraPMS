@@ -7,6 +7,7 @@ import DangerButton from '@/Components/DangerButton.vue';
 import NavLink from '@/Components/NavLink.vue';
 import AddButton from '@/Components/AddButton.vue';
 import ActionButtons from '@/Components/ActionButtons.vue';
+import Pagination from '@/Components/Pagination.vue';
 
 // Assuming rooms are passed as a prop
 const props = defineProps({
@@ -51,6 +52,7 @@ const props = defineProps({
                             </tr>
                         </tbody>
                     </table>
+                    <Pagination :links="customers.links" class="mt-6 flex justify-end mr-5" />
                 </div>
             </div>
         </div>
