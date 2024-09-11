@@ -21,4 +21,10 @@ class Customer extends Model
     public function tenant(){
         return $this->belongsTo(Tenant::class);
     }
+
+    public static function ofActiveTenant()
+    {
+        $tenantId = auth()->user()->getActiveTenant()->id;
+        return self::where('tenant_id', $tenantId)->get();
+    }
 }
