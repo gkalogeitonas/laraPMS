@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use Illuminate\Validation\Rule;
 
 
+
 class CustomerController extends Controller
 {
 
@@ -18,11 +19,18 @@ class CustomerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         if (auth()->user()->hasActiveTenant()) {
-            $customers = Customer::ofActiveTenant()->paginate(10);
-            return Inertia::render('Customers/Index', ['customers' => $customers]);
+            $customers = Customer::ofActiveTenant()
+                ->when($request->search, function ($query, $search) {
+                    $query->where('name', 'like', '%' . $search . '%');
+                })
+                ->paginate(10);
+            return Inertia::render('Customers/Index', [
+                'customers' => $customers,
+                'filters' => request()->all('search'),
+            ]);
         }else{
             return Inertia::render('Customers/Index', ['customers' => []]);
         }

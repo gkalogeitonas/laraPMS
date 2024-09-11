@@ -4,6 +4,7 @@ use App\Models\Customer;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 
 
 uses(RefreshDatabase::class);
@@ -117,4 +118,60 @@ it('allows a user to edit a customer of the active tenant', function () {
     $response->assertStatus(200);
     $response->assertSee($customer->name);
     $response->assertSee($customer->email); // Assuming the customer has an email field
+});
+
+
+it('returns paginated customers of the active tenant', function () {
+    // Create a user and set the active tenant
+    $user = User::factory()->create();
+    $tenant = Tenant::factory()->create();
+    $user->tenants()->attach($tenant);
+
+    $this->actingAs($user);
+    $user->setActiveTenant($tenant);
+
+    // Create customers for the active tenant
+    $customersOfActiveTenant = Customer::factory()->count(15)->create(['tenant_id' => $tenant->id]);
+
+    // Create customers for another tenant
+    $otherTenant = Tenant::factory()->create();
+    Customer::factory()->count(5)->create(['tenant_id' => $otherTenant->id]);
+
+    // Make a GET request to the index route
+    $response = $this->get('/customers');
+
+    // Assert that the response is successful
+    $response->assertStatus(200);
+
+    // Assert that the correct number of customers is returned
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Customers/Index')
+        ->has('customers.data', 10) // First page should have 10 customers
+    );
+});
+
+it('filters customers by search query', function () {
+    // Create a user and set the active tenant
+    $user = User::factory()->create();
+    $tenant = Tenant::factory()->create();
+    $user->tenants()->attach($tenant);
+    $this->actingAs($user);
+    $user->setActiveTenant($tenant);
+
+    // Create customers for the active tenant
+    $matchingCustomer = Customer::factory()->create(['tenant_id' => $tenant->id, 'name' => 'John Doe']);
+    $nonMatchingCustomer = Customer::factory()->create(['tenant_id' => $tenant->id, 'name' => 'Jane Smith']);
+
+    // Make a GET request to the index route with a search query
+    $response = $this->get('/customers?search=John');
+
+    // Assert that the response is successful
+    $response->assertStatus(200);
+
+    // Assert that the correct customer is returned
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Customers/Index')
+        ->has('customers.data', 1)
+        ->where('customers.data.0.name', 'John Doe')
+    );
 });
