@@ -25,6 +25,6 @@ class Customer extends Model
     public static function ofActiveTenant()
     {
         $tenantId = auth()->user()->getActiveTenant()->id;
-        return self::where('tenant_id', $tenantId)->get();
+        return self::where('tenant_id', $tenantId);
     }
 }

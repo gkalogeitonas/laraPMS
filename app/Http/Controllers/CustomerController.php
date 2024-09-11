@@ -21,7 +21,7 @@ class CustomerController extends Controller
     public function index()
     {
         if (auth()->user()->hasActiveTenant()) {
-            $customers = Customer::ofActiveTenant();
+            $customers = Customer::ofActiveTenant()->paginate(10);
             return Inertia::render('Customers/Index', ['customers' => $customers]);
         }else{
             return Inertia::render('Customers/Index', ['customers' => []]);

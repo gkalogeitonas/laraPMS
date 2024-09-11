@@ -50,7 +50,7 @@ it('returns customers of the active tenant', function () {
     Customer::factory()->count(2)->create(['tenant_id' => $otherTenant->id]);
 
     // Get customers of the active tenant
-    $customers = Customer::ofActiveTenant();
+    $customers = Customer::ofActiveTenant()->paginate(10);
 
     // Assert that the correct customers are returned
     expect($customers)->toHaveCount(3);

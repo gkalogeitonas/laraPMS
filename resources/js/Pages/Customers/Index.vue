@@ -10,7 +10,7 @@ import ActionButtons from '@/Components/ActionButtons.vue';
 
 // Assuming rooms are passed as a prop
 const props = defineProps({
-  customers: Array,
+  customers: Object,
 });
 
 </script>
@@ -36,7 +36,7 @@ const props = defineProps({
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            <tr v-for="customer in props.customers" :key="customer.id">
+                            <tr v-for="customer in customers.data" :key="customer.id">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <NavLink :href="route('customers.show', customer.id)">{{ customer.name }}</NavLink>
                                 </td>
