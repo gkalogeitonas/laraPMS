@@ -63,7 +63,7 @@ it('allows a user to update a customer of the active tenant', function () {
     ];
 
     $response = $this->patch(route('customers.update', $customer), $updatedData);
-    $response->assertStatus(200);
+    $response->assertStatus(302);
     $this->assertDatabaseHas('customers', [
         'id' => $customer->id,
         'name' => 'Updated Name'
