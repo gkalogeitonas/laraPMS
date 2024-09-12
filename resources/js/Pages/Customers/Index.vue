@@ -11,6 +11,7 @@ import AddButton from '@/Components/AddButton.vue';
 import ActionButtons from '@/Components/ActionButtons.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { router } from '@inertiajs/vue3'
+import debounce from "lodash/debounce";
 
 
 
@@ -22,13 +23,12 @@ const props = defineProps({
 
 let search = ref(props.filters.search);
 
-watch(search, value => {
-  console.log(value);
-  router.get('/customers', { search: value }, {
-    preserveState: true,
-    replace: true
-  });
-});
+
+watch(search, debounce(function (value) {
+    router.get('/customers', { search: value }, {
+        preserveState: true,
+        replace: true });
+}, 300));
 
 </script>
 
