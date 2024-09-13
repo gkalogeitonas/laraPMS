@@ -8,6 +8,8 @@ use App\Models\Room;
 use App\Policies\RoomPolicy;
 use App\Models\Customer;
 use App\Policies\CustomerPolicy;
+use App\Models\Booking;
+use App\Policies\BookingPolicy;
 // use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -22,6 +24,7 @@ class AuthServiceProvider extends ServiceProvider
         Property::class => PropertyPolicy::class,
         Room::class => RoomPolicy::class,
         Customer::class => CustomerPolicy::class,
+        Booking::class => BookingPolicy::class,
     ];
 
     /**

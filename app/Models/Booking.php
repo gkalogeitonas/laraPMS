@@ -9,22 +9,20 @@ class Booking extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'room_id', 'customer_id', 'start_date', 'end_date', 'status',
-    ];
+    protected $guarded = [];
 
     public function room()
     {
         return $this->belongsTo(Room::class);
     }
 
-    public function customer()
-    {
-        return $this->belongsTo(Customer::class);
-    }
+    // public function customer()
+    // {
+    //     return $this->belongsTo(Customer::class);
+    // }
 
-    public function payment()
-    {
-        return $this->hasMany(Payment::class);
-    }
+    // public function payment()
+    // {
+    //     return $this->hasMany(Payment::class);
+    // }
 }

@@ -15,9 +15,15 @@ return new class extends Migration
             $table->id();
             $table->foreignId('room_id')->constrained()->onDelete('cascade');
             $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
-            $table->foreignId('customer_id')->constrained()->onDelete('cascade');
+            $table->foreignId('customer_id')->nullable();
+            $table->string('name');
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('source')->nullable();
             $table->date('start_date');
             $table->date('end_date');
+            $table->integer('total_guests');
+            $table->decimal('price', 10, 2);
             $table->string('status');
             $table->timestamps();
         });
