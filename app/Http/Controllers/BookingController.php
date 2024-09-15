@@ -60,17 +60,22 @@ class BookingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Booking $booking, Request $request)
     {
-        //
+        $this->authorize('update', $booking);
+        $attributes = $this->validateBooking($request);
+        $booking->update($attributes);
+        return redirect()->route('bookings.index')->with('success', 'Booking updated.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Booking $booking)
     {
-        //
+        $this->authorize('delete', $booking);
+        $booking->delete();
+        return redirect()->route('bookings.index')->with('success', 'Booking deleted.');
     }
 
     private function validateBooking(Request $request)

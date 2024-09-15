@@ -4,6 +4,7 @@ use App\Models\User;
 use App\Models\Room;
 use App\Models\Tenant;
 use App\Models\Customer;
+use App\Models\Booking;
 use function Pest\Laravel\get;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\post;
@@ -41,7 +42,7 @@ it('can create a booking', function () {
         'status' => 'pending',
     ];
 
-    $response = post('/bookings', $bookingData);
+    $response = post(route('bookings.store'), $bookingData);
 
     $response->assertRedirect(route('bookings.index'))->assertSessionHas('success', 'Booking created.');
 
@@ -63,7 +64,7 @@ it('prevents non tenant members to create a booking', function () {
         'status' => 'pending',
     ];
 
-    $response = post('/bookings', $bookingData);
+    $response = post(route('bookings.store'), $bookingData);
 
     $response->assertStatus(403);
 
@@ -81,6 +82,80 @@ test('a booking requires a room', function () {
         'status' => 'pending',
     ];
 
-    $response = post('/bookings', $bookingData);
+    $response = post(route('bookings.store'), $bookingData);
     $response->assertSessionHasErrors('room_id');
+});
+
+test('a user can update a booking', function () {
+    $booking = Booking::factory()->create([
+        'tenant_id' => $this->tenant->id,
+        'room_id' => $this->room->id,
+    ]);
+
+    $response = patch(route('bookings.update', $booking->id), [
+        'name' => 'New Name',
+        'room_id' => $booking->room->id,
+        'customer_id' => $booking->customer,
+        'start_date' => $booking->start_date,
+        'end_date' => $booking->end_date,
+        'total_guests' => $booking->total_guests,
+        'price' => $booking->price,
+        'status' => $booking->status,
+    ]);
+
+    $response->assertRedirect(route('bookings.index'))->assertSessionHas('success', 'Booking updated.');
+
+    $booking->refresh();
+
+    expect($booking->name)->toBe('New Name');
+});
+
+it('prevents non tenant members to update a booking', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $booking = Booking::factory()->create([
+        'tenant_id' => $this->tenant->id,
+        'room_id' => $this->room->id,
+    ]);
+
+    $response = patch('/bookings/' . $booking->id, [
+        'name' => 'New Name',
+        'room_id' => $booking->room->id,
+        'customer_id' => $booking->customer,
+        'start_date' => $booking->start_date,
+        'end_date' => $booking->end_date,
+        'total_guests' => $booking->total_guests,
+        'price' => $booking->price,
+        'status' => $booking->status,
+    ]);
+
+    $response->assertStatus(403);
+});
+
+test('a user can delete a booking', function () {
+    $booking = Booking::factory()->create([
+        'tenant_id' => $this->tenant->id,
+        'room_id' => $this->room->id,
+    ]);
+
+    $response = delete(route('bookings.destroy', $booking->id));
+
+    $response->assertRedirect(route('bookings.index'))->assertSessionHas('success', 'Booking deleted.');
+
+    expect(Booking::count())->toBe(0);
+});
+
+it('prevents non tenant members to delete a booking', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $booking = Booking::factory()->create([
+        'tenant_id' => $this->tenant->id,
+        'room_id' => $this->room->id,
+    ]);
+
+    $response = delete('/bookings/' . $booking->id);
+
+    $response->assertStatus(403);
 });
