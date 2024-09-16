@@ -86,6 +86,22 @@ test('a booking requires a room', function () {
     $response->assertSessionHasErrors('room_id');
 });
 
+test('a booking requires end date to be after start date', function () {
+    $bookingData = [
+        'room_id' => $this->room->id,
+        'name' => 'Booking Name',
+        'customer_id' => $this->customer->id,
+        'start_date' => '2024-01-10',
+        'end_date' => '2024-01-01',
+        'total_guests' => 2,
+        'price' => 100.00,
+        'status' => 'pending',
+    ];
+
+    $response = post(route('bookings.store'), $bookingData);
+    $response->assertSessionHasErrors('end_date');
+});
+
 test('a user can update a booking', function () {
     $booking = Booking::factory()->create([
         'tenant_id' => $this->tenant->id,

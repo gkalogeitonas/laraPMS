@@ -76,6 +76,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
+    Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create');
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
     Route::patch('/bookings/{booking}', [BookingController::class, 'update'])->name('bookings.update');
     Route::delete('/bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy');

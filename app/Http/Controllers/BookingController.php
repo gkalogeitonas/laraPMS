@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Room;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
+use Inertia\Inertia;
 
 
 class BookingController extends Controller
@@ -23,7 +24,11 @@ class BookingController extends Controller
      */
     public function create()
     {
-        //
+        //return auth()->user()->getActiveTenant()->rooms;
+        return Inertia::render('Bookings/Create', [
+            'rooms' => auth()->user()->getActiveTenant()->rooms,
+            'statuses' => Config::get('booking.status'),
+        ]);
     }
 
     /**
@@ -31,14 +36,12 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
-
         $attributes = $this->validateBooking($request);
         $room = Room::find($request->room_id);
         $this->authorize('update', $room);
         $attributes['tenant_id'] = auth()->user()->getActiveTenant()->id;
         Booking::create($attributes);
         return redirect()->route('bookings.index')->with('success', 'Booking created.');
-
     }
 
     /**
@@ -85,7 +88,7 @@ class BookingController extends Controller
             'name' => 'required|string|min:3|max:255',
             'customer_id' => 'nullable',
             'start_date' => 'required|date',
-            'end_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
             'status' => 'required|in:' . implode(',', Config::get('booking.status')),
             'total_guests' => 'required|integer',
             'price' => 'required|numeric',

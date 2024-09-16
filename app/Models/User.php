@@ -79,4 +79,5 @@ class User extends Authenticatable
     {
         return session()->has('active_tenant_id');
     }
+
 }

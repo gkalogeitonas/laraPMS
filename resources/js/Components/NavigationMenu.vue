@@ -19,5 +19,8 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
         <ResponsiveNavLink :href="route('calendar')" :active="route().current('calendar')">
             Calendar
         </ResponsiveNavLink>
+        <ResponsiveNavLink :href="route('bookings.index')" :active="route().current('bookings')">
+            Bookings
+        </ResponsiveNavLink>
     </div>
 </template>
