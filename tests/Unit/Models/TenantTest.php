@@ -4,6 +4,7 @@ use App\Models\Tenant;
 use App\Models\Room;
 use App\Models\Property;
 use App\Models\Customer;
+use App\Models\Booking;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -44,4 +45,22 @@ it('can have many customers', function () {
     // Assert that the tenant's customers relationship returns the correct customers
     expect($tenant->customers)->toHaveCount(3);
     expect($tenant->customers->pluck('id')->toArray())->toEqual($customers->pluck('id')->toArray());
+});
+
+it('can have Bookings', function () {
+    // Create a tenant
+    $tenant = Tenant::factory()->create();
+
+    // Create a room associated with the tenant
+    $room = Room::factory()->create(['tenant_id' => $tenant->id]);
+
+    // Create a booking associated with the tenant
+    $booking = Booking::factory()->create([
+        'tenant_id' => $tenant->id,
+        'room_id' => $room->id,
+    ]);
+
+    // Assert that the tenant's bookings relationship returns the correct bookings
+    expect($tenant->bookings)->toHaveCount(1);
+    expect($tenant->bookings->first()->id)->toEqual($booking->id);
 });
