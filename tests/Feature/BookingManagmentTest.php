@@ -175,3 +175,12 @@ it('prevents non tenant members to delete a booking', function () {
 
     $response->assertStatus(403);
 });
+
+it('can view the bookings index', function () {
+    $response = get(route('bookings.index'));
+
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Bookings/Index')
+        ->has('bookings')
+    );
+});
