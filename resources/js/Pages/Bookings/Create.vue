@@ -11,6 +11,8 @@ import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import NavLink from "@/Components/NavLink.vue";
+import Autocomplete from '@/Components/Autocomplete.vue';
+
 
 const props = defineProps([
     "rooms",
@@ -48,6 +50,7 @@ let submit = () => {
                 <form @submit.prevent="submit">
                     <div class="grid grid-cols-2 gap-4">
                         <div>
+                            <Autocomplete />
                             <InputLabel for="customer_id" value="Customer" />
                             <select v-model="form.customer_id" id="customer_id" name="customer_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                 <option value="">Select a customer</option>
@@ -58,14 +61,9 @@ let submit = () => {
                             <InputError :message="form.errors.customer_id" />
                         </div>
                         <div>
-                            <InputLabel for="status" value="Status" />
-                            <select v-model="form.status" id="status" name="status" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                <option value="">Select a status</option>
-                                <option v-for="status in statuses" :value="status" :key="status">
-                                    {{ status }}
-                                </option>
-                            </select>
-                            <InputError :message="form.errors.status" />
+                            <InputLabel for="name" value="Name" />
+                            <TextInput v-model="form.name" id="name" type="text" />
+                            <InputError :message="form.errors.name" />
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-4 mt-4">
@@ -85,6 +83,40 @@ let submit = () => {
                             <InputLabel for="price" value="Price" />
                             <TextInput v-model="form.price" id="price" type="number" />
                             <InputError :message="form.errors.price" />
+                        </div>
+                        <div>
+                            <InputLabel for="total_guests" value="Total Guests" />
+                            <TextInput v-model="form.total_guests" id="total_guests" type="number" />
+                            <InputError :message="form.errors.total_guests" />
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <InputLabel for="phone" value="Phone" />
+                            <TextInput v-model="form.phone" id="phone" type="text" />
+                            <InputError :message="form.errors.phone" />
+                        </div>
+                        <div>
+                            <InputLabel for="email" value="Email" />
+                            <TextInput v-model="form.email" id="email" type="email" />
+                            <InputError :message="form.errors.email" />
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <InputLabel for="status" value="Status" />
+                            <select v-model="form.status" id="status" name="status" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <option value="">Select a status</option>
+                                <option v-for="status in statuses" :value="status" :key="status">
+                                    {{ status }}
+                                </option>
+                            </select>
+                            <InputError :message="form.errors.status" />
+                        </div>
+                        <div>
+                            <InputLabel for="source" value="Source" />
+                            <TextInput v-model="form.source" id="source" type="text" />
+                            <InputError :message="form.errors.source" />
                         </div>
                     </div>
                 </form>

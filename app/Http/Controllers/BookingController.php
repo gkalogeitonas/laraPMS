@@ -16,7 +16,10 @@ class BookingController extends Controller
      */
     public function index()
     {
-        //
+
+        return Inertia::render('Bookings/Index', [
+            'bookings' => auth()->user()->getActiveTenant()->bookings,
+        ]);
     }
 
     /**
