@@ -175,3 +175,13 @@ it('filters customers by search query', function () {
         ->where('customers.data.0.name', 'John Doe')
     );
 });
+
+
+test('a user can view the create customer page', function () {
+    $response = $this->get(route('customers.create'));
+
+    $response->assertStatus(200);
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Customers/Create')
+    );
+});
