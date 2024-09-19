@@ -34,6 +34,14 @@ let form = useForm({
 let submit = () => {
     form.post(route('bookings.store'));
 };
+
+const updateCustomer = (customer) => {
+  form.customer_id = customer.id;
+  form.phone = customer.phone;
+  form.email = customer.email;
+  console.log("Selected Customer:", customer); // Debugging with console.log
+  // alert(`Selected Customer: ${JSON.stringify(customer)}`); // Uncomment this line to use alert instead
+};
 </script>
 
 <template>
@@ -57,7 +65,7 @@ let submit = () => {
                                     {{ customer.name }}
                                 </option>
                             </select> -->
-                            <Autocomplete apiEndpoint="/customer/search" />
+                            <Autocomplete apiEndpoint="/customer/search"  paramName="search" @update:customer="updateCustomer" />
                             <InputError :message="form.errors.customer_id" />
                         </div>
                         <div>
