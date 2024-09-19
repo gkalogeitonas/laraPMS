@@ -67,7 +67,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/switch-tenant', [TenantSwitchController::class, 'switch']);
 
     Route::resource('customers', CustomerController::class);
-
+    Route::get('/customer/search', [CustomerController::class, 'search'])->name('customers.search');
 
 
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
@@ -77,5 +77,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy');
 
 });
+
 
 require __DIR__.'/auth.php';

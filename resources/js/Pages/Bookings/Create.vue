@@ -50,14 +50,14 @@ let submit = () => {
                 <form @submit.prevent="submit">
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <Autocomplete />
                             <InputLabel for="customer_id" value="Customer" />
-                            <select v-model="form.customer_id" id="customer_id" name="customer_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <!-- <select v-model="form.customer_id" id="customer_id" name="customer_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                 <option value="">Select a customer</option>
                                 <option v-for="customer in customers" :value="customer.id" :key="customer.id">
                                     {{ customer.name }}
                                 </option>
-                            </select>
+                            </select> -->
+                            <Autocomplete apiEndpoint="/customer/search" />
                             <InputError :message="form.errors.customer_id" />
                         </div>
                         <div>

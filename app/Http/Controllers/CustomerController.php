@@ -90,6 +90,15 @@ class CustomerController extends Controller
         $customer->delete();
     }
 
+    public function search(Request $request)
+    {
+        $customers = Customer::ofActiveTenant()
+            ->where('name', 'like', '%' . $request->search . '%')
+            ->limit(20)
+            ->get();
+        return response()->json($customers);
+    }
+
 
 
     private function validateCustomer(Request $request, Customer $customer = null)
