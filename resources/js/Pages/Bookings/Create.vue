@@ -28,7 +28,9 @@ let form = useForm({
     status: "",
     start_date: "",
     end_date: "",
+    total_guests: "",
     price: "",
+    room_id: ""
 });
 
 let submit = () => {
@@ -37,9 +39,10 @@ let submit = () => {
 
 const updateCustomer = (customer) => {
   form.customer_id = customer.id;
+  form.name = customer.name;
   form.phone = customer.phone;
   form.email = customer.email;
-  console.log("Selected Customer:", customer); // Debugging with console.log
+  //console.log("Selected Customer:", customer); // Debugging with console.log
   // alert(`Selected Customer: ${JSON.stringify(customer)}`); // Uncomment this line to use alert instead
 };
 </script>
@@ -59,12 +62,6 @@ const updateCustomer = (customer) => {
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <InputLabel for="customer_id" value="Customer" />
-                            <!-- <select v-model="form.customer_id" id="customer_id" name="customer_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                <option value="">Select a customer</option>
-                                <option v-for="customer in customers" :value="customer.id" :key="customer.id">
-                                    {{ customer.name }}
-                                </option>
-                            </select> -->
                             <Autocomplete apiEndpoint="/customer/search"  paramName="search" @update:customer="updateCustomer" />
                             <InputError :message="form.errors.customer_id" />
                         </div>
@@ -72,30 +69,6 @@ const updateCustomer = (customer) => {
                             <InputLabel for="name" value="Name" />
                             <TextInput v-model="form.name" id="name" type="text" />
                             <InputError :message="form.errors.name" />
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4 mt-4">
-                        <div>
-                            <InputLabel for="start_date" value="Start Date" />
-                            <TextInput v-model="form.start_date" id="start_date" type="date" />
-                            <InputError :message="form.errors.start_date" />
-                        </div>
-                        <div>
-                            <InputLabel for="end_date" value="End Date" />
-                            <TextInput v-model="form.end_date" id="end_date" type="date" />
-                            <InputError :message="form.errors.end_date" />
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4 mt-4">
-                        <div>
-                            <InputLabel for="price" value="Price" />
-                            <TextInput v-model="form.price" id="price" type="number" />
-                            <InputError :message="form.errors.price" />
-                        </div>
-                        <div>
-                            <InputLabel for="total_guests" value="Total Guests" />
-                            <TextInput v-model="form.total_guests" id="total_guests" type="number" />
-                            <InputError :message="form.errors.total_guests" />
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-4 mt-4">
@@ -108,6 +81,41 @@ const updateCustomer = (customer) => {
                             <InputLabel for="email" value="Email" />
                             <TextInput v-model="form.email" id="email" type="email" />
                             <InputError :message="form.errors.email" />
+                        </div>
+                    </div>
+                    <hr class="my-8" />
+                    <div class="grid grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <InputLabel for="start_date" value="Start Date" />
+                            <TextInput v-model="form.start_date" id="start_date" type="date" />
+                            <InputError :message="form.errors.start_date" />
+                        </div>
+                        <div>
+                            <InputLabel for="end_date" value="End Date" />
+                            <TextInput v-model="form.end_date" id="end_date" type="date" />
+                            <InputError :message="form.errors.end_date" />
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 mt-4">
+                        <div>
+                            <InputLabel for="room_id" value="Room" />
+                            <select v-model="form.room_id" id="room_id" name="room_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                              <option value="">Select a room</option>
+                              <option v-for="room in rooms" :value="room.id" :key="room.id">
+                                {{ room.name }}
+                              </option>
+                            </select>
+                            <InputError :message="form.errors.room_id" />
+                        </div>
+                        <div>
+                            <InputLabel for="price" value="Price" />
+                            <TextInput v-model="form.price" id="price" type="number" />
+                            <InputError :message="form.errors.price" />
+                        </div>
+                        <div>
+                            <InputLabel for="total_guests" value="Total Guests" />
+                            <TextInput v-model="form.total_guests" id="total_guests" type="number" />
+                            <InputError :message="form.errors.total_guests" />
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-4 mt-4">
@@ -126,6 +134,18 @@ const updateCustomer = (customer) => {
                             <TextInput v-model="form.source" id="source" type="text" />
                             <InputError :message="form.errors.source" />
                         </div>
+                    </div>
+                    <div class="flex items-center justify-end mt-4">
+                        <NavLink :href="route('bookings.index')" class=""
+                            >Cancel</NavLink
+                        >
+                        <PrimaryButton
+                            class="ms-4"
+                            :class="{ 'opacity-25': form.processing }"
+                            :disabled="form.processing"
+                        >
+                            Create Booking
+                        </PrimaryButton>
                     </div>
                 </form>
             </div>

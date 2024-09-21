@@ -18,7 +18,7 @@ class BookingController extends Controller
     {
 
         return Inertia::render('Bookings/Index', [
-            'bookings' => auth()->user()->getActiveTenant()->bookings,
+            'bookings' => auth()->user()->getActiveTenant()->bookings()->paginate(10),
         ]);
     }
 

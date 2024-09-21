@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 
 
+
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
@@ -184,4 +185,19 @@ test('a user can view the create customer page', function () {
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Customers/Create')
     );
+});
+
+
+it('can search for customers', function () {
+    Customer::factory()->createMany([
+        ['tenant_id' => $this->tenant->id, 'name' => 'John Doe'],
+        ['tenant_id' => $this->tenant->id, 'name' => 'Jane Doe'],
+        ['tenant_id' => $this->tenant->id, 'name' => 'Alice Smith']
+    ]);
+
+    $response = $this->get('/customer/search?search=John');
+    // Assert: Check the response
+    $response->assertStatus(200)
+             ->assertJsonCount(1)
+             ->assertJsonFragment(['name' => 'John Doe']);
 });

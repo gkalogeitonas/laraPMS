@@ -45,7 +45,7 @@ const selectResult = (result) => {
   <div class="relative">
     <input
       type="text"
-      placeholder="what are you looking for?"
+      placeholder="Search..."
       v-model="query"
       @keyup="autoComplete"
       class="form-control"
