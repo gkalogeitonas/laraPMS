@@ -18,8 +18,8 @@ import Show from '../Customers/Show.vue';
 
 
 const props = defineProps({
-  bookings: Object,
-  //filters: Object,
+    bookings: Object,
+    //filters: Object,
 });
 
 // let search = ref(props.filters.search);
@@ -34,43 +34,42 @@ const props = defineProps({
 </script>
 
 <template>
+
     <Head title="Dashboard" />
 
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Bookings</h2>
-            <AddButton :href="route('bookings.create')">Create  Booking</AddButton>
+            <AddButton :href="route('bookings.create')">Create Booking</AddButton>
         </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <!-- <input v-model="search" type="text" placeholder="Search..." class="border px-2 rounded-lg" /> -->
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Bookings
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <tr v-for="booking in bookings.data" :key="booking.id">
-                                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="min-w-full divide-y divide-gray-200">
+                        <div class="bg-gray-50">
+                            <span scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Bookings
+                            </span>
+                        </div>
+                        <div class="bg-white divide-y divide-gray-200">
+                            <div v-for="booking in bookings.data" :key="booking.id"
+                                class="flex items-center justify-between py-4">
+                                <div class="px-6 py-4">
                                     <NavLink :href="route('bookings.show', booking.id)">{{ booking.name }}</NavLink>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                </div>
+                                <div class="px-6 py-4 text-right text-sm font-medium">
                                     <div class="flex justify-end space-x-4 mt-4">
-                                        <ActionButtons
-                                        :showUrl="route('bookings.show', booking.id)"
-                                        :editUrl="route('bookings.edit', booking.id)"
-                                        :deleteUrl="route('bookings.destroy', booking.id)"
-                                        />
+                                        <ActionButtons :showUrl="route('bookings.show', booking.id)"
+                                            :editUrl="route('bookings.edit', booking.id)"
+                                            :deleteUrl="route('bookings.destroy', booking.id)" />
                                     </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <Pagination :links="bookings.links" class="mt-6 flex justify-end mr-5" />
                 </div>
             </div>
