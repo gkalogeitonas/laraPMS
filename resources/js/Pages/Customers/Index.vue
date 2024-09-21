@@ -61,6 +61,7 @@ watch(search, debounce(function (value) {
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex justify-end space-x-4 mt-4">
                                         <ActionButtons
+                                        :showUrl="route('customers.show', customer.id)"
                                         :editUrl="route('customers.edit', customer.id)"
                                         :deleteUrl="route('customers.destroy', customer.id)"
                                         />

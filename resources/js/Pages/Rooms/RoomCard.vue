@@ -21,6 +21,7 @@ const props = defineProps({
     <span class="ml-5 flex-grow"> {{ room.type }}</span>
     <span class="ml-5 flex-grow"> {{ room.status }}</span>
     <ActionButtons class="ml-auto lex-grow"
+      :showUrl="route('rooms.show', room.id)"
       :editUrl="route('rooms.edit', room.id)"
       :deleteUrl="route('rooms.destroy', room.id)"
     />

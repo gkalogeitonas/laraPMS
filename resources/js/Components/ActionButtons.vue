@@ -1,9 +1,12 @@
 <template>
   <div class="flex justify-end space-x-4 mt-4">
-    <EditButton :href="editUrl">
+    <NavLink v-if="showUrl" :href="showUrl"   class=" items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+        View
+    </NavLink>
+    <EditButton v-if="editUrl" :href="editUrl">
       Edit
     </EditButton>
-    <DeleteButton :href="deleteUrl">
+    <DeleteButton v-if="deleteUrl" :href="deleteUrl">
       Delete
     </DeleteButton>
   </div>
@@ -11,8 +14,9 @@
 
 <script setup>
 import { defineProps } from 'vue';
-import EditButton from './EditButton.vue';
-import DeleteButton from './DeleteButton.vue';
+import NavLink from '@/Components/NavLink.vue';
+import EditButton from '@/Components/EditButton.vue';
+import DeleteButton from '@/Components/DeleteButton.vue';
 
 const props = defineProps({
   editUrl: {
@@ -20,6 +24,10 @@ const props = defineProps({
     required: true
   },
   deleteUrl: {
+    type: String,
+    required: true
+  },
+  showUrl: {
     type: String,
     required: true
   }
