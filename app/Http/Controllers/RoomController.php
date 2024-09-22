@@ -37,7 +37,6 @@ class RoomController extends Controller
         return Inertia::render('Rooms/Create', [
             'property' => $property,
             'types' => config('room.types'),
-            'statuses' => config('room.statuses')
         ]);
     }
 
@@ -72,7 +71,6 @@ class RoomController extends Controller
         return Inertia::render('Rooms/Edit', [
             'room' => $room,
             'types' => config('room.types'),
-            'statuses' => config('room.statuses')
         ]);
     }
 
@@ -103,8 +101,6 @@ class RoomController extends Controller
             'name' => 'required|string|min:3|max:255',
             'description' => 'nullable|string|min:5|max:255',
             'type' => 'required|in:' . implode(',', config('room.types')),
-            'status' => 'required|in:' . implode(',', config('room.statuses')),
-            ///'property_id' => 'required|exists:properties,id',
         ]);
     }
 

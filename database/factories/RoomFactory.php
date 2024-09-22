@@ -32,7 +32,6 @@ class RoomFactory extends Factory
             'tenant_id' => $property->tenant_id,
             'name' => 'Room ' . $this->faker->unique()->numberBetween(1, 100),
             'description' => $this->faker->paragraph,
-            'status' => 'available',
             'type' => $this->faker->randomElement(config('room.types')),
         ];
     }

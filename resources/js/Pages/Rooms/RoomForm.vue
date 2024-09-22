@@ -11,10 +11,6 @@ const props = defineProps({
     types: {
         type: Array,
         required: true
-    },
-    statuses: {
-        type: Array,
-        required: true
     }
 });
 </script>
@@ -32,13 +28,6 @@ const props = defineProps({
                 <option v-for="type in types" :key="type" :value="type">{{ type }}</option>
             </select>
             <InputError :message="form.errors.type" class="mt-2" />
-        </div>
-        <div class="mb-4">
-            <InputLabel for="status" value="Room Status" />
-            <select id="status" v-model="form.status" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
-                <option v-for="status in statuses" :key="status" :value="status">{{ status }}</option>
-            </select>
-            <InputError :message="form.errors.status" class="mt-2" />
         </div>
         <div class="mb-4">
             <InputLabel for="description" value="Description" />

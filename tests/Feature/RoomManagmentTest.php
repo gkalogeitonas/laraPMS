@@ -38,8 +38,7 @@ test('a user can see their active tenant rooms in rooms index', function () {
     // user can see the room
     $response->assertSee($room->name)
         ->assertSee($room->description)
-        ->assertSee($room->type)
-        ->assertSee($room->status);
+        ->assertSee($room->type);
 });
 
 test('a user with no active tenant see empty rooms index', function () {
@@ -68,8 +67,7 @@ it('allows the owner to create a room', function () {
     $response = post(route('properties.rooms.store', $property), [
         'name' => 'Room 101',
         'description' => 'A cozy room',
-        'type' => 'single',
-        'status' => 'available'
+        'type' => 'single'
     ]);
 
     //$response->assertRedirect(route('properties.show', $property));
@@ -89,9 +87,7 @@ test('The create method returns the room create form', function () {
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Rooms/Create')
         ->has('types')
-        ->has('statuses')
         ->where('types', config('room.types'))
-        ->where('statuses', config('room.statuses'))
     );
 });
 
@@ -117,16 +113,13 @@ test('The edit method returns the room edit form', function () {
                 ->where('name', $room->name)
                 ->where('description', $room->description)
                 ->where('type', $room->type)
-                ->where('status', $room->status)
                 ->where('property_id', $room->property_id)
                 ->where('tenant_id', $room->tenant_id)
                 ->where('created_at', $room->created_at->toISOString())
                 ->where('updated_at', $room->updated_at->toISOString());
         })
         ->has('types')
-        ->has('statuses')
         ->where('types', config('room.types'))
-        ->where('statuses', config('room.statuses'))
     );
 });
 
@@ -160,7 +153,6 @@ it('prevents a non-owner from creating a room', function () {
     $response = post(route('properties.rooms.store', $property), [
         'name' => 'Room 101',
         'description' => 'A cozy room',
-        'status' => 'available',
     ]);
 
     $response->assertStatus(403);
@@ -180,7 +172,6 @@ it('allows the owner to update a room', function () {
     $response = patch(route('rooms.update', [$room]), [
         'name' => 'Updated Room Name',
         'description' => 'Updated description',
-        'status' => 'occupied',
         'type' => 'single',
     ]);
 
@@ -204,7 +195,6 @@ it('prevents a non-owner from updating a room', function () {
         'name' => 'Updated Room Name',
         'description' => 'Updated description',
         'price' => 150,
-        'status' => 'occupied',
     ]);
 
     $response->assertStatus(403);

@@ -12,9 +12,8 @@ class Room extends Model
     protected $fillable = [
         'name',
         'description',
-        'type', // Ensure 'type' is also fillable if it's a column in your table
+        'type',
         'price',
-        'status',
         'property_id',
         'tenant_id',
     ];

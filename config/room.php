@@ -6,11 +6,5 @@ return [
         'double',
         'triple',
         'apartment',
-    ],
-    'statuses' => [
-        'available',
-        'booked',
-        'occupied',
-        'out of service',
-    ],
+    ]
 ];
