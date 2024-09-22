@@ -6,7 +6,7 @@ import FlashMessages from '@/Components/FlashMessages.vue';
 
 
 <template>
-    <div class="flex h-screen">
+    <div class="flex h-full">
 
         <!-- Sidebar -->
         <Sidebar />
