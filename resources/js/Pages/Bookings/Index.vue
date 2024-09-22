@@ -93,8 +93,8 @@ const props = defineProps({
                                 </div>
                                 <div class="px-6 py-4">
                                     <span class="text-xs inline-flex flex-col leading-5 font-semibold ">
-                                        <div>Day In: {{ booking.check_in }}</div>
-                                        <div>Day Out: {{ booking.check_out }}</div>
+                                        <div>Check In: {{ booking.check_in }}</div>
+                                        <div>Check Out: {{ booking.check_out }}</div>
                                         <div>Total Night: {{ booking.total_days }}</div>
                                     </span>
                                 </div>
@@ -124,6 +124,6 @@ const props = defineProps({
 <style scoped>
 /* Custom grid template columns */
 .grid-cols-7 {
-  grid-template-columns: 25px repeat(5, 1fr) 250px;
+  grid-template-columns: 25px 120px repeat(4, 1fr) 250px;
 }
 </style>
