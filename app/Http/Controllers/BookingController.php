@@ -14,12 +14,21 @@ class BookingController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $query = auth()->user()->getActiveTenant()->bookings()->with('room');
+
+        if ($request->has('start_date') && $request->has('end_date')) {
+            $query->whereBetween('start_date', [$request->start_date, $request->end_date])
+            ->orWhereBetween('end_date', [$request->start_date, $request->end_date]);
+        }
+
+        $bookings = $query->paginate(10);
 
         return Inertia::render('Bookings/Index', [
-            'bookings' => auth()->user()->getActiveTenant()->bookings()->with('room')->paginate(10),
+            'bookings' => $bookings,
         ]);
+
     }
 
     /**
