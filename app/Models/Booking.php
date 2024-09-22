@@ -22,9 +22,9 @@ class Booking extends Model
 
     public function getTotalDaysAttribute()
     {
-        $start_date = new \DateTime($this->start_date);
-        $end_date = new \DateTime($this->end_date);
-        return $start_date->diff($end_date)->days;
+        $check_in = new \DateTime($this->check_in);
+        $check_out = new \DateTime($this->check_out);
+        return $check_in->diff($check_out)->days;
     }
 
     public function getTotalCostAttribute()

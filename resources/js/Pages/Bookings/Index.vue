@@ -93,8 +93,8 @@ const props = defineProps({
                                 </div>
                                 <div class="px-6 py-4">
                                     <span class="text-xs inline-flex flex-col leading-5 font-semibold ">
-                                        <div>Day In: {{ booking.start_date }}</div>
-                                        <div>Day Out: {{ booking.end_date }}</div>
+                                        <div>Day In: {{ booking.check_in }}</div>
+                                        <div>Day Out: {{ booking.check_out }}</div>
                                         <div>Total Night: {{ booking.total_days }}</div>
                                     </span>
                                 </div>

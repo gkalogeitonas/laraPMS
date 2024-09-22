@@ -18,9 +18,9 @@ class BookingController extends Controller
     {
         $query = auth()->user()->getActiveTenant()->bookings()->with('room');
 
-        if ($request->has('start_date') && $request->has('end_date')) {
-            $query->whereBetween('start_date', [$request->start_date, $request->end_date])
-            ->orWhereBetween('end_date', [$request->start_date, $request->end_date]);
+        if ($request->has('check_in') && $request->has('check_out')) {
+            $query->whereBetween('check_in', [$request->check_in, $request->check_out])
+            ->orWhereBetween('check_out', [$request->check_in, $request->check_out]);
         }
 
         $bookings = $query->paginate(10);
@@ -99,8 +99,8 @@ class BookingController extends Controller
             'room_id' => 'required',
             'name' => 'required|string|min:3|max:255',
             'customer_id' => 'nullable',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'check_in' => 'required|date',
+            'check_out' => 'required|date|after:check_in',
             'status' => 'required|in:' . implode(',', Config::get('booking.status')),
             'total_guests' => 'required|integer',
             'price' => 'required|numeric',

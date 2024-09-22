@@ -18,8 +18,8 @@ it('belongs to a room', function () {
 
 it('calculates total_days correctly', function () {
     $booking = Booking::factory()->create([
-        'start_date' => Carbon::parse('2023-01-01'),
-        'end_date' => Carbon::parse('2023-01-10'),
+        'check_in' => Carbon::parse('2023-01-01'),
+        'check_out' => Carbon::parse('2023-01-10'),
     ]);
 
     expect($booking->total_days)->toBe(9);
@@ -27,8 +27,8 @@ it('calculates total_days correctly', function () {
 
 it('calculates total_cost correctly', function () {
     $booking = Booking::factory()->create([
-        'start_date' => Carbon::parse('2023-01-01'),
-        'end_date' => Carbon::parse('2023-01-10'),
+        'check_in' => Carbon::parse('2023-01-01'),
+        'check_out' => Carbon::parse('2023-01-10'),
         'price' => 100.00,
     ]);
 

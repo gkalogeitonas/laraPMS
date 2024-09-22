@@ -35,8 +35,8 @@ it('can create a booking', function () {
         'room_id' => $this->room->id,
         'name' => 'Booking Name',
         'customer_id' => $this->customer->id,
-        'start_date' => '2024-01-01',
-        'end_date' => '2024-01-10',
+        'check_in' => '2024-01-01',
+        'check_out' => '2024-01-10',
         'total_guests' => 2,
         'price' => 100.00,
         'status' => 'pending',
@@ -57,8 +57,8 @@ it('prevents non tenant members to create a booking', function () {
         'room_id' => $this->room->id,
         'name' => 'Booking Name',
         'customer_id' => $this->customer->id,
-        'start_date' => '2024-01-01',
-        'end_date' => '2024-01-10',
+        'check_in' => '2024-01-01',
+        'check_out' => '2024-01-10',
         'total_guests' => 2,
         'price' => 100.00,
         'status' => 'pending',
@@ -75,8 +75,8 @@ test('a booking requires a room', function () {
     $bookingData = [
         'name' => 'Booking Name',
         'customer_id' => $this->customer->id,
-        'start_date' => '2024-01-01',
-        'end_date' => '2024-01-10',
+        'check_in' => '2024-01-01',
+        'check_out' => '2024-01-10',
         'total_guests' => 2,
         'price' => 100.00,
         'status' => 'pending',
@@ -91,15 +91,15 @@ test('a booking requires end date to be after start date', function () {
         'room_id' => $this->room->id,
         'name' => 'Booking Name',
         'customer_id' => $this->customer->id,
-        'start_date' => '2024-01-10',
-        'end_date' => '2024-01-01',
+        'check_in' => '2024-01-10',
+        'check_out' => '2024-01-01',
         'total_guests' => 2,
         'price' => 100.00,
         'status' => 'pending',
     ];
 
     $response = post(route('bookings.store'), $bookingData);
-    $response->assertSessionHasErrors('end_date');
+    $response->assertSessionHasErrors('check_out');
 });
 
 test('a user can update a booking', function () {
@@ -112,8 +112,8 @@ test('a user can update a booking', function () {
         'name' => 'New Name',
         'room_id' => $booking->room->id,
         'customer_id' => $booking->customer,
-        'start_date' => $booking->start_date,
-        'end_date' => $booking->end_date,
+        'check_in' => $booking->check_in,
+        'check_out' => $booking->check_out,
         'total_guests' => $booking->total_guests,
         'price' => $booking->price,
         'status' => $booking->status,
@@ -139,8 +139,8 @@ it('prevents non tenant members to update a booking', function () {
         'name' => 'New Name',
         'room_id' => $booking->room->id,
         'customer_id' => $booking->customer,
-        'start_date' => $booking->start_date,
-        'end_date' => $booking->end_date,
+        'check_in' => $booking->check_in,
+        'check_out' => $booking->check_out,
         'total_guests' => $booking->total_guests,
         'price' => $booking->price,
         'status' => $booking->status,
@@ -189,18 +189,18 @@ it('can filter booking by dates', function () {
     $booking1 = Booking::factory()->create([
         'tenant_id' => $this->tenant->id,
         'room_id' => $this->room->id,
-        'start_date' => '2024-01-01',
-        'end_date' => '2024-01-10',
+        'check_in' => '2024-01-01',
+        'check_out' => '2024-01-10',
     ]);
 
     $booking2 = Booking::factory()->create([
         'tenant_id' => $this->tenant->id,
         'room_id' => $this->room->id,
-        'start_date' => '2024-02-15',
-        'end_date' => '2024-02-20',
+        'check_in' => '2024-02-15',
+        'check_out' => '2024-02-20',
     ]);
 
-    $response = get(route('bookings.index', ['start_date' => '2024-01-01', 'end_date' => '2024-01-10']));
+    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-01-10']));
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Bookings/Index')
         ->has('bookings')
@@ -212,11 +212,11 @@ it('can filter booking by dates', function () {
     $booking3 = Booking::factory()->create([
         'tenant_id' => $this->tenant->id,
         'room_id' => $this->room->id,
-        'start_date' => '2024-01-05',
-        'end_date' => '2024-01-11',
+        'check_in' => '2024-01-05',
+        'check_out' => '2024-01-11',
     ]);
 
-    $response = get(route('bookings.index', ['start_date' => '2024-01-01', 'end_date' => '2024-01-10']));
+    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-01-10']));
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Bookings/Index')
         ->has('bookings')

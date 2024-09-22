@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('source')->nullable();
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->date('check_in');
+            $table->date('check_out');
             $table->integer('total_guests');
             $table->decimal('price', 10, 2);
             $table->string('status');

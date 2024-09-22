@@ -20,8 +20,8 @@ class BookingFactory extends Factory
      */
     public function definition(): array
     {
-        $start_date = Carbon::instance($this->faker->dateTimeBetween('-1 month', '+1 month'));
-        $end_date = $start_date->copy()->addDays($this->faker->numberBetween(1, 30));
+        $check_in = Carbon::instance($this->faker->dateTimeBetween('-1 month', '+1 month'));
+        $check_out = $check_in->copy()->addDays($this->faker->numberBetween(1, 30));
         return [
             'room_id' => Room::factory(),
             'tenant_id' => Tenant::factory(),
@@ -29,8 +29,8 @@ class BookingFactory extends Factory
             'email' => $this->faker->email,
             'phone' => $this->faker->phoneNumber,
             'customer_id' => Customer::factory(),
-            'start_date' => $start_date,
-            'end_date' => $end_date,
+            'check_in' => $check_in,
+            'check_out' => $check_out,
             'total_guests' => $this->faker->randomNumber(),
             'price' => $this->faker->randomFloat(2, 0, 100),
             'status' => "pending",
