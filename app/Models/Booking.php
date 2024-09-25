@@ -29,7 +29,7 @@ class Booking extends Model
 
     public function getTotalCostAttribute()
     {
-        return $this->total_days * $this->price;
+        return round($this->total_days * $this->price,2);
     }
 
     // public function customer()
