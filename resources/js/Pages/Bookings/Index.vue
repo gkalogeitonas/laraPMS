@@ -44,35 +44,43 @@ const props = defineProps({
         </template>
 
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <!-- <input v-model="search" type="text" placeholder="Search..." class="border px-2 rounded-lg" /> -->
                     <div class="min-w-full divide-y divide-gray-200">
-                        <div class="bg-gray-50 grid grid-cols-7 gap-4">
-                            <span class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                               ID
+                        <div class="bg-gray-50 grid grid-cols-10 gap-4">
+                            <span class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                ID
                             </span>
-                            <span class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                               Room
+                            <span class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Room
                             </span>
-                            <span class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                               Guest Name
+                            <span class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Guest Name
                             </span>
-                            <span class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <span class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Status
                             </span>
-                            <span class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Dates
+                            <span class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                check In
                             </span>
-                            <span class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Price (per/night)
+                            <span class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                check Out
                             </span>
-                            <span class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <span class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Nights
+                            </span>
+                            <span class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Price
+                            </span>
+                            <span class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Total
+                            </span>
+                            <span class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Actions
                             </span>
                         </div>
-                        <div class="bg-white divide-y divide-gray-200">
-                            <div v-for="booking in bookings.data" :key="booking.id" class="grid grid-cols-7 gap-4 py-4">
+                        <div v-for="booking in bookings.data" :key="booking.id" class="grid text-center grid-cols-10 gap-4 py-4">
                                 <div class="px-6 py-4">
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold ">
                                         #{{ booking.id }}
@@ -93,15 +101,27 @@ const props = defineProps({
                                 </div>
                                 <div class="px-6 py-4">
                                     <span class="text-xs inline-flex flex-col leading-5 font-semibold ">
-                                        <div>Check In: {{ booking.check_in }}</div>
-                                        <div>Check Out: {{ booking.check_out }}</div>
-                                        <div>Total Night: {{ booking.total_days }}</div>
+                                        {{ booking.check_in }}
+                                    </span>
+                                </div>
+                                <div class="px-6 py-4">
+                                    <span class="text-xs inline-flex flex-col leading-5 font-semibold ">
+                                        {{ booking.check_out }}
+                                    </span>
+                                </div>
+                                <div class="px-6 py-4">
+                                    <span class="text-xs inline-flex flex-col leading-5 font-semibold ">
+                                        {{ booking.total_days }}
                                     </span>
                                 </div>
                                 <div class="px-6 py-4">
                                     <span class="px-2 inline-flex flex-col text-xs leading-5 font-semibold ">
-                                        <div class="block">{{ booking.price }}</div>
-                                        <div class="block">Total: {{booking.total_cost}}</div>
+                                        {{ booking.price }}
+                                    </span>
+                                </div>
+                                <div class="px-6 py-4">
+                                    <span class="px-2 inline-flex flex-col text-xs leading-5 font-semibold ">
+                                        {{booking.total_cost}}
                                     </span>
                                 </div>
                                 <div class="px-6 py-4 text-right text-sm font-medium">
@@ -112,7 +132,6 @@ const props = defineProps({
                                             :deleteUrl="route('bookings.destroy', booking.id)" />
                                     </div>
                                 </div>
-                            </div>
                         </div>
                     </div>
                     <Pagination :links="bookings.links" class="mt-6 flex justify-end mr-5" />
@@ -123,7 +142,7 @@ const props = defineProps({
 </template>
 <style scoped>
 /* Custom grid template columns */
-.grid-cols-7 {
-  grid-template-columns: 25px 120px repeat(4, 1fr) 250px;
+.grid-cols-10 {
+  grid-template-columns: 25px 120px repeat(7, 1fr) 205px;
 }
 </style>
