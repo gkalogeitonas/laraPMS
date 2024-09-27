@@ -45,14 +45,14 @@ const config = reactive({
   onEventMoved: (args) => {
     args.control.message('Event moved: ' + args.e.data.text)
   },
-  eventResizeHandling: 'Update',
-  onEventResized: (args) => {
-    args.control.message('Event resized: ' + args.e.data.text)
-  },
-  eventClickHandling: 'Enabled',
-  onEventClicked: (args) => {
-    args.control.message('Event clicked: ' + args.e.data.text)
-  },
+//   eventResizeHandling: 'Update',
+//   onEventResized: (args) => {
+//     args.control.message('Event resized: ' + args.e.data.text)
+//   },
+//   eventClickHandling: 'Enabled',
+//   onEventClicked: (args) => {
+//     args.control.message('Event clicked: ' + args.e.data.text)
+//   },
   eventHoverHandling: 'Disabled',
   treeEnabled: true,
   onBeforeEventRender: (args) => {

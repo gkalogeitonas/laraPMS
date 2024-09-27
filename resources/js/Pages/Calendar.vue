@@ -19,7 +19,7 @@ const props = defineProps(['events', 'resources']);
         <div class="py-12">
             <div class="max-w-10xl mx-auto sm:px-2 lg:px-2">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <Scheduler :events="events" :resources="resources" />
+                    <Scheduler :events="events.data" :resources="resources" />
                 </div>
             </div>
         </div>
