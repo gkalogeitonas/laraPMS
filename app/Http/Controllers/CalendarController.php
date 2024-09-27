@@ -22,7 +22,7 @@ class CalendarController extends Controller
                 'resource' => 'R' . $booking->room->id,
                 'start' => $booking->check_in,
                 'end' => $booking->check_out,
-                'text' => $booking->room->name,
+                'text' => $booking->name,
                 'color' => '#1155cc', // You can customize the color as needed
             ];
         });
