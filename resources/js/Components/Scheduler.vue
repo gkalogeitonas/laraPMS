@@ -6,6 +6,19 @@
 import { DayPilot, DayPilotScheduler } from 'daypilot-pro-vue'
 import { ref, reactive, onMounted } from 'vue'
 
+
+// Define props
+const props = defineProps({
+  events: {
+    type: Array,
+    required: true,
+  },
+  resources: {
+    type: Array,
+    required: true,
+  },
+})
+
 const config = reactive({
   timeHeaders: [{ groupBy: 'Month' }, { groupBy: 'Day', format: 'd' }],
   scale: 'Day',
@@ -111,96 +124,6 @@ const config = reactive({
 })
 const schedulerRef = ref(null)
 
-const loadReservations = () => {
-  const events = [
-    {
-      id: 1,
-      resource: 'R1',
-      start: DayPilot.Date.today().firstDayOfMonth().addDays(3),
-      end: DayPilot.Date.today().firstDayOfMonth().addDays(7),
-      text: 'Event 1',
-      color: '#1155cc'
-    },
-    {
-      id: 2,
-      resource: 'R1',
-      start: DayPilot.Date.today().firstDayOfMonth().addDays(9),
-      end: DayPilot.Date.today().firstDayOfMonth().addDays(12),
-      text: 'Event 2',
-      color: '#6aa84f'
-    },
-    {
-      id: 3,
-      resource: 'R3',
-      start: DayPilot.Date.today().firstDayOfMonth().addDays(3),
-      end: DayPilot.Date.today().firstDayOfMonth().addDays(5),
-      text: 'Event 3',
-      color: '#1155cc'
-    },
-    {
-      id: 4,
-      resource: 'R3',
-      start: DayPilot.Date.today().firstDayOfMonth().addDays(5),
-      end: DayPilot.Date.today().firstDayOfMonth().addDays(7),
-      text: 'Event 4',
-      color: '#6aa84f'
-    },
-    {
-      id: 5,
-      resource: 'R3',
-      start: DayPilot.Date.today().firstDayOfMonth().addDays(7),
-      end: DayPilot.Date.today().firstDayOfMonth().addDays(9),
-      text: 'Event 5',
-      color: '#f1c232'
-    },
-    {
-      id: 6,
-      resource: 'R10',
-      start: '2024-07-19T13:00:00',
-      end: '2024-07-25T12:00:00',
-      text: 'Event 68',
-      color: '#cc0000'
-    },
-    {
-      id: 7,
-      resource: 'R10',
-      start: '2024-07-08T00:00:00',
-      end: '2024-07-19T12:00:00',
-      text: 'Event 6',
-      color: '#cc0000'
-    }
-  ]
-  config.events = events
-}
-
-const loadResources = () => {
-  const resources = [
-    {
-      name: 'Group A',
-      id: 'GA',
-      expanded: true,
-      children: [
-        { name: 'Resource 1', id: 'R1' },
-        { name: 'Resource 2', id: 'R2' },
-        { name: 'Resource 3', id: 'R3' },
-        { name: 'Resource 4', id: 'R4' },
-        { name: 'Resource 10', id: 'R10' }
-      ]
-    },
-    {
-      name: 'Group B',
-      id: 'GB',
-      expanded: true,
-      children: [
-        { name: 'Resource 5', id: 'R5' },
-        { name: 'Resource 6', id: 'R6' },
-        { name: 'Resource 7', id: 'R7' },
-        { name: 'Resource 8', id: 'R8' }
-      ]
-    }
-  ]
-  config.resources = resources
-}
 
 const updateColor = (e, color) => {
   const dp = schedulerRef.value?.control
@@ -212,8 +135,8 @@ const updateColor = (e, color) => {
 onMounted(() => {
   const dp = schedulerRef.value?.control
 
-  loadResources()
-  loadReservations()
+  config.events = props.events
+  config.resources = props.resources
 
   dp.message('Welcome!')
   dp.scrollTo(DayPilot.Date.today().firstDayOfMonth())
