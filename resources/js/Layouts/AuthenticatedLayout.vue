@@ -2,6 +2,7 @@
 import Sidebar from '@/Components/Sidebar.vue';
 import TenantSwitcher from '@/Components/TenantSwitcher.vue';
 import FlashMessages from '@/Components/FlashMessages.vue';
+import UserProfile from '@/Components/UserProfile.vue';
 </script>
 
 
@@ -9,22 +10,26 @@ import FlashMessages from '@/Components/FlashMessages.vue';
     <div class="flex h-full">
 
         <!-- Sidebar -->
-        <Sidebar />
+        <Sidebar id="sidebar" />
         <!-- Page Heading-->
 
 
         <!-- Main Content -->
         <div class="flex-1">
-            <header class="bg-white shadow" v-if="$slots.header">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between">
-                    <slot name="header" />
-                </div>
+
+            <header class="bg-white shadow flex justify-end">
+                <UserProfile />
             </header>
+
             <div class="max-w-7xl mx-auto py-2 px-4 sm:px-6 lg:px-8   flex justify-end">
                 <TenantSwitcher
                 :tenants="$page.props.auth.tenants"
                 :activeTenant="$page.props.auth.activeTenant"
                 />
+            </div>
+
+            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between">
+                <slot name="header" />
             </div>
 
             <!-- Flash Messages Component -->
@@ -38,3 +43,9 @@ import FlashMessages from '@/Components/FlashMessages.vue';
         </div>
     </div>
 </template>
+
+<style>
+#sidebar {
+    min-height: 100vh;
+}
+</style>
