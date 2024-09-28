@@ -5,6 +5,7 @@ use App\Models\Room;
 use App\Models\Tenant;
 use App\Models\Customer;
 use App\Models\Booking;
+use App\Models\Property;
 use function Pest\Laravel\get;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\post;

@@ -16,6 +16,13 @@ class BookingController extends Controller
      */
     public function index(Request $request)
     {
+         //check if user has active tenant
+        if (!auth()->user()->hasActiveTenant()) {
+            return Inertia::render('Bookings/Index', [
+                'bookings' => []
+            ]);
+        }
+
         $query = auth()->user()->getActiveTenant()->bookings()->with('room');
 
         if ($request->has('check_in') && $request->has('check_out')) {
