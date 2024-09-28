@@ -185,6 +185,40 @@ it('can view the bookings index', function () {
     );
 });
 
+it('can view the bookings in bookings Index', function () {
+    $booking = Booking::factory()->create([
+        'tenant_id' => $this->tenant->id,
+        'room_id' => $this->room->id,
+    ]);
+
+    $response = get(route('bookings.index'));
+
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Bookings/Index')
+        ->has('bookings')
+        ->has('bookings.data', 1)
+        ->where('bookings.data.0.id', $booking->id)
+    );
+});
+
+it('can not view other tenant bookings in bookings Index', function () {
+    $otherTenant = Tenant::factory()->create();
+    $otherRoom = Room::factory()->create(['tenant_id' => $otherTenant->id]);
+    $otherBooking = Booking::factory()->create([
+        'tenant_id' => $otherTenant->id,
+        'room_id' => $otherRoom->id,
+    ]);
+
+    $response = get(route('bookings.index'));
+
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Bookings/Index')
+        ->has('bookings')
+        ->has('bookings.data', 0)
+    );
+});
+
+
 it('can filter booking by dates', function () {
     $booking1 = Booking::factory()->create([
         'tenant_id' => $this->tenant->id,
