@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\Property;
 use App\Http\Resources\BookingCalendarResource;
+use App\Http\Resources\PropertyCalendarResource;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,12 @@ class CalendarController extends Controller
 {
     public function index()
     {
+        if (!auth()->user()->hasActiveTenant()) {
+            return Inertia::render('Calendar', [
+                'events' => [],
+                'resources' => [],
+            ]);
+        }
         // Fetch bookings
         $bookings = auth()->user()->getActiveTenant()->bookings()->with('room')->get();
 
