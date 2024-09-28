@@ -21,24 +21,8 @@ class CalendarController extends Controller
 
         // Fetch properties with rooms
         $properties = Auth::user()->getActiveProperties();
-        //$properties = Property::with('rooms')->get();
 
-        // Format properties and rooms as resources
-        $resources = $properties->map(function ($property) {
-            return [
-                'name' => $property->name,
-                'id' => 'P' . $property->id,
-                'expanded' => true,
-                'children' => $property->rooms->map(function ($room) {
-                    return [
-                        'name' => $room->name,
-                        'id' => 'R' . $room->id,
-                    ];
-                }),
-            ];
-        });
-
-        //return compact('events', 'resources');
+        $resources = PropertyCalendarResource::collection($properties);
 
         return Inertia::render('Calendar', [
             'events' => $events,
