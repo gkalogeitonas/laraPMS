@@ -10,6 +10,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\TenantSwitchController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\BookingStatusController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,6 +77,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/bookings/{booking}/edit', [BookingController::class, 'edit'])->name('bookings.edit');
     Route::patch('/bookings/{booking}', [BookingController::class, 'update'])->name('bookings.update');
     Route::delete('/bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy');
+
+    Route::get('/booking-statuses', [BookingStatusController::class, 'index'])->name('booking-statuses.index');
+    Route::get('/booking-statuses/create', [BookingStatusController::class, 'create'])->name('booking-statuses.create');
+    Route::post('/booking-statuses', [BookingStatusController::class, 'store'])->name('booking-statuses.store');
 
 });
 
