@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Booking;
 use Illuminate\Http\Request;
 use App\Models\BookingStatus;
 use Inertia\Inertia;
 
 class BookingStatusController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->authorizeResource(BookingStatus::class, 'bookingStatus');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -37,7 +43,7 @@ class BookingStatusController extends Controller
     public function store(Request $request)
     {
         if (!auth()->user()->hasActiveTenant()) {
-            return redirect()->route('bookingStatuses.Index')->with('error', 'No active tenant.');
+            return redirect()->route('booking-statuses.index')->with('error', 'No active tenant.');
         }
         $attributes = $this->validate($request, [
             'name' => 'required',
@@ -61,24 +67,31 @@ class BookingStatusController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(BookingStatus $bookingStatus)
     {
-        //
+        return Inertia::render('bookingStatuses/Edit', [
+            'bookingStatus' => $bookingStatus
+        ]);
     }
-
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(BookingStatus $bookingStatus, Request $request)
     {
-        //
+        $attributes = $this->validate($request, [
+            'name' => 'required',
+            'color' => 'string|nullable'
+        ]);
+        $bookingStatus->update($attributes);
+        return redirect()->route('booking-statuses.index')->with('success', 'Booking Status updated.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(BookingStatus $bookingStatus)
     {
-        //
+        $bookingStatus->delete();
+        return redirect()->route('booking-statuses.index')->with('error', 'Booking Status deleted.');
     }
 }

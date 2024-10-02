@@ -9,13 +9,15 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import NavLink from "@/Components/NavLink.vue";
 import BookingStatusForm from "@/Pages/bookingStatuses/BookingStatusForm.vue";
 
+const props = defineProps(["bookingStatus"]);
+
 let form = useForm({
-    name: "",
-    color: "",
+    name: props.bookingStatus.name,
+    color: props.bookingStatus.color,
 });
 
 let submit = () => {
-    form.post(route("booking-statuses.store"));
+    form.patch(route("booking-statuses.update", props.bookingStatus.id));
 };
 </script>
 
@@ -24,7 +26,7 @@ let submit = () => {
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Create New Booking Status
+               Edit Booking Status
             </h2>
         </template>
 
@@ -41,7 +43,7 @@ let submit = () => {
                             :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing"
                         >
-                            Create Booking Status
+                            Edit Booking Status
                         </PrimaryButton>
                     </div>
                 </form>

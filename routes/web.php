@@ -81,7 +81,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/booking-statuses', [BookingStatusController::class, 'index'])->name('booking-statuses.index');
     Route::get('/booking-statuses/create', [BookingStatusController::class, 'create'])->name('booking-statuses.create');
     Route::get('/booking-statuses/{bookingStatus}/edit', [BookingStatusController::class, 'edit'])->name('booking-statuses.edit');
-    Route::delete('/booking-statuses/{bookingStatus}', [BookingStatusController::class, 'delete'])->name('booking-statuses.destroy');
+    Route::delete('/booking-statuses/{bookingStatus}', [BookingStatusController::class, 'destroy'])->name('booking-statuses.destroy');
+    Route::patch('/booking-statuses/{bookingStatus}', [BookingStatusController::class, 'update'])->name('booking-statuses.update');
     Route::post('/booking-statuses', [BookingStatusController::class, 'store'])->name('booking-statuses.store');
 
 });
