@@ -11,14 +11,14 @@ class BookingStatusController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function Index()
     {
         if (!auth()->user()->hasActiveTenant()) {
-            return Inertia::render('bookingStatuses/index', [
+            return Inertia::render('bookingStatuses/Index', [
                 'bookingStatuses' => []
             ])->with('error', 'No active tenant.');
         }
-        return Inertia::render('bookingStatuses/index', [
+        return Inertia::render('bookingStatuses/Index', [
             'bookingStatuses' => auth()->user()->getActiveTenant()->bookingStatuses
         ]);
     }
@@ -28,7 +28,7 @@ class BookingStatusController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('bookingStatuses/Create');
     }
 
     /**
@@ -37,10 +37,11 @@ class BookingStatusController extends Controller
     public function store(Request $request)
     {
         if (!auth()->user()->hasActiveTenant()) {
-            return redirect()->route('booking-statuses.index')->with('error', 'No active tenant.');
+            return redirect()->route('bookingStatuses.Index')->with('error', 'No active tenant.');
         }
         $attributes = $this->validate($request, [
-            'name' => 'required'
+            'name' => 'required',
+            'color' => 'string|nullable'
         ]);
         $attributes['tenant_id'] = auth()->user()->getActiveTenant()->id;
 
