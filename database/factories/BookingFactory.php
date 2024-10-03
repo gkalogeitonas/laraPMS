@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use \App\Models\Room;
 use \App\Models\Tenant;
 use \App\Models\Customer;
+use \App\Models\BookingStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -33,7 +34,7 @@ class BookingFactory extends Factory
             'check_out' => $check_out,
             'total_guests' => $this->faker->randomNumber(),
             'price' => $this->faker->randomFloat(2, 0, 100),
-            'status' => "pending",
+            'booking_status_id' => BookingStatus::factory(),
         ];
     }
 }

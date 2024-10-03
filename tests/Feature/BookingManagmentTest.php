@@ -6,6 +6,7 @@ use App\Models\Tenant;
 use App\Models\Customer;
 use App\Models\Booking;
 use App\Models\Property;
+use App\Models\BookingStatus;
 use function Pest\Laravel\get;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\post;
@@ -20,6 +21,9 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->tenant = Tenant::factory()->create();
+    $this->BookingStatus = BookingStatus::factory()->create([
+        'tenant_id' => $this->tenant->id
+    ]);
     $this->user = User::factory()->create();
     $this->user->tenants()->attach($this->tenant);
     $this->actingAs($this->user);
@@ -30,8 +34,6 @@ beforeEach(function () {
 });
 
 it('can create a booking', function () {
-
-
     $bookingData = [
         'room_id' => $this->room->id,
         'name' => 'Booking Name',
@@ -40,7 +42,7 @@ it('can create a booking', function () {
         'check_out' => '2024-01-10',
         'total_guests' => 2,
         'price' => 100.00,
-        'status' => 'pending',
+        'booking_status_id' => null,
     ];
 
     $response = post(route('bookings.store'), $bookingData);
@@ -62,7 +64,8 @@ it('prevents non tenant members to create a booking', function () {
         'check_out' => '2024-01-10',
         'total_guests' => 2,
         'price' => 100.00,
-        'status' => 'pending',
+        'booking_status_id' => 2,
+
     ];
 
     $response = post(route('bookings.store'), $bookingData);
@@ -80,11 +83,11 @@ test('a booking requires a room', function () {
         'check_out' => '2024-01-10',
         'total_guests' => 2,
         'price' => 100.00,
-        'status' => 'pending',
+        'booking_status_id' => null,
     ];
-
     $response = post(route('bookings.store'), $bookingData);
-    $response->assertSessionHasErrors('room_id');
+    $response->assertStatus(403);
+    assertDatabaseMissing('bookings', $bookingData);
 });
 
 test('a booking requires end date to be after start date', function () {
@@ -96,7 +99,7 @@ test('a booking requires end date to be after start date', function () {
         'check_out' => '2024-01-01',
         'total_guests' => 2,
         'price' => 100.00,
-        'status' => 'pending',
+        'booking_status_id' => $this->BookingStatus->id,
     ];
 
     $response = post(route('bookings.store'), $bookingData);
@@ -117,7 +120,7 @@ test('a user can update a booking', function () {
         'check_out' => $booking->check_out,
         'total_guests' => $booking->total_guests,
         'price' => $booking->price,
-        'status' => $booking->status,
+        'booking_status_id' => null,
     ]);
 
     $response->assertRedirect(route('bookings.index'))->assertSessionHas('success', 'Booking updated.');
@@ -144,7 +147,7 @@ it('prevents non tenant members to update a booking', function () {
         'check_out' => $booking->check_out,
         'total_guests' => $booking->total_guests,
         'price' => $booking->price,
-        'status' => $booking->status,
+        'booking_status_id' => $booking->booking_status_id,
     ]);
 
     $response->assertStatus(403);

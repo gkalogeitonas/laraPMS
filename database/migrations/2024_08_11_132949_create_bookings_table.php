@@ -24,7 +24,7 @@ return new class extends Migration
             $table->date('check_out');
             $table->integer('total_guests');
             $table->decimal('price', 10, 2);
-            $table->string('status');
+            $table->foreignId('booking_status_id')->nullable()->constrained('booking_statuses')->nullOnDelete();
             $table->timestamps();
         });
     }
