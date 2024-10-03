@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\Room;
+use App\Models\BookingStatus;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -24,7 +25,7 @@ class BookingController extends Controller
             ]);
         }
 
-        $query = auth()->user()->getActiveTenant()->bookings()->with('room');
+        $query = auth()->user()->getActiveTenant()->bookings()->with('room', 'bookingStatus');
 
         if ($request->has('check_in') && $request->has('check_out')) {
             $query->whereBetween('check_in', [$request->check_in, $request->check_out])
@@ -44,10 +45,9 @@ class BookingController extends Controller
      */
     public function create()
     {
-        //return auth()->user()->getActiveTenant()->rooms;
         return Inertia::render('Bookings/Create', [
             'rooms' => auth()->user()->getActiveTenant()->rooms,
-            'statuses' => Config::get('booking.status'),
+            'bookingStatuses' => auth()->user()->getActiveTenant()->bookingStatuses,
         ]);
     }
 
@@ -103,19 +103,15 @@ class BookingController extends Controller
 
     private function validateBooking(Request $request)
     {
-        $user = auth()->user();
+        //dd($request->all());
+        $booking_statuses = auth()->user()->getActiveTenant()->bookingStatuses;
         return $request->validate([
             'room_id' => 'required',
             'name' => 'required|string|min:3|max:255',
             'customer_id' => 'nullable',
             'check_in' => 'required|date',
             'check_out' => 'required|date|after:check_in',
-            'booking_status_id' => [
-                'nullable',
-                Rule::exists('booking_statuses', 'id')->where(function ($query) use ($user) {
-                    $query->where('tenant_id', $user->tenant_id);
-                }),
-            ],
+            'booking_status_id' => 'nullable|in:' . $booking_statuses->pluck('id')->join(','),
             'total_guests' => 'required|integer',
             'price' => 'required|numeric',
         ]);

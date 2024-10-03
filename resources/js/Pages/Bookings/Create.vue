@@ -16,7 +16,7 @@ import Autocomplete from '@/Components/Autocomplete.vue';
 
 const props = defineProps([
     "rooms",
-    "statuses",
+    "bookingStatuses",
 ]);
 
 let form = useForm({
@@ -25,7 +25,7 @@ let form = useForm({
     phone: "",
     address: "",
     customer_id: "",
-    status: "",
+    booking_status_id: "",
     check_in: "",
     check_out: "",
     total_guests: "",
@@ -121,13 +121,13 @@ const updateCustomer = (customer) => {
                     <div class="grid grid-cols-2 gap-4 mt-4">
                         <div>
                             <InputLabel for="status" value="Status" />
-                            <select v-model="form.status" id="status" name="status" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <select v-model="form.booking_status_id" id="bookingStatus" name="bookingStatus" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                 <option value="">Select a status</option>
-                                <option v-for="status in statuses" :value="status" :key="status">
-                                    {{ status }}
+                                <option v-for="status in bookingStatuses" :value="status.id" :key="status.id">
+                                    {{ status.name }}
                                 </option>
                             </select>
-                            <InputError :message="form.errors.status" />
+                            <InputError :message="form.errors.booking_status_id" />
                         </div>
                         <div>
                             <InputLabel for="source" value="Source" />

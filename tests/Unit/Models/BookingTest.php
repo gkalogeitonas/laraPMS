@@ -2,6 +2,7 @@
 
 use App\Models\Booking;
 use App\Models\Room;
+use App\Models\BookingStatus;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -14,6 +15,14 @@ it('belongs to a room', function () {
 
     expect($booking->room)->toBeInstanceOf(Room::class);
     expect($booking->room->id)->toBe($room->id);
+});
+
+it('belongs to a BookingStatus', function () {
+    $booking = Booking::factory()->create([
+        'booking_status_id' => BookingStatus::factory()->create()->id
+    ]);
+
+    expect($booking->BookingStatus)->toBeInstanceOf(BookingStatus::class);
 });
 
 it('calculates total_days correctly', function () {

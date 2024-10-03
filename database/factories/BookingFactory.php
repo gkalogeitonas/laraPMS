@@ -34,7 +34,7 @@ class BookingFactory extends Factory
             'check_out' => $check_out,
             'total_guests' => $this->faker->randomNumber(),
             'price' => $this->faker->randomFloat(2, 0, 100),
-            'booking_status_id' => BookingStatus::factory(),
+            'booking_status_id' => null,
         ];
     }
 }

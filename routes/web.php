@@ -69,14 +69,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('customers', CustomerController::class);
     Route::get('/customer/search', [CustomerController::class, 'search'])->name('customers.search');
 
-
-    Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
-    Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
-    Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create');
-    Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
-    Route::get('/bookings/{booking}/edit', [BookingController::class, 'edit'])->name('bookings.edit');
-    Route::patch('/bookings/{booking}', [BookingController::class, 'update'])->name('bookings.update');
-    Route::delete('/bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy');
+    Route::resource('bookings', BookingController::class);
 
     Route::get('/booking-statuses', [BookingStatusController::class, 'index'])->name('booking-statuses.index');
     Route::get('/booking-statuses/create', [BookingStatusController::class, 'create'])->name('booking-statuses.create');

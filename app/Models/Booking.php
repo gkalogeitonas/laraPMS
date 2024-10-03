@@ -19,6 +19,11 @@ class Booking extends Model
         return $this->belongsTo(Room::class);
     }
 
+    public function bookingStatus()
+    {
+        return $this->belongsTo(BookingStatus::class);
+    }
+
 
     public function getTotalDaysAttribute()
     {
