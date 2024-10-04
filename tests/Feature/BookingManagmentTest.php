@@ -52,7 +52,7 @@ it('can create a booking', function () {
     assertDatabaseHas('bookings', $bookingData);
 });
 
-it('prevents non tenant members to create a booking', function () {
+it('prevents user to create a booking on others tenant room', function () {
     $user = User::factory()->create();
     $this->actingAs($user);
 
@@ -69,10 +69,10 @@ it('prevents non tenant members to create a booking', function () {
     ];
 
     $response = post(route('bookings.store'), $bookingData);
-
-    $response->assertStatus(403);
-
+    //return an error on room_id
+    $response->assertStatus(302);
     assertDatabaseMissing('bookings', $bookingData);
+
 });
 
 test('a booking requires a room', function () {
@@ -86,7 +86,7 @@ test('a booking requires a room', function () {
         'booking_status_id' => null,
     ];
     $response = post(route('bookings.store'), $bookingData);
-    $response->assertStatus(403);
+    $response->assertStatus(302);
     assertDatabaseMissing('bookings', $bookingData);
 });
 

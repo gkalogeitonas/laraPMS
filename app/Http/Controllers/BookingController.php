@@ -57,7 +57,6 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         $room = Room::find($request->room_id);
-        $this->authorize('update', $room);
         $attributes = $this->validateBooking($request);
         $attributes['tenant_id'] = auth()->user()->getActiveTenant()->id;
         Booking::create($attributes);
@@ -75,9 +74,15 @@ class BookingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Booking $booking)
     {
-        //
+        return  $booking->load(['room', 'bookingStatus']);
+        $this->authorize('update', $booking);
+        return Inertia::render('Bookings/Edit', [
+            'booking' => $booking->load(['room', 'bookingStatus']),
+            'rooms' => auth()->user()->getActiveTenant()->rooms,
+            'bookingStatuses' => auth()->user()->getActiveTenant()->bookingStatuses,
+        ]);
     }
 
     /**
@@ -105,8 +110,9 @@ class BookingController extends Controller
     {
         //dd($request->all());
         $booking_statuses = auth()->user()->getActiveTenant()->bookingStatuses;
+        $rooms = auth()->user()->getActiveTenant()->rooms;
         return $request->validate([
-            'room_id' => 'required',
+            'room_id' => 'required|in:' . $rooms->pluck('id')->join(','),
             'name' => 'required|string|min:3|max:255',
             'customer_id' => 'nullable',
             'check_in' => 'required|date',
