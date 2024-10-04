@@ -10,6 +10,7 @@ import NavLink from '@/Components/NavLink.vue';
 import AddButton from '@/Components/AddButton.vue';
 import ActionButtons from '@/Components/ActionButtons.vue';
 import Pagination from '@/Components/Pagination.vue';
+import BookingStatus from '@/Components/BookingStatus.vue';
 import { router } from '@inertiajs/vue3'
 import debounce from "lodash/debounce";
 import Show from '../Customers/Show.vue';
@@ -95,9 +96,10 @@ const props = defineProps({
                                     {{ booking.name }}
                                 </div>
                                 <div class="px-6 py-4">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                        {{ booking.booking_status ? booking.booking_status.name : 'No Status' }}
-                                    </span>
+                                    <BookingStatus
+                                    v-if="booking.booking_status"
+                                    :booking_status="booking.booking_status"
+                                  />
                                 </div>
                                 <div class="px-6 py-4">
                                     <span class="text-xs inline-flex flex-col leading-5 font-semibold ">
