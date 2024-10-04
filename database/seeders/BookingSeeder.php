@@ -16,14 +16,17 @@ class BookingSeeder extends Seeder
         Booking::factory()->count(2)->create([
             'tenant_id' => 1,
             'room_id' => 1,
+            'booking_status_id' => rand(1, 4),
         ]);
         Booking::factory()->count(2)->create([
             'tenant_id' => 1,
             'room_id' => 3,
+            'booking_status_id' => rand(1, 4),
         ]);
         Booking::factory()->count(2)->create([
             'tenant_id' => 1,
             'room_id' => 5,
+            'booking_status_id' => rand(1, 4),
         ]);
     }
 }
