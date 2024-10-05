@@ -11,6 +11,7 @@ use App\Http\Controllers\TenantSwitchController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\BookingStatusController;
+use App\Http\Controllers\BookingSourceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,6 +78,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/booking-statuses/{bookingStatus}', [BookingStatusController::class, 'destroy'])->name('booking-statuses.destroy');
     Route::patch('/booking-statuses/{bookingStatus}', [BookingStatusController::class, 'update'])->name('booking-statuses.update');
     Route::post('/booking-statuses', [BookingStatusController::class, 'store'])->name('booking-statuses.store');
+
+
+    Route::get('/booking-sources', [BookingSourceController::class, 'index'])->name('booking-sources.index');
+    Route::get('/booking-sources/create', [BookingSourceController::class, 'create'])->name('booking-sources.create');
+    Route::get('/booking-sources/{bookingSource}/edit', [BookingSourceController::class, 'edit'])->name('booking-sources.edit');
+    Route::delete('/booking-sources/{bookingSource}', [BookingSourceController::class, 'destroy'])->name('booking-sources.destroy');
+    Route::patch('/booking-sources/{bookingSource}', [BookingSourceController::class, 'update'])->name('booking-sources.update');
+    Route::post('/booking-sources', [BookingSourceController::class, 'store'])->name('booking-sources.store');
+
 
 });
 
