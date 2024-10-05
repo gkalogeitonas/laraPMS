@@ -37,7 +37,7 @@ class BookingSourceController extends Controller
         $attributes  = $request->validate([
             'name' => 'required|string|max:255',
         ]);
-        $attributes['tenant_id'] = auth()->user()->getActiveTenant()->id;
+
         BookingSource::create($attributes);
         return redirect()->route('booking-sources.index')->with('success', 'Booking Source created.');
     }
@@ -69,8 +69,9 @@ class BookingSourceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(BookingSource $bookingSource)
     {
-        //
+        $bookingSource->delete();
+        return redirect()->route('booking-sources.index')->with('success', 'Booking Source deleted.');
     }
 }

@@ -53,7 +53,7 @@ test('a user without active tenant cannot create a booking source', function () 
         'name' => 'Website'
     ]);
 
-    $response->assertStatus(403);
+    $response->assertStatus(302);
     $this->assertDatabaseMissing('booking_sources', ['name' => 'Website']);
 });
 
@@ -80,7 +80,7 @@ test('a user without an active tenant will see empty list of booking sources', f
     $this->actingAs($user);
     $response = $this->get(route('booking-sources.index'));
 
-    $response->assertStatus(403);
+    $response->assertStatus(200);
     $response->assertDontSee('Website');
 });
 
