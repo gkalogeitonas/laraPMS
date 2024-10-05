@@ -13,5 +13,11 @@ class BookingSource extends Model
     protected static function booted(): void
     {
         static::addGlobalScope(new TenantScope());
+
+        static::creating(function($model) {
+            if(session()->has('active_tenant_id')) {
+                $model->tenant_id = session()->get('active_tenant_id');
+            }
+        });
     }
 }

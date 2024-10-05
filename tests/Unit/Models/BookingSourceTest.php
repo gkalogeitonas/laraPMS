@@ -65,5 +65,23 @@ test('a user without active tenant cannot see a list of booking sources', functi
     $bookingSources = BookingSource::all();
     //assert that the user has access to only 2 booking sources
     expect($bookingSources->count())->toBe(0);
+});
 
+
+test('a booking source is assigned active tenant id on creation', function () {
+    //create a tenant
+    $tenant = Tenant::factory()->create([
+        'id' => 2
+    ]);
+    //create a user and assign to tenant
+    $user = User::factory()->create();
+    $tenant->users()->attach($user);
+    $this->actingAs($user);
+    $user->setActiveTenant($tenant);
+
+    //create a booking source without specifying tenant_id
+    $bookingSource = BookingSource::factory()->create();
+
+    //assert that the booking source has the active tenant id
+    expect($bookingSource->tenant_id)->toBe($tenant->id);
 });
