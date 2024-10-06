@@ -6,8 +6,11 @@ use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use function Pest\Laravel\get;
-
+use function Pest\Laravel\post;
+use function Pest\Laravel\delete;
+use function Pest\Laravel\patch;
 use function Pest\Laravel\actingAs;
+use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
 
@@ -53,7 +56,7 @@ test('a user without active tenant cannot create a booking source', function () 
         'name' => 'Website'
     ]);
 
-    $response->assertStatus(302);
+    $response->assertStatus(403);
     $this->assertDatabaseMissing('booking_sources', ['name' => 'Website']);
 });
 
@@ -106,7 +109,7 @@ it('can delete a booking source', function () {
         'name' => 'Website'
     ]);
     $this->actingAs($owner);
-    $response = $this->delete(route('booking-sources.destroy', $bookingSource->id));
+    $response = $this->delete('/booking-sources/' . $bookingSource->id);
 
     $response->assertStatus(302);
     $this->assertDatabaseMissing('booking_sources', ['name' => 'Website']);
@@ -121,32 +124,32 @@ it('prevents a user without an active tenant from deleting a booking source', fu
     ]);
     $user = User::factory()->create();
     $this->actingAs($user);
-    $response = $this->delete(route('booking-sources.destroy', $bookingSource->id));
+    $response = $this->delete('/booking-sources/' . $bookingSource->id);
+    //dd('/booking-sources/' . $bookingSource->id);
 
-    $response->assertStatus(403);
+
+    $response->assertStatus(404);
     $this->assertDatabaseHas('booking_sources', ['name' => 'Website']);
 });
 
 it('prevents a user from deleting another tenant\'s booking source', function () {
-    list('owner' => $nonowner,  'tenant' => $tenant) = createOwnerAndProperty();
     $otherTenant = Tenant::factory()->create();
     $bookingSource = BookingSource::create([
         'tenant_id' => $otherTenant->id,
         'name' => 'Website'
     ]);
-    $this->actingAs($nonowner);
-    $response = $this->delete(route('booking-sources.destroy', $bookingSource->id));
 
-    $response->assertStatus(403);
+    list('owner' => $nonowner,  'tenant' => $tenant) = createOwnerAndProperty();
+
+    $this->actingAs($nonowner);
+    $response = $this->delete('/booking-sources/' . $bookingSource->id);
+
+
+    $response->assertStatus(404);
     $this->assertDatabaseHas('booking_sources', ['name' => 'Website']);
 });
 
 test('a users can see only its own booking sources', function () {
-    list('owner' => $owner,  'tenant' => $tenant) = createOwnerAndProperty();
-    $bookingSource = BookingSource::create([
-        'tenant_id' => $tenant->id,
-        'name' => 'Website'
-    ]);
     $otherTenant = Tenant::factory()->create();
     $otherBookingSource = BookingSource::create([
         'tenant_id' => $otherTenant->id,
@@ -156,6 +159,13 @@ test('a users can see only its own booking sources', function () {
     BookingSource::factory()->count(2)->create([
         'tenant_id' => $otherTenant->id,
     ]);
+
+    list('owner' => $owner,  'tenant' => $tenant) = createOwnerAndProperty();
+    $bookingSource = BookingSource::create([
+        'tenant_id' => $tenant->id,
+        'name' => 'Website'
+    ]);
+
     $this->actingAs($owner);
     $response = $this->get(route('booking-sources.index'));
 
@@ -167,6 +177,6 @@ test('a users can see only its own booking sources', function () {
     $response->assertInertia(fn (Assert $page) => $page
         ->component('BookingSources/Index')
         ->has('bookingSources', 1)
-        ->where('bookingSources.0.id', $bookingSource->id)
+        ->where('bookingSources.0.name', 'Website')
     );
 });

@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Booking;
 use App\Models\BookingSource;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class BookingSourceController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->authorizeResource(BookingSource::class, 'bookingSource');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -55,15 +61,20 @@ class BookingSourceController extends Controller
      */
     public function edit(string $id)
     {
-        //
+
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, BookingSource $bookingSource)
     {
-        //
+        $attributes  = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $bookingSource->update($attributes);
+        return redirect()->route('booking-sources.index')->with('success', 'Booking Source updated.');
     }
 
     /**

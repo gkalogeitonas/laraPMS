@@ -5,22 +5,21 @@ import { Head } from '@inertiajs/vue3';
 // Import the necessary components
 import AddButton from '@/Components/AddButton.vue';
 import ActionButtons from '@/Components/ActionButtons.vue';
-import Pagination from '@/Components/Pagination.vue';
 
 const props = defineProps({
-    BookingSource: Object,
+    bookingSources: Object,
 });
 
 
 </script>
 
 <template>
-    <Head title="Booking Statuses" />
+    <Head title="Booking sources" />
 
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Booking Source</h2>
-            <AddButton :href="route('booking-statuses.create')">Create New Booking Source</AddButton>
+            <AddButton :href="route('booking-sources.create')">Create New Booking Source</AddButton>
         </template>
 
         <div class="py-12">
@@ -35,7 +34,7 @@ const props = defineProps({
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            <tr v-for="Source in BookingSource" :key="status.id">
+                            <tr v-for="Source in bookingSources" :key="Source.id">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     {{ Source.name }}
                                 </td>

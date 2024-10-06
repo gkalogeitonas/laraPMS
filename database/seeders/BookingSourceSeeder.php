@@ -21,5 +21,7 @@ class BookingSourceSeeder extends Seeder
             'tenant_id' => 1,
             'name' => 'Individual',
         ]);
+
+        BookingSource::factory()->count(3)->create();
     }
 }
