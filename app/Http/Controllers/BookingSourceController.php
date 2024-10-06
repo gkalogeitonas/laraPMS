@@ -60,9 +60,11 @@ class BookingSourceController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(BookingSource $bookingSource)
     {
-
+        return Inertia::render('BookingSources/Edit', [
+            'bookingSource' => $bookingSource
+        ]);
     }
 
     /**
