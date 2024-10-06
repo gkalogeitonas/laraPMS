@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             PropertySeeder::class,
             CustomerSeeder::class,
             BookingStatusSeeder::class,
+            BookingSourceSeeder::class,
             BookingSeeder::class,
         ]);
     }
