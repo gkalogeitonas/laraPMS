@@ -8,7 +8,9 @@ uses(RefreshDatabase::class);
 
 
 it('belongs to a tenant', function () {
-    $tenant = Tenant::factory()->create();
+    $data = createUserWithTenant();
+    $tenant = $data['tenant'];
+
     $bookingStatus = BookingStatus::create([
         'tenant_id' => $tenant->id,
         'name' => 'Confirmed'

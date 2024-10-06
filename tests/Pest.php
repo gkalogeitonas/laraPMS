@@ -63,3 +63,17 @@ function createOwnerAndProperty()
 
     return compact('tenant', 'owner', 'property');
 }
+
+function createUserWithTenant()
+{
+    // Create a tenant
+    $tenant = \App\Models\Tenant::factory()->create();
+
+    // Create a user and associate them with the tenant
+    $user = \App\Models\User::factory()->create();
+    $user->tenants()->attach($tenant->id);
+    // Set the user's active tenant
+    $user->setActiveTenant($tenant);
+
+    return compact('tenant', 'user');
+}

@@ -18,8 +18,11 @@ it('belongs to a room', function () {
 });
 
 it('belongs to a BookingStatus', function () {
+    $data = createUserWithTenant();
+
     $booking = Booking::factory()->create([
-        'booking_status_id' => BookingStatus::factory()->create()->id
+        'booking_status_id' => BookingStatus::factory()->create()->id,
+        'tenant_id' => $data['tenant']->id,
     ]);
 
     expect($booking->BookingStatus)->toBeInstanceOf(BookingStatus::class);

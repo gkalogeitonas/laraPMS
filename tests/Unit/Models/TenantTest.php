@@ -67,8 +67,9 @@ it('can have Bookings', function () {
 });
 
 it('can have many Booking statuses', function () {
-    // Create a tenant
-    $tenant = Tenant::factory()->create();
+    $data = createUserWithTenant();
+    $owner = $data['user'];
+    $tenant = $data['tenant'];
 
     // Create booking statuses associated with the tenant
     $bookingStatuses = BookingStatus::factory()->count(3)->create(['tenant_id' => $tenant->id]);

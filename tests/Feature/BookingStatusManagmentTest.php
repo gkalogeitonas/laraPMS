@@ -123,20 +123,19 @@ it('prevents a user without an active tenant from deleting a booking status', fu
     $this->actingAs($user);
     $response = $this->delete(route('booking-statuses.destroy', $bookingStatus->id));
 
-    $response->assertStatus(403);
+    $response->assertStatus(404);
     $this->assertDatabaseHas('booking_statuses', ['name' => 'Confirmed']);
 });
 
 it('prevent a user from deleting others tenant booking status', function () {
-    list('owner' => $nonowner,  'tenant' => $tenant) = createOwnerAndProperty();
     $otherTenant = Tenant::factory()->create();
     $bookingStatus = BookingStatus::create([
         'tenant_id' => $otherTenant->id,
         'name' => 'Confirmed'
     ]);
+    list('owner' => $nonowner,  'tenant' => $tenant) = createOwnerAndProperty();
     $this->actingAs($nonowner);
     $response = $this->delete(route('booking-statuses.destroy', $bookingStatus->id));
-
-    $response->assertStatus(403);
+    $response->assertStatus(404);
     $this->assertDatabaseHas('booking_statuses', ['name' => 'Confirmed']);
 });

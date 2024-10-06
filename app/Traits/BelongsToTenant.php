@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\Scopes\TenantScope;
+use App\Models\Tenant;
 
 trait BelongsToTenant
 {
