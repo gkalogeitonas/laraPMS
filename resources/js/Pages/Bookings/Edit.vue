@@ -22,6 +22,7 @@ let form = useForm({
     address: props.booking.address || "",
     customer_id: props.booking.customer_id || "",
     booking_status_id: props.booking.booking_status_id || "",
+    booking_source_id: props.booking.booking_source_id || "",
     check_in: props.booking.check_in || "",
     check_out: props.booking.check_out || "",
     total_guests: props.booking.total_guests || "",

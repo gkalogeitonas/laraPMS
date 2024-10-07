@@ -5,6 +5,7 @@ import { Head } from "@inertiajs/vue3";
 import { useForm } from "@inertiajs/vue3";
 
 // Import the DangerButton component
+
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import NavLink from "@/Components/NavLink.vue";
 import BookingForm from "@/Pages/Bookings/BookingForm.vue";
@@ -23,6 +24,7 @@ let form = useForm({
     address: "",
     customer_id: "",
     booking_status_id: "",
+    booking_source_id: "",
     check_in: "",
     check_out: "",
     total_guests: "",
