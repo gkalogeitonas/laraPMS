@@ -6,6 +6,8 @@ use App\Models\Tenant;
 use App\Models\Customer;
 use App\Models\Booking;
 use App\Models\Property;
+use App\Models\BookingStatus;
+use App\Models\BookingSource;
 use function Pest\Laravel\get;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\post;
@@ -47,5 +49,44 @@ test('a user without tenant can not view Bookings in  bookings index', function 
         ->component('Bookings/Index')
         ->has('bookings')
         ->has('bookings', 0)
+    );
+});
+
+
+it('can see only booking statuses and booking sources from own tenant in booking form', function () {
+
+
+    // Create booking statuses and booking sources for another tenant
+    $otherTenant = Tenant::factory()->create();
+    $otherBookingStatus = BookingStatus::factory()->create(['tenant_id' => $otherTenant->id]);
+    $otherBookingSource = BookingSource::factory()->create(['tenant_id' => $otherTenant->id]);
+
+
+    // Create a tenant and a user
+    $data = createUserWithTenant();
+    $tenant = $data['tenant'];
+    $user = $data['user'];
+
+    // Create booking statuses and booking sources for the tenant
+    $tenantBookingStatus = BookingStatus::factory()->create(['tenant_id' => $tenant->id]);
+    $tenantBookingSource = BookingSource::factory()->create(['tenant_id' => $tenant->id]);
+
+    // Log in as the user
+    actingAs($user);
+
+    // Access the booking form
+    $response = $this->get(route('bookings.create'));
+
+    // Assert that only the booking statuses and booking sources from the user's tenant are visible
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Bookings/Create')
+        ->has('bookingStatuses', 1)
+        ->where('bookingStatuses.0.id', $tenantBookingStatus->id)
+        ->where('bookingStatuses.0.name', $tenantBookingStatus->name)
+        ->has('BookingSources', 1)
+        ->where('BookingSources.0.id', $tenantBookingSource->id)
+        ->where('BookingSources.0.name', $tenantBookingSource->name)
+        ->whereNot('bookingStatuses.0.id', $otherBookingStatus->id)
+        ->whereNot('BookingSources.0.id', $otherBookingSource->id)
     );
 });

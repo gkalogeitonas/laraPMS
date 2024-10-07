@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\Booking;
 use App\Models\Property;
 use App\Models\BookingStatus;
+use App\Models\BookingSource;
 use function Pest\Laravel\get;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\post;
@@ -22,6 +23,9 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->tenant = Tenant::factory()->create();
     $this->BookingStatus = BookingStatus::factory()->create([
+        'tenant_id' => $this->tenant->id
+    ]);
+    $this->BookingSource = BookingSource::factory()->create([
         'tenant_id' => $this->tenant->id
     ]);
     $this->user = User::factory()->create();
@@ -223,6 +227,9 @@ it('can not view other tenant bookings in bookings Index', function () {
 });
 
 
+
+
+
 it('can filter booking by dates', function () {
     $booking1 = Booking::factory()->create([
         'tenant_id' => $this->tenant->id,
@@ -265,3 +272,6 @@ it('can filter booking by dates', function () {
     );
 
 });
+
+
+

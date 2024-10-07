@@ -48,7 +48,7 @@ class BookingController extends Controller
     {
         return Inertia::render('Bookings/Create', [
             'rooms' => auth()->user()->getActiveTenant()->rooms,
-            'bookingStatuses' => auth()->user()->getActiveTenant()->bookingStatuses,
+            'bookingStatuses' => BookingStatus::all(),
             'BookingSources' => BookingSource::all(),
         ]);
     }
@@ -83,7 +83,8 @@ class BookingController extends Controller
         return Inertia::render('Bookings/Edit', [
             'booking' => $booking->load(['room', 'bookingStatus']),
             'rooms' => auth()->user()->getActiveTenant()->rooms,
-            'bookingStatuses' => auth()->user()->getActiveTenant()->bookingStatuses,
+            'bookingStatuses' => BookingSource::all(),
+            'BookingSources' => BookingSource::all(),
         ]);
     }
 
@@ -112,6 +113,7 @@ class BookingController extends Controller
     {
         //dd($request->all());
         $booking_statuses = auth()->user()->getActiveTenant()->bookingStatuses;
+        $booking_sources = auth()->user()->getActiveTenant()->bookingSources;
         $rooms = auth()->user()->getActiveTenant()->rooms;
         return $request->validate([
             'room_id' => 'required|in:' . $rooms->pluck('id')->join(','),
@@ -120,6 +122,7 @@ class BookingController extends Controller
             'check_in' => 'required|date',
             'check_out' => 'required|date|after:check_in',
             'booking_status_id' => 'nullable|in:' . $booking_statuses->pluck('id')->join(','),
+            'booking_source_id' => 'nullable|in:' . $booking_sources->pluck('id')->join(','),
             'total_guests' => 'required|integer',
             'price' => 'required|numeric',
         ]);
