@@ -5,10 +5,6 @@ import { Head } from "@inertiajs/vue3";
 import { useForm } from "@inertiajs/vue3";
 
 // Import the DangerButton component
-import DangerButton from "@/Components/DangerButton.vue";
-import TextInput from "@/Components/TextInput.vue";
-import InputLabel from "@/Components/InputLabel.vue";
-import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import NavLink from "@/Components/NavLink.vue";
 import BookingForm from "@/Pages/Bookings/BookingForm.vue";
