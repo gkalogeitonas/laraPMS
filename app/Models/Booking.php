@@ -26,7 +26,7 @@ class Booking extends Model
 
     public function bookingSource()
     {
-        return $this->belongsTo(BookingStatus::class);
+        return $this->belongsTo(BookingSource::class);
     }
 
 
