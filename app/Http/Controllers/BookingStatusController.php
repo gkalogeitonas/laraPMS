@@ -25,7 +25,7 @@ class BookingStatusController extends Controller
             ])->with('error', 'No active tenant.');
         }
         return Inertia::render('bookingStatuses/Index', [
-            'bookingStatuses' => auth()->user()->getActiveTenant()->bookingStatuses
+            'bookingStatuses' => BookingStatus::all()
         ]);
     }
 
@@ -49,8 +49,6 @@ class BookingStatusController extends Controller
             'name' => 'required',
             'color' => 'string|nullable'
         ]);
-        $attributes['tenant_id'] = auth()->user()->getActiveTenant()->id;
-
         BookingStatus::create($attributes);
         return redirect()->route('booking-statuses.index')->with('success', 'Booking Status created.');
 

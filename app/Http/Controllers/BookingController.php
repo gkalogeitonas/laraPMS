@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\BookingSource;
 use App\Models\Room;
 use App\Models\BookingStatus;
 use Illuminate\Validation\Rule;
@@ -48,6 +49,7 @@ class BookingController extends Controller
         return Inertia::render('Bookings/Create', [
             'rooms' => auth()->user()->getActiveTenant()->rooms,
             'bookingStatuses' => auth()->user()->getActiveTenant()->bookingStatuses,
+            'BookingSources' => BookingSource::all(),
         ]);
     }
 

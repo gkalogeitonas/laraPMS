@@ -39,7 +39,7 @@ function toggleSettingsMenu() {
             </span>
         </div>
           <div v-if="isSettingsMenuOpen" class="ml-6">
-            <ResponsiveNavLink :href="route('booking-sources.index')" :active="route().current('booking-sources.index')">
+            <ResponsiveNavLink :href="route('booking-statuses.index')" :active="route().current('booking-statuses.index')">
               Booking Statuses
             </ResponsiveNavLink>
             <ResponsiveNavLink :href="route('booking-sources.index')" :active="route().current('booking-sources.index')">
