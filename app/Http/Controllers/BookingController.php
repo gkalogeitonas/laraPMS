@@ -68,9 +68,9 @@ class BookingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Booking $booking)
     {
-        //
+        return $booking->load('room', 'bookingStatus', 'bookingSource');
     }
 
     /**
@@ -78,12 +78,12 @@ class BookingController extends Controller
      */
     public function edit(Booking $booking)
     {
-        return  $booking->load(['room', 'bookingStatus']);
+        //return  $booking->load(['room', 'bookingStatus', 'bookingSource']);
         $this->authorize('update', $booking);
         return Inertia::render('Bookings/Edit', [
-            'booking' => $booking->load(['room', 'bookingStatus']),
+            'booking' => $booking->load(['room', 'bookingStatus', 'bookingSource']),
             'rooms' => auth()->user()->getActiveTenant()->rooms,
-            'bookingStatuses' => BookingSource::all(),
+            'bookingStatuses' => BookingStatus::all(),
             'BookingSources' => BookingSource::all(),
         ]);
     }
