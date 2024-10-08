@@ -11,9 +11,9 @@ import AddButton from '@/Components/AddButton.vue';
 import ActionButtons from '@/Components/ActionButtons.vue';
 import Pagination from '@/Components/Pagination.vue';
 import BookingStatus from '@/Components/BookingStatus.vue';
+import DateRangePicker from '@/Components/DateRangePicker.vue';
 import { router } from '@inertiajs/vue3'
-import debounce from "lodash/debounce";
-import Show from '../Customers/Show.vue';
+import { difference } from 'lodash';
 
 
 
@@ -32,6 +32,13 @@ const props = defineProps({
 //         replace: true });
 // }, 300));
 
+const  handleDateRangeChange = (dateRange) => {
+    console.log(dateRange);
+    // router.get('/bookings', { start_date: dateRange[0], end_date: dateRange[1] }, {
+    //     preserveState: true,
+    //     replace: true });
+}
+
 </script>
 
 <template>
@@ -46,6 +53,21 @@ const props = defineProps({
 
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
+                <!-- filter-->
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 bg-white border-b border-gray-200">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                            </div>
+                            <div>
+                                <DateRangePicker @update:dateRange="handleDateRangeChange" />
+                            </div>
+                            <div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /filter-->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <!-- <input v-model="search" type="text" placeholder="Search..." class="border px-2 rounded-lg" /> -->
                     <div class="min-w-full divide-y divide-gray-200">
