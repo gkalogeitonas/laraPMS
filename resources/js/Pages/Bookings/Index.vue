@@ -26,17 +26,12 @@ const props = defineProps({
 // let search = ref(props.filters.search);
 
 
-// watch(search, debounce(function (value) {
-//     router.get('/bookings', { search: value }, {
-//         preserveState: true,
-//         replace: true });
-// }, 300));
-
 const  handleDateRangeChange = (dateRange) => {
     console.log(dateRange);
-    // router.get('/bookings', { start_date: dateRange[0], end_date: dateRange[1] }, {
-    //     preserveState: true,
-    //     replace: true });
+    router.get('/bookings', { check_in: dateRange[0], check_out: dateRange[1] }, {
+        preserveState: true,
+        replace: true
+    });
 }
 
 </script>
@@ -58,11 +53,13 @@ const  handleDateRangeChange = (dateRange) => {
                     <div class="p-6 bg-white border-b border-gray-200">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
+                                <label for="search" class="block text-sm font-medium text-gray-700">Search</label>
+                                <input v-model="name" type="text" placeholder="Name..." class="border px-2 rounded-lg" />
+                            </div>
+                            <div>
                             </div>
                             <div>
                                 <DateRangePicker @update:dateRange="handleDateRangeChange" />
-                            </div>
-                            <div>
                             </div>
                         </div>
                     </div>
