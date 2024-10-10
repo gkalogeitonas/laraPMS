@@ -28,9 +28,16 @@ class BookingController extends Controller
 
         $query = auth()->user()->getActiveTenant()->bookings()->with('room', 'bookingStatus');
 
+
         if ($request->has('check_in') && $request->has('check_out')) {
-            $query->whereBetween('check_in', [$request->check_in, $request->check_out])
-            ->orWhereBetween('check_out', [$request->check_in, $request->check_out]);
+            $query->where(function($query) use ($request) {
+                $query->whereBetween('check_in', [$request->check_in, $request->check_out])
+                      ->orWhereBetween('check_out', [$request->check_in, $request->check_out]);
+            });
+        }
+
+        if ($request->has('name')) {
+            $query->where('name', 'LIKE', '%' . $request->name . '%');
         }
 
         $bookings = $query->paginate(10);

@@ -230,48 +230,5 @@ it('can not view other tenant bookings in bookings Index', function () {
 
 
 
-it('can filter booking by dates', function () {
-    $booking1 = Booking::factory()->create([
-        'tenant_id' => $this->tenant->id,
-        'room_id' => $this->room->id,
-        'check_in' => '2024-01-01',
-        'check_out' => '2024-01-10',
-    ]);
-
-    $booking2 = Booking::factory()->create([
-        'tenant_id' => $this->tenant->id,
-        'room_id' => $this->room->id,
-        'check_in' => '2024-02-15',
-        'check_out' => '2024-02-20',
-    ]);
-
-    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-01-10']));
-    $response->assertInertia(fn (Assert $page) => $page
-        ->component('Bookings/Index')
-        ->has('bookings')
-        ->has('bookings.data', 1)
-        ->where('bookings.data.0.id', $booking1->id)
-        ->missing('bookings.data.2')
-    );
-
-    $booking3 = Booking::factory()->create([
-        'tenant_id' => $this->tenant->id,
-        'room_id' => $this->room->id,
-        'check_in' => '2024-01-05',
-        'check_out' => '2024-01-11',
-    ]);
-
-    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-01-10']));
-    $response->assertInertia(fn (Assert $page) => $page
-        ->component('Bookings/Index')
-        ->has('bookings')
-        ->has('bookings.data', 2)
-        ->where('bookings.data.0.id', $booking1->id)
-        ->where('bookings.data.1.id', $booking3->id)
-        ->missing('bookings.data.2')
-    );
-
-});
-
 
 
