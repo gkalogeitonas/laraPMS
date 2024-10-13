@@ -40,10 +40,26 @@ class BookingController extends Controller
             $query->where('name', 'LIKE', '%' . $request->name . '%');
         }
 
+        if ($request->has('booking_status_id')) {
+            $query->where('booking_status_id', $request->booking_status_id);
+        }
+
+
+        if ($request->has('booking_source_id')) {
+            $query->where('booking_source_id', $request->booking_source_id);
+        }
+
+        if ($request->has('room_id')) {
+            $query->where('room_id', $request->room_id);
+        }
+
         $bookings = $query->paginate(10);
 
         return Inertia::render('Bookings/Index', [
             'bookings' => $bookings,
+            'bookingStatuses' => BookingStatus::all(),
+            'BookingSources' => BookingSource::all(),
+            'Rooms' => auth()->user()->getActiveTenant()->rooms,
         ]);
 
     }

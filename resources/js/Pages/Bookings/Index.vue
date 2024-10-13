@@ -20,6 +20,9 @@ import { difference } from 'lodash';
 
 const props = defineProps({
     bookings: Object,
+    bookingStatuses: Object,
+    BookingSources: Object,
+    Rooms: Object,
     //filters: Object,
 });
 
@@ -51,14 +54,40 @@ const  handleDateRangeChange = (dateRange) => {
                 <!-- filter-->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white border-b border-gray-200">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                            <div id="booking_name_filter">
                                 <label for="search" class="block text-sm font-medium text-gray-700">Search</label>
                                 <input v-model="name" type="text" placeholder="Name..." class="border px-2 rounded-lg" />
                             </div>
-                            <div>
+                            <div id="booking_status_filter">
+                                <label for="booking_status" class="block text-sm font-medium text-gray-700">Status</label>
+                                <select id="booking_status" name="booking_status" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                    <option value="">Select a status</option>
+                                    <option v-for="status in bookingStatuses" :value="status.id" :key="status.id">
+                                        {{ status.name }}
+                                    </option>
+                                </select>
                             </div>
-                            <div>
+                            <div id="booking_source_filter">
+                                <label for="booking_source" class="block text-sm font-medium text-gray-700">Source</label>
+                                <select id="booking_source" name="booking_source" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                    <option value="">Select a source</option>
+                                    <option v-for="source in BookingSources" :value="source.id" :key="source.id">
+                                        {{ source.name }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div id="booking_room_filter">
+                                <label for="room" class="block text-sm font-medium text-gray-700">Room</label>
+                                <select id="room" name="room" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                    <option value="">Select a room</option>
+                                    <option v-for="room in Rooms" :value="room.id" :key="room.id">
+                                        {{ room.name }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div id="booking_date_range_filter">
+                                <label for="date_range" class="block text-sm font-medium text-gray-700">Date Range</label>
                                 <DateRangePicker @update:dateRange="handleDateRangeChange" />
                             </div>
                         </div>

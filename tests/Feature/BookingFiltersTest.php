@@ -159,3 +159,209 @@ it('can filter booking by both name and dates', function () {
         ->missing('bookings.data.0')
     );
 });
+
+
+it('can filter bookings by booking status', function () {
+    $bookingStatus1 = BookingStatus::factory()->create([
+        'tenant_id' => $this->tenant->id,
+    ]);
+
+    $bookingStatus2 = BookingStatus::factory()->create([
+        'tenant_id' => $this->tenant->id,
+    ]);
+
+    $booking1 = Booking::factory()->create([
+        'tenant_id' => $this->tenant->id,
+        'room_id' => $this->room->id,
+        'booking_status_id' => $bookingStatus1->id,
+    ]);
+
+    $booking2 = Booking::factory()->create([
+        'tenant_id' => $this->tenant->id,
+        'room_id' => $this->room->id,
+        'booking_status_id' => $bookingStatus2->id,
+    ]);
+
+    $response = get(route('bookings.index', ['booking_status_id' => $bookingStatus1->id]));
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Bookings/Index')
+        ->has('bookings')
+        ->has('bookings.data', 1)
+        ->where('bookings.data.0.id', $booking1->id)
+        ->missing('bookings.data.2')
+    );
+
+    $response = get(route('bookings.index', ['booking_status_id' => $bookingStatus2->id]));
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Bookings/Index')
+        ->has('bookings')
+        ->has('bookings.data', 1)
+        ->where('bookings.data.0.id', $booking2->id)
+        ->missing('bookings.data.2')
+    );
+
+    $response = get(route('bookings.index', ['booking_status_id' => 999]));
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Bookings/Index')
+        ->has('bookings')
+        ->missing('bookings.data.0')
+    );
+});
+
+
+it('can filter bookings by bookings status and dates', function () {
+    $bookingStatus1 = BookingStatus::factory()->create([
+        'tenant_id' => $this->tenant->id,
+    ]);
+
+    $bookingStatus2 = BookingStatus::factory()->create([
+        'tenant_id' => $this->tenant->id,
+    ]);
+
+    $booking1 = Booking::factory()->create([
+        'tenant_id' => $this->tenant->id,
+        'room_id' => $this->room->id,
+        'booking_status_id' => $bookingStatus1->id,
+        'check_in' => '2024-01-01',
+        'check_out' => '2024-01-10',
+    ]);
+
+
+    $booking2 = Booking::factory()->create([
+        'tenant_id' => $this->tenant->id,
+        'room_id' => $this->room->id,
+        'booking_status_id' => $bookingStatus2->id,
+        'check_in' => '2024-02-15',
+        'check_out' => '2024-02-20',
+    ]);
+
+
+    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-01-10', 'booking_status_id' => $bookingStatus1->id]));
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Bookings/Index')
+        ->has('bookings')
+        ->has('bookings.data', 1)
+        ->where('bookings.data.0.id', $booking1->id)
+        ->missing('bookings.data.2')
+    );
+
+    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-01-10', 'booking_status_id' => $bookingStatus2->id]));
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Bookings/Index')
+        ->has('bookings')
+        ->missing('bookings.data.0')
+    );
+
+    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-01-10', 'booking_status_id' => 999]));
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Bookings/Index')
+        ->has('bookings')
+        ->missing('bookings.data.0')
+    );
+});
+
+
+it('can filter bookings by booking source', function(){
+    $bookingSource1 = BookingSource::factory()->create([
+        'tenant_id' => $this->tenant->id,
+    ]);
+
+    $bookingSource2 = BookingSource::factory()->create([
+        'tenant_id' => $this->tenant->id,
+    ]);
+
+
+    $booking1 = Booking::factory()->create([
+        'tenant_id' => $this->tenant->id,
+        'room_id' => $this->room->id,
+        'booking_source_id' => $bookingSource1->id,
+        'check_in' => '2024-01-01',
+        'check_out' => '2024-01-10',
+    ]);
+
+    $booking2 = Booking::factory()->create([
+        'tenant_id' => $this->tenant->id,
+        'room_id' => $this->room->id,
+        'booking_source_id' => $bookingSource2->id,
+        'check_in' => '2024-02-15',
+        'check_out' => '2024-02-20',
+    ]);
+
+    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-01-10', 'booking_source_id' => $bookingSource1->id]));
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Bookings/Index')
+        ->has('bookings')
+        ->has('bookings.data', 1)
+        ->where('bookings.data.0.id', $booking1->id)
+        ->missing('bookings.data.2')
+    );
+
+    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-03-10', 'booking_source_id' => $bookingSource1->id]));
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Bookings/Index')
+        ->has('bookings')
+        ->has('bookings.data', 1)
+        ->where('bookings.data.0.id', $booking1->id)
+        ->missing('bookings.data.2')
+    );
+
+    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-01-10', 'booking_source_id' => $bookingSource2->id]));
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Bookings/Index')
+        ->has('bookings')
+        ->missing('bookings.data.0')
+    );
+
+    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-03-10', 'booking_source_id' => $bookingSource2->id]));
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Bookings/Index')
+        ->has('bookings')
+        ->has('bookings.data', 1)
+        ->where('bookings.data.0.id', $booking2->id)
+        ->missing('bookings.data.2')
+    );
+});
+
+it('can filter bookings by rooms', function(){
+    $room1 = Room::factory()->create(['tenant_id' => $this->tenant->id]);
+    $room2 = Room::factory()->create(['tenant_id' => $this->tenant->id]);
+
+    $booking1 = Booking::factory()->create([
+        'tenant_id' => $this->tenant->id,
+        'room_id' => $room1->id,
+        'check_in' => '2024-01-01',
+        'check_out' => '2024-01-10',
+    ]);
+
+    $booking2 = Booking::factory()->create([
+        'tenant_id' => $this->tenant->id,
+        'room_id' => $room2->id,
+        'check_in' => '2024-02-15',
+        'check_out' => '2024-02-20',
+    ]);
+
+    $response = get(route('bookings.index', ['room_id' => $room1->id]));
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Bookings/Index')
+        ->has('bookings')
+        ->has('bookings.data', 1)
+        ->where('bookings.data.0.id', $booking1->id)
+        ->missing('bookings.data.2')
+    );
+
+    $response = get(route('bookings.index', ['room_id' => $room2->id]));
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Bookings/Index')
+        ->has('bookings')
+        ->has('bookings.data', 1)
+        ->where('bookings.data.0.id', $booking2->id)
+        ->missing('bookings.data.2')
+    );
+
+    $response = get(route('bookings.index', ['room_id' => 999]));
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Bookings/Index')
+        ->has('bookings')
+        ->missing('bookings.data.0')
+    );
+});
