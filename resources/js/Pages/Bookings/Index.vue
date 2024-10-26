@@ -24,16 +24,16 @@ const props = defineProps({
     bookingStatuses: Object,
     BookingSources: Object,
     Rooms: Object,
-    //filters: Object,
+    filters: Object,
 });
 
 const filters = ref({
-    name: '',
-    booking_status_id: '',
-    booking_source_id: '',
-    room_id: '',
-    check_in: '',
-    check_out: '',
+    name: props.filters.name || '',
+    booking_status_id: props.filters.booking_status_id || '',
+    booking_source_id: props.filters.booking_source_id || '',
+    room_id: props.filters.room_id || '',
+    check_in: props.filters.check_in || '',
+    check_out: props.filters.check_out || '',
 });
 
 
