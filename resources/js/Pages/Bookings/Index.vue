@@ -27,16 +27,31 @@ const props = defineProps({
     //filters: Object,
 });
 
-// let search = ref(props.filters.search);
+const filters = ref({
+    name: '',
+    booking_status_id: '',
+    booking_source_id: '',
+    room_id: '',
+    check_in: '',
+    check_out: '',
+});
 
 
-const  handleDateRangeChange = (dateRange) => {
-    console.log(dateRange);
-    router.get('/bookings', { check_in: dateRange[0], check_out: dateRange[1] }, {
-        preserveState: true,
-        replace: true
-    });
-}
+const handleDateRangeChange = (dateRange) => {
+    filters.value.check_in = dateRange[0];
+    filters.value.check_out = dateRange[1];
+};
+
+const getNonEmptyFilters = (filters) => {
+    return Object.fromEntries(
+        Object.entries(filters).filter(([key, value]) => value !== '' && value !== null && value !== undefined)
+    );
+};
+
+watch(filters, (newFilters) => {
+    const nonEmptyFilters = getNonEmptyFilters(newFilters);
+    router.get(route('bookings.index'), nonEmptyFilters, { preserveState: true });
+}, { deep: true });
 
 </script>
 
@@ -59,11 +74,11 @@ const  handleDateRangeChange = (dateRange) => {
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div id="booking_name_filter">
                                 <label for="search" class="block text-sm font-medium text-gray-700">Search</label>
-                                <input v-model="name" type="text" placeholder="Name..." class="border px-2 rounded-lg" />
+                                <input v-model="filters.name" type="text" placeholder="Name..." class="border px-2 rounded-lg" />
                             </div>
                             <div id="booking_status_filter">
                                 <label for="booking_status" class="block text-sm font-medium text-gray-700">Status</label>
-                                <select id="booking_status" name="booking_status" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <select v-model="filters.booking_status_id" id="booking_status" name="booking_status" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                     <option value="">Select a status</option>
                                     <option v-for="status in bookingStatuses" :value="status.id" :key="status.id">
                                         {{ status.name }}
@@ -72,7 +87,7 @@ const  handleDateRangeChange = (dateRange) => {
                             </div>
                             <div id="booking_source_filter">
                                 <label for="booking_source" class="block text-sm font-medium text-gray-700">Source</label>
-                                <select id="booking_source" name="booking_source" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <select v-model="filters.booking_source_id"  id="booking_source" name="booking_source" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                     <option value="">Select a source</option>
                                     <option v-for="source in BookingSources" :value="source.id" :key="source.id">
                                         {{ source.name }}
@@ -81,7 +96,7 @@ const  handleDateRangeChange = (dateRange) => {
                             </div>
                             <div id="booking_room_filter">
                                 <label for="room" class="block text-sm font-medium text-gray-700">Room</label>
-                                <RoomSelect :rooms="Rooms" v-model="selectedRoom" />
+                                <RoomSelect :rooms="Rooms" v-model="filters.room_id" />
                             </div>
                         </div>
 
