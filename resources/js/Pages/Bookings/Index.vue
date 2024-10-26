@@ -1,7 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
+import { ref, watch, computed} from 'vue';
 
 
 
@@ -12,6 +12,7 @@ import ActionButtons from '@/Components/ActionButtons.vue';
 import Pagination from '@/Components/Pagination.vue';
 import BookingStatus from '@/Components/BookingStatus.vue';
 import DateRangePicker from '@/Components/DateRangePicker.vue';
+import RoomSelect from '@/Components/RoomSelect.vue';
 import { router } from '@inertiajs/vue3'
 import { difference } from 'lodash';
 
@@ -41,6 +42,7 @@ const  handleDateRangeChange = (dateRange) => {
 
 <template>
 
+
     <Head title="Dashboard" />
 
     <AuthenticatedLayout>
@@ -54,7 +56,7 @@ const  handleDateRangeChange = (dateRange) => {
                 <!-- filter-->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white border-b border-gray-200">
-                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div id="booking_name_filter">
                                 <label for="search" class="block text-sm font-medium text-gray-700">Search</label>
                                 <input v-model="name" type="text" placeholder="Name..." class="border px-2 rounded-lg" />
@@ -79,16 +81,14 @@ const  handleDateRangeChange = (dateRange) => {
                             </div>
                             <div id="booking_room_filter">
                                 <label for="room" class="block text-sm font-medium text-gray-700">Room</label>
-                                <select id="room" name="room" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                    <option value="">Select a room</option>
-                                    <option v-for="room in Rooms" :value="room.id" :key="room.id">
-                                        {{ room.name }}
-                                    </option>
-                                </select>
+                                <RoomSelect :rooms="Rooms" v-model="selectedRoom" />
                             </div>
-                            <div id="booking_date_range_filter">
-                                <label for="date_range" class="block text-sm font-medium text-gray-700">Date Range</label>
-                                <DateRangePicker @update:dateRange="handleDateRangeChange" />
+                        </div>
+
+                        <div class="flex justify-center mt-5">
+                            <div id="booking_date_filter">
+                                <label for="date" class="block text-sm font-medium text-gray-700">Date Range</label>
+                                <DateRangePicker @change="handleDateRangeChange" />
                             </div>
                         </div>
                     </div>

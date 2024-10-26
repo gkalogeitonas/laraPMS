@@ -59,7 +59,7 @@ class BookingController extends Controller
             'bookings' => $bookings,
             'bookingStatuses' => BookingStatus::all(),
             'BookingSources' => BookingSource::all(),
-            'Rooms' => auth()->user()->getActiveTenant()->rooms,
+            'Rooms' => auth()->user()->getActiveTenant()->rooms()->with('property')->get(),
         ]);
 
     }
