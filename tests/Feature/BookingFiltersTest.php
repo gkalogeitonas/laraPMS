@@ -80,6 +80,23 @@ it('can filter booking by dates', function () {
         ->missing('bookings.data.2')
     );
 
+    $response = get(route('bookings.index', ['check_in' => '2024-01-02', 'check_out' => '2024-01-07']));
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Bookings/Index')
+        ->has('bookings')
+        ->has('bookings.data', 2)
+        ->where('bookings.data.0.id', $booking1->id)
+        ->where('bookings.data.1.id', $booking3->id)
+        ->missing('bookings.data.2')
+    );
+
+    $response = get(route('bookings.index', ['check_in' => '2024-01-12', 'check_out' => '2024-01-14']));
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Bookings/Index')
+        ->has('bookings')
+        ->has('bookings.data', 0)
+    );
+
 });
 
 

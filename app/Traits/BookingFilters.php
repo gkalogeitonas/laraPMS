@@ -8,8 +8,8 @@ trait BookingFilters
     {
         if ($request->has('check_in') && $request->has('check_out')) {
             $query->where(function($query) use ($request) {
-                $query->whereBetween('check_in', [$request->check_in, $request->check_out])
-                      ->orWhereBetween('check_out', [$request->check_in, $request->check_out]);
+                $query->where('check_in', '<=', $request->check_out)
+                ->where('check_out', '>=', $request->check_in);
             });
         }
 
@@ -32,3 +32,4 @@ trait BookingFilters
         return $query;
     }
 }
+
