@@ -24,6 +24,7 @@ const props = defineProps({
     BookingSources: Object,
     Rooms: Object,
     filters: Object,
+    totals: Object,
 });
 
 const filters = ref({
@@ -176,6 +177,11 @@ watch(filters, (newFilters) => {
                                     </div>
                                 </div>
                         </div>
+                    </div>
+                    <!-- Display the total sum -->
+                    <div class="mt-4">
+                        <h3 class="text-lg font-medium text-gray-900">Total Amount: {{ totals.total_amount }}</h3>
+                        <h3 class="text-lg font-medium text-gray-900">Total Days: {{ totals.total_days }}</h3>
                     </div>
                     <Pagination :links="bookings.links" class="mt-6 flex justify-end mr-5" />
                 </div>

@@ -25,7 +25,11 @@ class BookingController extends Controller
          //check if user has active tenant
         if (!auth()->user()->hasActiveTenant()) {
             return Inertia::render('Bookings/Index', [
-                'bookings' => []
+                'bookings' => [],
+                'totals' => [
+                    'total_amount' => 0,
+                    'total_days' => 0,
+                ],
             ]);
         }
 
@@ -34,6 +38,15 @@ class BookingController extends Controller
 
         $query = $this->applyBookingFilters($query, $request);
 
+        $totals = [
+            'total_amount' => $query->get()->sum(function ($booking) {
+                return $booking->total_cost;
+            }),
+            'total_days' => $query->get()->sum(function ($booking) {
+                return $booking->total_days;
+            }),
+        ];
+
         $bookings = $query->paginate(10);
 
         return Inertia::render('Bookings/Index', [
@@ -41,6 +54,7 @@ class BookingController extends Controller
             'bookingStatuses' => BookingStatus::all(),
             'BookingSources' => BookingSource::all(),
             'Rooms' => auth()->user()->getActiveTenant()->rooms()->with('property')->get(),
+            'totals' => $totals,
             'filters' => request()->all('check_in', 'check_out', 'name', 'booking_status_id', 'booking_source_id', 'room_id'),
         ]);
 
