@@ -54,7 +54,7 @@ it('can filter booking by dates', function () {
         'check_out' => '2024-02-20',
     ]);
 
-    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-01-10']));
+    $response = get(route('bookings.index', ['start_date' => '2024-01-01', 'end_date' => '2024-01-10']));
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Bookings/Index')
         ->has('bookings')
@@ -70,7 +70,7 @@ it('can filter booking by dates', function () {
         'check_out' => '2024-01-11',
     ]);
 
-    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-01-10']));
+    $response = get(route('bookings.index', ['start_date' => '2024-01-01', 'end_date' => '2024-01-10']));
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Bookings/Index')
         ->has('bookings')
@@ -80,7 +80,7 @@ it('can filter booking by dates', function () {
         ->missing('bookings.data.2')
     );
 
-    $response = get(route('bookings.index', ['check_in' => '2024-01-02', 'check_out' => '2024-01-07']));
+    $response = get(route('bookings.index', ['start_date' => '2024-01-02', 'end_date' => '2024-01-07']));
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Bookings/Index')
         ->has('bookings')
@@ -90,7 +90,7 @@ it('can filter booking by dates', function () {
         ->missing('bookings.data.2')
     );
 
-    $response = get(route('bookings.index', ['check_in' => '2024-01-12', 'check_out' => '2024-01-14']));
+    $response = get(route('bookings.index', ['start_date' => '2024-01-12', 'end_date' => '2024-01-14']));
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Bookings/Index')
         ->has('bookings')
@@ -153,7 +153,7 @@ it('can filter booking by both name and dates', function () {
         'check_out' => '2024-02-20',
     ]);
 
-    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-01-10', 'name' => $booking1->name]));
+    $response = get(route('bookings.index', ['start_date' => '2024-01-01', 'end_date' => '2024-01-10', 'name' => $booking1->name]));
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Bookings/Index')
         ->has('bookings')
@@ -162,14 +162,14 @@ it('can filter booking by both name and dates', function () {
         ->missing('bookings.data.2')
     );
 
-    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-01-10', 'name' => $booking2->name]));
+    $response = get(route('bookings.index', ['start_date' => '2024-01-01', 'end_date' => '2024-01-10', 'name' => $booking2->name]));
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Bookings/Index')
         ->has('bookings')
         ->missing('bookings.data.0')
     );
 
-    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-01-10', 'name' => 'random name']));
+    $response = get(route('bookings.index', ['start_date' => '2024-01-01', 'end_date' => '2024-01-10', 'name' => 'random name']));
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Bookings/Index')
         ->has('bookings')
@@ -253,7 +253,7 @@ it('can filter bookings by bookings status and dates', function () {
     ]);
 
 
-    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-01-10', 'booking_status_id' => $bookingStatus1->id]));
+    $response = get(route('bookings.index', ['start_date' => '2024-01-01', 'end_date' => '2024-01-10', 'booking_status_id' => $bookingStatus1->id]));
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Bookings/Index')
         ->has('bookings')
@@ -262,14 +262,14 @@ it('can filter bookings by bookings status and dates', function () {
         ->missing('bookings.data.2')
     );
 
-    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-01-10', 'booking_status_id' => $bookingStatus2->id]));
+    $response = get(route('bookings.index', ['start_date' => '2024-01-01', 'end_date' => '2024-01-10', 'booking_status_id' => $bookingStatus2->id]));
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Bookings/Index')
         ->has('bookings')
         ->missing('bookings.data.0')
     );
 
-    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-01-10', 'booking_status_id' => 999]));
+    $response = get(route('bookings.index', ['start_date' => '2024-01-01', 'end_date' => '2024-01-10', 'booking_status_id' => 999]));
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Bookings/Index')
         ->has('bookings')
@@ -304,7 +304,7 @@ it('can filter bookings by booking source', function(){
         'check_out' => '2024-02-20',
     ]);
 
-    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-01-10', 'booking_source_id' => $bookingSource1->id]));
+    $response = get(route('bookings.index', ['start_date' => '2024-01-01', 'end_date' => '2024-01-10', 'booking_source_id' => $bookingSource1->id]));
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Bookings/Index')
         ->has('bookings')
@@ -313,7 +313,7 @@ it('can filter bookings by booking source', function(){
         ->missing('bookings.data.2')
     );
 
-    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-03-10', 'booking_source_id' => $bookingSource1->id]));
+    $response = get(route('bookings.index', ['start_date' => '2024-01-01', 'end_date' => '2024-03-10', 'booking_source_id' => $bookingSource1->id]));
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Bookings/Index')
         ->has('bookings')
@@ -322,14 +322,14 @@ it('can filter bookings by booking source', function(){
         ->missing('bookings.data.2')
     );
 
-    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-01-10', 'booking_source_id' => $bookingSource2->id]));
+    $response = get(route('bookings.index', ['start_date' => '2024-01-01', 'end_date' => '2024-01-10', 'booking_source_id' => $bookingSource2->id]));
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Bookings/Index')
         ->has('bookings')
         ->missing('bookings.data.0')
     );
 
-    $response = get(route('bookings.index', ['check_in' => '2024-01-01', 'check_out' => '2024-03-10', 'booking_source_id' => $bookingSource2->id]));
+    $response = get(route('bookings.index', ['start_date' => '2024-01-01', 'end_date' => '2024-03-10', 'booking_source_id' => $bookingSource2->id]));
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Bookings/Index')
         ->has('bookings')

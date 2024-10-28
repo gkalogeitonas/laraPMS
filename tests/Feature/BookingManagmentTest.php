@@ -249,8 +249,8 @@ it('calculates the total sum of selected bookings', function () {
     ]);
 
     $response = $this->get(route('bookings.index', [
-        'check_in' => '2024-01-01',
-        'check_out' => '2024-12-31',
+        'start_date' => '2024-01-01',
+        'end_date' => '2024-12-31',
     ]));
 
     $response->assertInertia(fn (Assert $page) => $page
@@ -284,8 +284,8 @@ it('calculates the total sum of selected dates period', function () {
     ]);
 
     $response = $this->get(route('bookings.index', [
-        'check_in' => '2024-01-01',
-        'check_out' => '2024-01-07',
+        'start_date' => '2024-01-01',
+        'end_date' => '2024-01-07',
     ]));
 
     $response->assertInertia(fn (Assert $page) => $page

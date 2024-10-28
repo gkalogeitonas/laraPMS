@@ -6,10 +6,10 @@ trait BookingFilters
 {
     public function applyBookingFilters($query, $request)
     {
-        if ($request->has('check_in') && $request->has('check_out')) {
+        if ($request->has('start_date') && $request->has('end_date')) {
             $query->where(function($query) use ($request) {
-                $query->where('check_in', '<=', $request->check_out)
-                ->where('check_out', '>=', $request->check_in);
+                $query->where('check_in', '<=', $request->end_date)
+                ->where('check_out', '>=', $request->start_date);
             });
         }
 

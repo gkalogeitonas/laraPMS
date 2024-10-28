@@ -55,6 +55,6 @@ const props = defineProps({
 const emits = defineEmits(['update:filters']);
 
 const handleDateRangeChange = (dateRange) => {
-    emits('update:filters', { ...props.filters, check_in: dateRange[0], check_out: dateRange[1] });
+    emits('update:filters', { ...props.filters, start_date: dateRange[0], end_date: dateRange[1] });
 };
 </script>

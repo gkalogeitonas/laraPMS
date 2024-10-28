@@ -55,7 +55,7 @@ class BookingController extends Controller
             'BookingSources' => BookingSource::all(),
             'Rooms' => auth()->user()->getActiveTenant()->rooms()->with('property')->get(),
             'totals' => $totals,
-            'filters' => request()->all('check_in', 'check_out', 'name', 'booking_status_id', 'booking_source_id', 'room_id'),
+            'filters' => request()->all('start_date', 'end_date', 'name', 'booking_status_id', 'booking_source_id', 'room_id'),
         ]);
 
     }

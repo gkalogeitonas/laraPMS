@@ -32,14 +32,14 @@ const filters = ref({
     booking_status_id: props.filters.booking_status_id || '',
     booking_source_id: props.filters.booking_source_id || '',
     room_id: props.filters.room_id || '',
-    check_in: props.filters.check_in || '',
-    check_out: props.filters.check_out || '',
+    start_date: props.filters.start_date || '',
+    end_date: props.filters.end_date || '',
 });
 
 
 const handleDateRangeChange = (dateRange) => {
-    filters.value.check_in = dateRange[0];
-    filters.value.check_out = dateRange[1];
+    filters.value.start_date = dateRange[0];
+    filters.value.end_date = dateRange[1];
 };
 
 const updateFilters = (newFilters) => {
