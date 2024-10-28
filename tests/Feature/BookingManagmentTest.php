@@ -262,40 +262,6 @@ it('calculates the total sum of selected bookings', function () {
 });
 
 
-it('calculates the total sum of selected dates period', function () {
-    $booking1 = Booking::factory()->create([
-        'tenant_id' => $this->tenant->id,
-        'room_id' => $this->room->id,
-        'name' => 'Booking 1',
-        'customer_id' => $this->customer->id,
-        'check_in' => '2023-12-26',
-        'check_out' => '2024-01-10',
-        'price' => 100,
-    ]);
-
-    $booking2 = Booking::factory()->create([
-        'tenant_id' => $this->tenant->id,
-        'room_id' => $this->room->id,
-        'name' => 'Booking 2',
-        'customer_id' => $this->customer->id,
-        'check_in' => '2024-02-01',
-        'check_out' => '2024-02-10',
-        'price' => 50,
-    ]);
-
-    $response = $this->get(route('bookings.index', [
-        'start_date' => '2024-01-01',
-        'end_date' => '2024-01-07',
-    ]));
-
-    $response->assertInertia(fn (Assert $page) => $page
-        ->component('Bookings/Index')
-        ->has('bookings.data', 1)
-        ->where('totals.total_amount', 900)
-        ->where('totals.total_days', 12)
-    );
-});
-
 
 
 

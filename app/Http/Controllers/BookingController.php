@@ -6,9 +6,8 @@ use App\Models\Booking;
 use App\Models\BookingSource;
 use App\Models\Room;
 use App\Models\BookingStatus;
-use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
+use App\Services\BookingTotalsCalculator;
 use Inertia\Inertia;
 use App\Traits\BookingFilters;
 
@@ -38,14 +37,9 @@ class BookingController extends Controller
 
         $query = $this->applyBookingFilters($query, $request);
 
-        $totals = [
-            'total_amount' => $query->get()->sum(function ($booking) {
-                return $booking->total_cost;
-            }),
-            'total_days' => $query->get()->sum(function ($booking) {
-                return $booking->total_days;
-            }),
-        ];
+        // Calculate the totals using the BookingTotalsCalculator
+        $totalsCalculator = new BookingTotalsCalculator($query->get(), $request->start_date, $request->end_date);
+        $totals = $totalsCalculator->calculate();
 
         $bookings = $query->paginate(10);
 
