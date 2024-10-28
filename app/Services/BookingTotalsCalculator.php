@@ -14,8 +14,8 @@ class BookingTotalsCalculator
     public function __construct(Collection $bookings, $startDate, $endDate)
     {
         $this->bookings = $bookings;
-        $this->startDate = Carbon::parse($startDate);
-        $this->endDate = Carbon::parse($endDate);
+        $this->startDate = ($startDate) ? Carbon::parse($startDate) : false;
+        $this->endDate = ($endDate) ? Carbon::parse($endDate) : false;
     }
 
     public function calculate()
@@ -27,12 +27,10 @@ class BookingTotalsCalculator
             $bookingStartDate = Carbon::parse($booking->check_in);
             $bookingEndDate = Carbon::parse($booking->check_out);
 
-            $effectiveStartDate = $bookingStartDate->greaterThan($this->startDate) ? $bookingStartDate : $this->startDate;
-            $effectiveEndDate = $bookingEndDate->lessThan($this->endDate) ? $bookingEndDate : $this->endDate;
-
+            $effectiveStartDate = $this->getEffectiveStartDate($bookingStartDate);
+            $effectiveEndDate = $this->getEffectiveEndDate($bookingEndDate);
 
             $daysInRange = $effectiveStartDate->diffInDays($effectiveEndDate, false);
-            //dd($this->startDate, $this->endDate, $booking, $daysInRange);
 
             if ($daysInRange > 0) {
                 $totalDays += $daysInRange;
@@ -44,5 +42,20 @@ class BookingTotalsCalculator
             'total_amount' => $totalAmount,
             'total_days' => $totalDays,
         ];
+    }
+
+    private function getEffectiveStartDate($bookingStartDate)
+    {   if (!$this->startDate) {
+            return $bookingStartDate;
+        }
+        return $bookingStartDate->greaterThan($this->startDate) ? $bookingStartDate : $this->startDate;
+    }
+
+    private function getEffectiveEndDate($bookingEndDate)
+    {
+        if (!$this->endDate) {
+            return $bookingEndDate;
+        }
+        return $bookingEndDate->lessThan($this->endDate) ? $bookingEndDate : $this->endDate;
     }
 }

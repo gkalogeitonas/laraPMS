@@ -88,3 +88,16 @@ it('calculates with single day bookings', function () {
     expect($result['total_amount'])->toBe(250);
     expect($result['total_days'])->toBe(2);
 });
+
+it('calculates with null dates', function () {
+    $bookings = new Collection([
+        (object) ['check_in' => '2023-01-10', 'check_out' => '2023-01-11', 'price' => 100],
+        (object) ['check_in' => '2023-01-20', 'check_out' => '2023-01-21', 'price' => 150],
+    ]);
+    $calculator = new BookingTotalsCalculator($bookings, null, null);
+
+    $result = $calculator->calculate();
+
+    expect($result['total_amount'])->toBe(250);
+    expect($result['total_days'])->toBe(2);
+});
