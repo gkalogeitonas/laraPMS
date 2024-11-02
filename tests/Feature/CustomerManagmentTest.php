@@ -85,18 +85,20 @@ it('prevents a user from managing others tenants customer', function () {
     $otherTenant = Tenant::factory()->create();
     $customer = Customer::factory()->create(['tenant_id' => $otherTenant->id]);
 
+    $user = createAsUserWithActiveTenant($otherTenant);
+
     $response = $this->get(route('customers.index'));
     $response->assertStatus(200);
     $response->assertDontSee($customer->name);
 
     $response = $this->get(route('customers.edit', $customer));
-    $response->assertStatus(403);
+    $response->assertStatus(404);
 
     $response = $this->patch(route('customers.update', $customer), []);
-    $response->assertStatus(403);
+    $response->assertStatus(404);
 
     $response = $this->delete(route('customers.destroy', $customer));
-    $response->assertStatus(403);
+    $response->assertStatus(404);
 });
 
 

@@ -42,7 +42,7 @@ it('can have many customers', function () {
 
     // Create customers associated with the tenant
     $customers = Customer::factory()->count(3)->create(['tenant_id' => $tenant->id]);
-
+    $user = createAsUserWithActiveTenant($tenant);
     // Assert that the tenant's customers relationship returns the correct customers
     expect($tenant->customers)->toHaveCount(3);
     expect($tenant->customers->pluck('id')->toArray())->toEqual($customers->pluck('id')->toArray());

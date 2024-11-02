@@ -21,12 +21,16 @@ test('a customer belongs to a tenant', function () {
 });
 
 
-it('a customer can be accessed through a tenant', function () {
+test('a customer can be accessed through a tenant', function () {
     // Create a tenant
     $tenant = Tenant::factory()->create();
 
     // Create a customer and associate them with the tenant
     $customer = Customer::factory()->create(['tenant_id' => $tenant->id]);
+    $user = User::factory()->create();
+    $user->tenants()->attach($tenant);
+    $this->actingAs($user);
+    $user->setActiveTenant($tenant);
 
     // Refresh the tenant to ensure the relationship is loaded
     $tenant->load('customers');
@@ -36,18 +40,16 @@ it('a customer can be accessed through a tenant', function () {
 
 
 it('returns customers of the active tenant', function () {
-    // Create a user and set the active tenant
-    $user = User::factory()->create();
-    $tenant = Tenant::factory()->create();
-    $user->tenants()->attach($tenant);
-    $this->actingAs($user);
-    $user->setActiveTenant($tenant);
-    // Create customers for the active tenant
-    $customersOfActiveTenant = Customer::factory()->count(3)->create(['tenant_id' => $tenant->id]);
-
     // Create customers for another tenant
     $otherTenant = Tenant::factory()->create();
     Customer::factory()->count(2)->create(['tenant_id' => $otherTenant->id]);
+    // Create a user and set the active tenant
+    $tenant = Tenant::factory()->create();
+    $user = createAsUserWithActiveTenant($tenant);
+    // Create customers for the active tenant
+    $customersOfActiveTenant = Customer::factory()->count(3)->create(['tenant_id' => $tenant->id]);
+
+
 
     // Get customers of the active tenant
     $customers = Customer::ofActiveTenant()->paginate(10);
