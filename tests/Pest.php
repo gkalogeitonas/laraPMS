@@ -2,6 +2,8 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\Tenant;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,4 +78,14 @@ function createUserWithTenant()
     $user->setActiveTenant($tenant);
 
     return compact('tenant', 'user');
+}
+
+function createAsUserWithActiveTenant(Tenant $tenant): User
+{
+    $user = User::factory()->create();
+    $user->tenants()->attach($tenant);
+    test()->actingAs($user);
+    $user->setActiveTenant($tenant);
+
+    return $user;
 }
