@@ -1,0 +1,58 @@
+screens:
+  - id: SCR-001
+    name: "Login"
+    route: "/login"
+    purpose: "Authenticate user into the system"
+    requirements_covered:
+      - RQ-002
+
+  - id: SCR-002
+    name: "Dashboard"
+    route: "/dashboard"
+    purpose: "Overview of properties and bookings for tenant (with calendar view)"
+    requirements_covered:
+      - RQ-001
+      - RQ-004
+
+  - id: SCR-003
+    name: "Booking Form"
+    route: "/bookings/create"
+    purpose: "Create a new booking"
+    requirements_covered:
+      - RQ-004
+      - RQ-005
+
+  - id: SCR-004
+    name: "Property List"
+    route: "/properties"
+    purpose: "List and filter tenant’s properties"
+    requirements_covered:
+      - RQ-003
+
+  - id: SCR-005
+    name: "Notifications"
+    route: "/notifications"
+    purpose: "View recent alerts and tenant invites"
+    requirements_covered:
+      - RQ-006
+
+  - id: SCR-006
+    name: "Registration"
+    route: "/register"
+    purpose: "Allow new users to sign up"
+    requirements_covered:
+      - RQ-002
+
+  - id: SCR-007
+    name: "Property Detail"
+    route: "/properties/{id}"
+    purpose: "Show details of a single property"
+    requirements_covered:
+      - RQ-003
+
+  - id: SCR-008
+    name: "Reporting"
+    route: "/reports/bookings"
+    purpose: "Aggregate and display bookings by source"
+    requirements_covered:
+      - RQ-005

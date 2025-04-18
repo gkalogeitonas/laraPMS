@@ -1,0 +1,134 @@
+requirements:
+  - id: RQ-001
+    requirement: "Multi-Tenant"
+    description: "Each tenant has isolated data and cannot view or modify other tenants’ properties or bookings."
+    user_story: "As a tenant administrator, I want each tenant’s data fully isolated so that no tenant can access another’s."
+    expected_behavior: "Tenant scoping is enforced on every data query/operation; cross-tenant access is prevented at the ORM and UI layers."
+    type: "Functional"
+    status: "Planned"
+    screens:
+      - "SCR-002"
+      - "SCR-004"
+      - "SCR-003"
+
+  - id: RQ-002
+    requirement: "User Management"
+    description: "Secure registration and authentication, role-based/permission-based user access."
+    user_story: "As a user, I want to sign up and log in securely and have permissions enforced so only authorized actions are allowed."
+    expected_behavior: "Users can register, authenticate, and be assigned roles/permissions; unauthorized actions are blocked with proper feedback."
+    type: "Functional"
+    status: "Planned"
+    screens:
+      - "SCR-001"
+      - "SCR-006"
+
+  - id: RQ-003
+    requirement: "Property & Room"
+    description: "CRUD for properties and rooms, with listing and filtering capabilities."
+    user_story: "As a tenant admin, I want to manage my properties and rooms (create, edit, delete, list, filter) so inventory stays up‑to‑date."
+    expected_behavior: "Admin UI provides forms and listings for properties and rooms, with filters by attributes (e.g., location, capacity)."
+    type: "Functional"
+    status: "Planned"
+    screens:
+      - "SCR-004"
+      - "SCR-007"
+
+  - id: RQ-004
+    requirement: "Bookings"
+    description: "Create, update, and cancel bookings; track booking statuses; maintain a calendar view of availability."
+    user_story: "As a customer, I want to book, modify, or cancel a room; as an admin, I want to see booking statuses in a calendar."
+    expected_behavior: "The system supports full booking lifecycle (new, update, cancel) and displays availability in a calendar interface."
+    type: "Functional"
+    status: "Planned"
+    screens:
+      - "SCR-003"
+      - "SCR-002"
+
+  - id: RQ-005
+    requirement: "Booking Sources"
+    description: "Record the origin of bookings (website, third‑party) and allow reporting by source."
+    user_story: "As an operations manager, I want to know where each booking came from so I can analyze channel performance."
+    expected_behavior: "Every booking record includes a “source” field; reports can aggregate bookings by source type and date range."
+    type: "Functional"
+    status: "Planned"
+    screens:
+      - "SCR-003"
+      - "SCR-008"
+
+  - id: RQ-006
+    requirement: "Notifications"
+    description: "Optional email or in‑app alerts for booking changes or tenant invites."
+    user_story: "As a user, I want to receive notifications when my booking changes or when I’m invited to a tenant."
+    expected_behavior: "Email and/or in‑app notifications are sent on booking status changes and tenant invitation events."
+    type: "Functional"
+    status: "Planned"
+    screens:
+      - "SCR-005"
+
+  - id: RQ-007
+    requirement: "Testing"
+    description: "Automated tests (using Pest for Laravel) covering core CRUD, authentication, and multi‑tenant constraints."
+    user_story: "As a developer, I want automated tests for core features so I can ensure stability and catch regressions."
+    expected_behavior: "A suite of Pest tests verifies CRUD operations, auth flows, and tenant isolation rules; CI fails if any test breaks."
+    type: "Non‑functional"
+    status: "Planned"
+    screens: []
+
+screens:
+  - id: SCR-001
+    name: "Login"
+    route: "/login"
+    purpose: "Authenticate user into the system"
+    requirements_covered:
+      - "RQ-002"
+
+  - id: SCR-002
+    name: "Dashboard"
+    route: "/dashboard"
+    purpose: "Overview of properties/bookings for tenant (with calendar view)"
+    requirements_covered:
+      - "RQ-001"
+      - "RQ-004"
+
+  - id: SCR-003
+    name: "Booking Form"
+    route: "/bookings/create"
+    purpose: "Create a new booking"
+    requirements_covered:
+      - "RQ-004"
+      - "RQ-005"
+
+  - id: SCR-004
+    name: "Property List"
+    route: "/properties"
+    purpose: "List and filter tenant’s properties"
+    requirements_covered:
+      - "RQ-003"
+
+  - id: SCR-005
+    name: "Notifications"
+    route: "/notifications"
+    purpose: "View recent alerts and tenant invites"
+    requirements_covered:
+      - "RQ-006"
+
+  - id: SCR-006
+    name: "Registration"
+    route: "/register"
+    purpose: "Allow new users to sign up"
+    requirements_covered:
+      - "RQ-002"
+
+  - id: SCR-007
+    name: "Property Detail"
+    route: "/properties/{id}"
+    purpose: "Show details of a single property"
+    requirements_covered:
+      - "RQ-003"
+
+  - id: SCR-008
+    name: "Reporting"
+    route: "/reports/bookings"
+    purpose: "Aggregate and display bookings by source"
+    requirements_covered:
+      - "RQ-005"
