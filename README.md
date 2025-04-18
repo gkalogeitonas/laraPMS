@@ -45,6 +45,57 @@ To set up and run the development environment, follow these steps:
 
 Now, you can access the application at `http://localhost:8000`.
 
+## Multi-Tenant Property Management
+
+LARAPMS supports multiple tenants, allowing each tenant to manage their own set of properties, rooms, and bookings independently. Key features include handling bookings, booking statuses, and booking sources, while enforcing strict access control to ensure each tenant can only view or modify their own data.
+
+## Summary of Models and Relationships
+
+1. **User**  
+   - Belongs to many `Tenant`s (through `tenant_user` pivot).  
+   - Each user can set an “active tenant” stored in session.
+
+2. **Tenant**  
+   - Has many `Property`s, `Room`s, `Booking`s, `BookingStatus`es, `BookingSource`s, `Customer`s.
+
+3. **Property**  
+   - Belongs to one `Tenant`.  
+   - Has many `Room`s.
+
+4. **Room**  
+   - Belongs to one `Tenant` and one `Property`.  
+   - Has many `Booking`s.
+
+5. **Booking**  
+   - Belongs to one `Tenant`, one `Room`, one `BookingStatus`, and one `BookingSource`.
+
+6. **BookingStatus**  
+   - Belongs to one `Tenant`.  
+   - Used to delineate states like 'Confirmed', 'Cancelled', etc.
+
+7. **BookingSource**  
+   - Belongs to one `Tenant` and defines where a booking originated (website, external site, etc.).
+
+8. **Customer**  
+   - Belongs to one `Tenant`.  
+   - Potentially linked to multiple `Booking`s.
+
+## Testing
+
+This project uses [Pest](https://pestphp.com/) for Laravel backend tests, offering a concise and readable approach to testing.
+
+You can run the backend tests with:
+
+```sh
+php artisan test
+```
+
+If you have any frontend tests, you can run them with:
+
+```sh
+npm test
+```
+
 ## Contributing
 
 We welcome contributions! Please read our [contributing guidelines](CONTRIBUTING.md) for more information.
