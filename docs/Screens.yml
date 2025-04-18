@@ -3,7 +3,11 @@ screens:
     name: "Login"
     route: "/login"
     purpose: "Authenticate user into the system"
-    data_needed:
+    implemented: true
+    backend_data:
+      - csrf_token
+      - session_status
+    user_input:
       - email
       - password
       - remember
@@ -12,105 +16,158 @@ screens:
     name: "Dashboard"
     route: "/dashboard"
     purpose: "Overview of properties and bookings for tenant (with calendar view)"
-    data_needed:
+    implemented: false
+    backend_data:
       - auth.user
       - auth.activeTenant
+      - recent_bookings
+      - property_statistics
+      - upcoming_checkouts
+    user_input:
+      - date_range_filter
+      - view_preferences
 
   - id: SCR-003
     name: "Booking Form"
     route: "/bookings/create"
     purpose: "Create a new booking"
-    data_needed:
+    implemented: true
+    backend_data:
       - rooms
       - bookingStatuses
-      - BookingSources
-      - customer data (name, email, phone, address)
-      - booking details (dates, guests, price)
+      - bookingSources
+      - customers_list
+    user_input:
+      - customer_data (name, email, phone, address)
+      - booking_details (check_in, check_out, guests, price)
+      - selected_room
+      - selected_status
+      - selected_source
 
   - id: SCR-004
     name: "Property List"
     route: "/properties"
     purpose: "List and filter tenant's properties"
-    data_needed:
+    implemented: true
+    backend_data:
       - properties
+    user_input:
+      - search
+      - filters
 
   - id: SCR-005
     name: "Calendar"
     route: "/calendar"
     purpose: "Visual calendar showing all bookings and availability"
-    data_needed:
+    implemented: true
+    backend_data:
       - events
       - resources (rooms/properties)
+    user_input:
+      - date_range
+      - view_type
 
   - id: SCR-006
     name: "Registration"
     route: "/register"
     purpose: "Allow new users to sign up"
-    data_needed:
+    implemented: true
+    backend_data:
+      - csrf_token
+    user_input:
       - name
       - email
       - password
+      - password_confirmation
       - tenant_name (optional)
 
   - id: SCR-007
     name: "Property Detail"
     route: "/properties/{id}"
     purpose: "Show details of a single property and its rooms"
-    data_needed:
+    implemented: true
+    backend_data:
       - property
       - rooms
+    user_input:
+      - none
 
   - id: SCR-008
     name: "Bookings Index"
     route: "/bookings"
     purpose: "List and filter all bookings"
-    data_needed:
+    implemented: true
+    backend_data:
       - bookings
       - bookingStatuses
-      - BookingSources
-      - Rooms
+      - bookingSources
+      - rooms
+    user_input:
       - filters
-      - totals
+      - search
 
   - id: SCR-009
     name: "Booking Edit"
     route: "/bookings/{id}/edit"
     purpose: "Edit an existing booking"
-    data_needed:
+    implemented: true
+    backend_data:
       - booking
       - rooms
       - bookingStatuses
-      - BookingSources
+      - bookingSources
+    user_input:
+      - booking_details
+      - selected_status
+      - selected_source
 
   - id: SCR-010
     name: "Rooms Index"
     route: "/rooms"
     purpose: "List all rooms across properties"
-    data_needed:
+    implemented: true
+    backend_data:
       - rooms
+      - properties
+    user_input:
+      - filters
+      - search
 
   - id: SCR-011
     name: "Room Create"
     route: "/properties/{id}/rooms/create"
     purpose: "Create a new room for a property"
-    data_needed:
+    implemented: true
+    backend_data:
       - property
-      - types
-      - statuses
+      - room_types
+      - room_statuses
+    user_input:
+      - name
+      - type
+      - status
+      - capacity
+      - description
 
   - id: SCR-012
     name: "Customers Index"
     route: "/customers"
     purpose: "List and search customers"
-    data_needed:
+    implemented: true
+    backend_data:
       - customers
+    user_input:
+      - search
       - filters
 
   - id: SCR-013
     name: "Customer Create"
     route: "/customers/create"
     purpose: "Create a new customer"
-    data_needed:
+    implemented: true
+    backend_data:
+      - none
+    user_input:
       - name
       - email
       - phone
@@ -120,21 +177,204 @@ screens:
     name: "Booking Statuses Index"
     route: "/booking-statuses"
     purpose: "Manage booking statuses"
-    data_needed:
+    implemented: true
+    backend_data:
       - bookingStatuses
+    user_input:
+      - search
+      - filters
 
   - id: SCR-015
     name: "Booking Sources Index"
     route: "/booking-sources"
     purpose: "Manage booking sources"
-    data_needed:
+    implemented: true
+    backend_data:
       - bookingSources
+    user_input:
+      - search
+      - filters
 
   - id: SCR-016
     name: "Profile Edit"
     route: "/profile"
     purpose: "Update user profile and password"
-    data_needed:
+    implemented: true
+    backend_data:
       - user
       - mustVerifyEmail
+    user_input:
+      - name
+      - email
+      - password
+      - current_password
+
+  - id: SCR-017
+    name: "Welcome"
+    route: "/"
+    purpose: "Landing page for the application"
+    implemented: true
+    backend_data:
+      - canLogin
+      - canRegister
+      - laravelVersion
+      - phpVersion
+    user_input:
+      - none
+
+  - id: SCR-018
+    name: "Property Create"
+    route: "/properties/create"
+    purpose: "Create a new property"
+    implemented: true
+    backend_data:
+      - none
+    user_input:
+      - name
+      - address
+      - description
+
+  - id: SCR-019
+    name: "Property Edit"
+    route: "/properties/{id}/edit"
+    purpose: "Edit an existing property"
+    implemented: true
+    backend_data:
+      - property
+    user_input:
+      - name
+      - address
+      - description
+
+  - id: SCR-020
+    name: "Room Show"
+    route: "/rooms/{id}"
+    purpose: "Show details of a single room"
+    implemented: true
+    backend_data:
+      - room
+      - property
+    user_input:
+      - none
+
+  - id: SCR-021
+    name: "Room Edit"
+    route: "/rooms/{id}/edit"
+    purpose: "Edit an existing room"
+    implemented: true
+    backend_data:
+      - room
+      - room_types
+      - room_statuses
+    user_input:
+      - name
+      - type
       - status
+      - capacity
+      - description
+
+  - id: SCR-022
+    name: "Booking Status Create"
+    route: "/booking-statuses/create"
+    purpose: "Create a new booking status"
+    implemented: true
+    backend_data:
+      - none
+    user_input:
+      - name
+      - color
+      - is_default
+
+  - id: SCR-023
+    name: "Booking Status Edit"
+    route: "/booking-statuses/{id}/edit"
+    purpose: "Edit an existing booking status"
+    implemented: true
+    backend_data:
+      - bookingStatus
+    user_input:
+      - name
+      - color
+      - is_default
+
+  - id: SCR-024
+    name: "Booking Source Create"
+    route: "/booking-sources/create"
+    purpose: "Create a new booking source"
+    implemented: true
+    backend_data:
+      - none
+    user_input:
+      - name
+      - is_default
+
+  - id: SCR-025
+    name: "Booking Source Edit"
+    route: "/booking-sources/{id}/edit"
+    purpose: "Edit an existing booking source"
+    implemented: true
+    backend_data:
+      - bookingSource
+    user_input:
+      - name
+      - is_default
+
+  - id: SCR-026
+    name: "Customer Show"
+    route: "/customers/{id}"
+    purpose: "View customer details"
+    implemented: true
+    backend_data:
+      - customer
+      - bookings
+    user_input:
+      - none
+
+  - id: SCR-027
+    name: "Customer Edit"
+    route: "/customers/{id}/edit"
+    purpose: "Edit an existing customer"
+    implemented: true
+    backend_data:
+      - customer
+    user_input:
+      - name
+      - email
+      - phone
+      - address
+
+  - id: SCR-028
+    name: "Booking Show"
+    route: "/bookings/{id}"
+    purpose: "View booking details"
+    implemented: true
+    backend_data:
+      - booking
+      - customer
+      - room
+      - bookingStatus
+      - bookingSource
+    user_input:
+      - none
+
+  - id: SCR-029
+    name: "Password Reset"
+    route: "/forgot-password"
+    purpose: "Allow users to reset their password"
+    implemented: true
+    backend_data:
+      - csrf_token
+    user_input:
+      - email
+
+  - id: SCR-030
+    name: "Reset Password Form"
+    route: "/reset-password/{token}"
+    purpose: "Form to set a new password"
+    implemented: true
+    backend_data:
+      - token
+      - email
+    user_input:
+      - password
+      - password_confirmation
