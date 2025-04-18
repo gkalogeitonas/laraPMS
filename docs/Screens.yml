@@ -3,56 +3,138 @@ screens:
     name: "Login"
     route: "/login"
     purpose: "Authenticate user into the system"
-    requirements_covered:
-      - RQ-002
+    data_needed:
+      - email
+      - password
+      - remember
 
   - id: SCR-002
     name: "Dashboard"
     route: "/dashboard"
     purpose: "Overview of properties and bookings for tenant (with calendar view)"
-    requirements_covered:
-      - RQ-001
-      - RQ-004
+    data_needed:
+      - auth.user
+      - auth.activeTenant
 
   - id: SCR-003
     name: "Booking Form"
     route: "/bookings/create"
     purpose: "Create a new booking"
-    requirements_covered:
-      - RQ-004
-      - RQ-005
+    data_needed:
+      - rooms
+      - bookingStatuses
+      - BookingSources
+      - customer data (name, email, phone, address)
+      - booking details (dates, guests, price)
 
   - id: SCR-004
     name: "Property List"
     route: "/properties"
-    purpose: "List and filter tenant’s properties"
-    requirements_covered:
-      - RQ-003
+    purpose: "List and filter tenant's properties"
+    data_needed:
+      - properties
 
   - id: SCR-005
-    name: "Notifications"
-    route: "/notifications"
-    purpose: "View recent alerts and tenant invites"
-    requirements_covered:
-      - RQ-006
+    name: "Calendar"
+    route: "/calendar"
+    purpose: "Visual calendar showing all bookings and availability"
+    data_needed:
+      - events
+      - resources (rooms/properties)
 
   - id: SCR-006
     name: "Registration"
     route: "/register"
     purpose: "Allow new users to sign up"
-    requirements_covered:
-      - RQ-002
+    data_needed:
+      - name
+      - email
+      - password
+      - tenant_name (optional)
 
   - id: SCR-007
     name: "Property Detail"
     route: "/properties/{id}"
-    purpose: "Show details of a single property"
-    requirements_covered:
-      - RQ-003
+    purpose: "Show details of a single property and its rooms"
+    data_needed:
+      - property
+      - rooms
 
   - id: SCR-008
-    name: "Reporting"
-    route: "/reports/bookings"
-    purpose: "Aggregate and display bookings by source"
-    requirements_covered:
-      - RQ-005
+    name: "Bookings Index"
+    route: "/bookings"
+    purpose: "List and filter all bookings"
+    data_needed:
+      - bookings
+      - bookingStatuses
+      - BookingSources
+      - Rooms
+      - filters
+      - totals
+
+  - id: SCR-009
+    name: "Booking Edit"
+    route: "/bookings/{id}/edit"
+    purpose: "Edit an existing booking"
+    data_needed:
+      - booking
+      - rooms
+      - bookingStatuses
+      - BookingSources
+
+  - id: SCR-010
+    name: "Rooms Index"
+    route: "/rooms"
+    purpose: "List all rooms across properties"
+    data_needed:
+      - rooms
+
+  - id: SCR-011
+    name: "Room Create"
+    route: "/properties/{id}/rooms/create"
+    purpose: "Create a new room for a property"
+    data_needed:
+      - property
+      - types
+      - statuses
+
+  - id: SCR-012
+    name: "Customers Index"
+    route: "/customers"
+    purpose: "List and search customers"
+    data_needed:
+      - customers
+      - filters
+
+  - id: SCR-013
+    name: "Customer Create"
+    route: "/customers/create"
+    purpose: "Create a new customer"
+    data_needed:
+      - name
+      - email
+      - phone
+      - address
+
+  - id: SCR-014
+    name: "Booking Statuses Index"
+    route: "/booking-statuses"
+    purpose: "Manage booking statuses"
+    data_needed:
+      - bookingStatuses
+
+  - id: SCR-015
+    name: "Booking Sources Index"
+    route: "/booking-sources"
+    purpose: "Manage booking sources"
+    data_needed:
+      - bookingSources
+
+  - id: SCR-016
+    name: "Profile Edit"
+    route: "/profile"
+    purpose: "Update user profile and password"
+    data_needed:
+      - user
+      - mustVerifyEmail
+      - status
