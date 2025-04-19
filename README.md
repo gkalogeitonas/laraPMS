@@ -45,6 +45,22 @@ To set up and run the development environment, follow these steps:
 
 Now, you can access the application at `http://localhost:8000`.
 
+
+
+Deploy with docker
+
+```
+# Upload your Laravel project with these files
+# Then SSH into your VPS
+cp .env.example .env
+docker-compose up -d --build
+
+# After containers are running:
+docker-compose exec app composer install
+docker-compose exec app php artisan key:generate
+docker-compose exec app php artisan migrate
+```
+
 ## Multi-Tenant Property Management
 
 LARAPMS supports multiple tenants, allowing each tenant to manage their own set of properties, rooms, and bookings independently. Key features include handling bookings, booking statuses, and booking sources, while enforcing strict access control to ensure each tenant can only view or modify their own data.
