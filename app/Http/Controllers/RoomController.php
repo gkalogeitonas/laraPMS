@@ -21,10 +21,10 @@ class RoomController extends Controller
     public function index()
     {
         if (auth()->user()->hasActiveTenant()) {
-          $rooms = Room::where('tenant_id', auth()->user()->getActiveTenant()->id)->get();
-          return Inertia::render('Rooms/Index', ['rooms' => $rooms]);
-        }else{
-          return Inertia::render('Rooms/Index', ['rooms' => []]);
+            $rooms = Room::all(); // Global scope will filter by active tenant automatically
+            return Inertia::render('Rooms/Index', ['rooms' => $rooms]);
+        } else {
+            return Inertia::render('Rooms/Index', ['rooms' => []]);
         }
     }
 
@@ -48,8 +48,6 @@ class RoomController extends Controller
         $this->authorize('update', $property);
         $attributes = $this->validateRoom($request);
         $attributes['property_id'] = $property->id;
-        $attributes['tenant_id'] = auth()->user()->getActiveTenant()->id;;
-
         Room::create($attributes);
 
         return redirect()->route('properties.show', $property)->with('success', 'Room created successfully.');
@@ -101,6 +99,7 @@ class RoomController extends Controller
             'name' => 'required|string|min:3|max:255',
             'description' => 'nullable|string|min:5|max:255',
             'type' => 'required|in:' . implode(',', config('room.types')),
+            'price' => 'nullable|numeric|min:0', // Add price validation
         ]);
     }
 
