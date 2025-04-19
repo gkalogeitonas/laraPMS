@@ -32,8 +32,7 @@ class BookingController extends Controller
             ]);
         }
 
-        $query = auth()->user()->getActiveTenant()->bookings()->with('room', 'bookingStatus', 'bookingSource');
-
+        $query = Booking::with('room', 'bookingStatus', 'bookingSource');
 
         $query = $this->applyBookingFilters($query, $request);
 
@@ -47,7 +46,7 @@ class BookingController extends Controller
             'bookings' => $bookings,
             'bookingStatuses' => BookingStatus::all(),
             'BookingSources' => BookingSource::all(),
-            'Rooms' => auth()->user()->getActiveTenant()->rooms()->with('property')->get(),
+            'Rooms' => Room::with('property')->get(), // Simplified from auth()->user()->getActiveTenant()->rooms()
             'totals' => $totals,
             'filters' => request()->all('start_date', 'end_date', 'name', 'booking_status_id', 'booking_source_id', 'room_id'),
         ]);
@@ -73,7 +72,10 @@ class BookingController extends Controller
     {
         $room = Room::find($request->room_id);
         $attributes = $this->validateBooking($request);
-        $attributes['tenant_id'] = auth()->user()->getActiveTenant()->id;
+
+        // Remove this line, as tenant_id will be set automatically by the trait
+        // $attributes['tenant_id'] = auth()->user()->getActiveTenant()->id;
+
         Booking::create($attributes);
         return redirect()->route('bookings.index')->with('success', 'Booking created.');
     }
@@ -124,10 +126,10 @@ class BookingController extends Controller
 
     private function validateBooking(Request $request)
     {
-        //dd($request->all());
-        $booking_statuses = auth()->user()->getActiveTenant()->bookingStatuses;
-        $booking_sources = auth()->user()->getActiveTenant()->bookingSources;
-        $rooms = auth()->user()->getActiveTenant()->rooms;
+        $booking_statuses = BookingStatus::all(); // The global scope will filter by tenant
+        $booking_sources = BookingSource::all();  // The global scope will filter by tenant
+        $rooms = Room::all();                     // The global scope will filter by tenant
+
         return $request->validate([
             'room_id' => 'required|in:' . $rooms->pluck('id')->join(','),
             'name' => 'required|string|min:3|max:255',
