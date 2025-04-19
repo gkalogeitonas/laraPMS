@@ -28,6 +28,8 @@ it('can have many rooms', function () {
     // Create a tenant
     $tenant = Tenant::factory()->create();
 
+    $user = createAsUserWithActiveTenant($tenant);
+
     // Create rooms associated with the tenant
     $rooms = Room::factory()->count(3)->create(['tenant_id' => $tenant->id]);
 
