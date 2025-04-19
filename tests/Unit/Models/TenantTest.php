@@ -53,6 +53,7 @@ it('can have many customers', function () {
 it('can have Bookings', function () {
     // Create a tenant
     $tenant = Tenant::factory()->create();
+    $user = createAsUserWithActiveTenant($tenant);
 
     // Create a room associated with the tenant
     $room = Room::factory()->create(['tenant_id' => $tenant->id]);

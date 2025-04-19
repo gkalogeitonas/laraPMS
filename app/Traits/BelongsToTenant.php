@@ -16,6 +16,7 @@ trait BelongsToTenant
                 $model->tenant_id = session()->get('active_tenant_id');
             }
         });
+
     }
 
     public function tenant()

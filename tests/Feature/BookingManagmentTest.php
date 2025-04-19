@@ -212,10 +212,17 @@ it('can view the bookings in bookings Index', function () {
 it('can not view other tenant bookings in bookings Index', function () {
     $otherTenant = Tenant::factory()->create();
     $otherRoom = Room::factory()->create(['tenant_id' => $otherTenant->id]);
+
+    // Temporarily clear the active tenant session
+    session()->forget('active_tenant_id');
+
     $otherBooking = Booking::factory()->create([
         'tenant_id' => $otherTenant->id,
         'room_id' => $otherRoom->id,
     ]);
+
+    // Restore active tenant for the current user
+    session()->put('active_tenant_id', $this->tenant->id);
 
     $response = get(route('bookings.index'));
 
@@ -225,7 +232,6 @@ it('can not view other tenant bookings in bookings Index', function () {
         ->has('bookings.data', 0)
     );
 });
-
 
 it('calculates the total sum of selected bookings', function () {
     $booking1 = Booking::factory()->create([
