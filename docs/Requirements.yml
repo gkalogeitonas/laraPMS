@@ -29,8 +29,8 @@ requirements:
   - id: RQ-003
     requirement: "Property Management"
     description: "CRUD for properties, with listing and filtering capabilities."
-    user_story: "As a tenant admin, I want to manage my properties (create, edit, delete, list, filter)."
-    expected_behavior: "Admin UI provides forms and listings for properties, with filters by attributes (e.g., location)."
+    user_story: "As a tenant admin, I want to manage my properties (create, edit, delete, list)."
+    expected_behavior: "Admin UI provides forms and listings for properties."
     type: "Functional"
     status: "Implemented"
     screens:
@@ -42,8 +42,8 @@ requirements:
   - id: RQ-004
     requirement: "Room Management"
     description: "CRUD for rooms, with listing and filtering capabilities."
-    user_story: "As a tenant admin, I want to manage my rooms (create, edit, delete, list, filter)."
-    expected_behavior: "Admin UI provides forms and listings for rooms, with filters by attributes (e.g., capacity, type)."
+    user_story: "As a tenant admin, I want to manage my rooms (create, edit, delete, list)."
+    expected_behavior: "Admin UI provides forms and listings for rooms."
     type: "Functional"
     status: "Implemented"
     screens:
