@@ -249,13 +249,25 @@ screens:
   - id: SCR-020
     name: "Room Show"
     route: "/rooms/{id}"
-    purpose: "Show details of a single room"
-    implemented: true
+    purpose: "Show comprehensive details of a single room including full booking history and financial metrics"
+    implemented: false
     backend_data:
-      - room
-      - property
+      - room (with all fields)
+      - property (parent property details)
+      - bookings (all related bookings)
+      - bookingStatuses (for filtering)
+      - bookingSources (for filtering)
+      - roomStats (occupancy rate, total revenue, avg price)
     user_input:
-      - none
+      - booking_filters (date range, status, source)
+      - sort_options
+    components:
+      - RoomDetailsCard
+      - ActionButtons
+      - BookingFilters
+      - BookingList
+      - FinancialSummary
+      - BreadcrumbNavigation
 
   - id: SCR-021
     name: "Room Edit"

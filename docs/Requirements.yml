@@ -111,3 +111,15 @@ requirements:
     type: "Non‑functional"
     status: "Implemented"
     screens: []
+
+  - id: RQ-010
+    requirement: "Room Booking Management"
+    description: "View all bookings (past and upcoming) for a specific room along with financial metrics."
+    user_story: "As a property manager, I want to view all bookings for a specific room so I can understand its occupancy history and revenue generation."
+    expected_behavior: "The room details page displays a comprehensive list of past and upcoming bookings with filtering options, sorting capabilities, and financial summaries."
+    type: "Functional"
+    status: "Planned"
+    screens:
+      - SCR-020 # Room Show
+
+

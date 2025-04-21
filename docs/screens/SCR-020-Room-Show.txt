@@ -1,0 +1,32 @@
++------------------------------------+
+| Room: [Room Name]   [Edit] [Delete]|
++------------------------------------+
+| Breadcrumbs: Dashboard > Properties > Property > Room
++------------------------------------+
+| ROOM DETAILS CARD                  |
+| Name: {name}                       |
+| Type: {type}                       |
+| Status: {status}                   |
+| Description: {description}         |
+| Property: {property.name} (link)   |
+| Created: {created_at}              |
+| [Create Booking]                   |
++------------------------------------+
+|                                    |
+| BOOKINGS                           |
++------------------------------------+
+| Filters: [Date Range] [Status] [Source] [Upcoming | Past]
++------------------------------------+
+| Booking List:                      |
+| - Guest: {name}                    |
+| - Dates: {check_in} - {check_out}  |
+| - Status: {status}                 |
+| - Price: {price}                   |
+| ...                               |
++------------------------------------+
+| Summary:                           |
+| - Total Revenue: $X,XXX            |
+| - Bookings: XX                     |
+| - Avg. Rate: $XXX                  |
+| - Occupancy: XX%                   |
++------------------------------------+
