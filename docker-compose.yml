@@ -1,0 +1,60 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: larapms_app
+    volumes:
+      - ./:/var/www
+    environment:
+      APP_ENV: production
+      APP_DEBUG: false
+      DB_CONNECTION: ${DB_CONNECTION}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - db
+    networks:
+      - larapms_net
+      #- proxy
+
+  web:
+    image: nginx:alpine
+    container_name: larapms_web
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8080:80"
+    environment:
+      VIRTUAL_HOST: larapms.local
+    depends_on:
+      - app
+    networks:
+      - larapms_net
+      #- proxy
+
+  db:
+    image: mysql:8
+    container_name: larapms_db
+    restart: unless-stopped
+    volumes:
+      - larapms_db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - larapms_net
+
+networks:
+  larapms_net:
+  proxy:
+    external: true
+
+volumes:
+  larapms_db_data:
