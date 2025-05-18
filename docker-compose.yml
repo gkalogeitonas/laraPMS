@@ -7,8 +7,8 @@ services:
     volumes:
       - ./:/var/www
     environment:
-      APP_ENV: production
-      APP_DEBUG: false
+      APP_ENV: "production"
+      APP_DEBUG: "false"
       DB_CONNECTION: ${DB_CONNECTION}
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
@@ -19,7 +19,7 @@ services:
       - db
     networks:
       - larapms_net
-      #- proxy
+      - proxy
 
   web:
     image: nginx:alpine
@@ -27,15 +27,24 @@ services:
     volumes:
       - ./:/var/www
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
-    ports:
-      - "8080:80"
-    environment:
-      VIRTUAL_HOST: larapms.local
+    # ports:  # Comment this out or remove when using Traefik
+    #  - "8080:80"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.larapms.rule=Host(`larapms.kalogeitonas.xyz`)"
+      - "traefik.http.routers.larapms.entrypoints=websecure"
+      - "traefik.http.routers.larapms.tls.certresolver=letsencrypt"
+      - "traefik.http.services.larapms.loadbalancer.server.port=80"
+      # Add these headers to ensure proper HTTPS handling
+      - "traefik.http.middlewares.larapms-headers.headers.customResponseHeaders.X-Forwarded-Proto=https"
+      - "traefik.http.middlewares.larapms-headers.headers.frameDeny=true"
+      - "traefik.http.middlewares.larapms-headers.headers.sslRedirect=true"
+      - "traefik.http.routers.larapms.middlewares=larapms-headers"
     depends_on:
       - app
     networks:
       - larapms_net
-      #- proxy
+      - proxy
 
   db:
     image: mysql:8

@@ -33,6 +33,16 @@ chmod -R 775 /var/www/bootstrap/cache\n\
 chown -R www-data:www-data /var/www/storage\n\
 chown -R www-data:www-data /var/www/bootstrap/cache\n\
 \n\
+# Install and build frontend if needed\n\
+if [ -f /var/www/package.json ] && [ ! -d /var/www/node_modules ]; then\n\
+  npm install\n\
+fi\n\
+\n\
+# Build frontend assets if package.json exists\n\
+if [ -f /var/www/package.json ]; then\n\
+  npm run build\n\
+fi\n\
+\n\
 # Run Laravel optimizations\n\
 if [ -f /var/www/artisan ]; then\n\
   php /var/www/artisan config:cache\n\
