@@ -23,8 +23,8 @@ let form = useForm({
     customer_id: props.booking.customer_id || "",
     booking_status_id: props.booking.booking_status_id || "",
     booking_source_id: props.booking.booking_source_id || "",
-    start_date: props.booking.start_date || "",
-    end_date: props.booking.end_date || "",
+    check_in: props.booking.check_in || "",
+    check_out: props.booking.check_out || "",
     total_guests: props.booking.total_guests || "",
     price: props.booking.price || "",
     room_id: props.booking.room_id || ""
