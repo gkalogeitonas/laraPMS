@@ -25,8 +25,8 @@ let form = useForm({
     customer_id: "",
     booking_status_id: "",
     booking_source_id: "",
-    start_date: "",
-    end_date: "",
+    check_in: "",
+    check_out: "",
     total_guests: "",
     price: "",
     room_id: ""

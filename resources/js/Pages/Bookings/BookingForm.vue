@@ -26,14 +26,14 @@
     <hr class="my-8" />
     <div class="grid grid-cols-2 gap-4 mt-4">
         <div>
-            <InputLabel for="start_date" value="Start Date" />
-            <TextInput v-model="form.start_date" id="start_date" type="date" />
-            <InputError :message="form.errors.start_date" />
+            <InputLabel for="check_in" value="Start Date" />
+            <TextInput v-model="form.check_in" id="check_in" type="date" />
+            <InputError :message="form.errors.check_in" />
         </div>
         <div>
-            <InputLabel for="end_date" value="End Date" />
-            <TextInput v-model="form.end_date" id="end_date" type="date" />
-            <InputError :message="form.errors.end_date" />
+            <InputLabel for="check_out" value="End Date" />
+            <TextInput v-model="form.check_out" id="check_out" type="date" />
+            <InputError :message="form.errors.check_out" />
         </div>
     </div>
     <div class="grid grid-cols-3 gap-4 mt-4">
