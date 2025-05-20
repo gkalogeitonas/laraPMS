@@ -1,5 +1,5 @@
 <template>
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
             <InputLabel for="customer_id" value="Customer" />
             <Autocomplete apiEndpoint="/customer/search"  paramName="search" @update:customer="updateCustomer" />
@@ -11,7 +11,7 @@
             <InputError :message="form.errors.name" />
         </div>
     </div>
-    <div class="grid grid-cols-2 gap-4 mt-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         <div>
             <InputLabel for="phone" value="Phone" />
             <TextInput v-model="form.phone" id="phone" type="text" />
@@ -24,7 +24,7 @@
         </div>
     </div>
     <hr class="my-8" />
-    <div class="grid grid-cols-2 gap-4 mt-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         <div>
             <InputLabel for="check_in" value="Start Date" />
             <TextInput v-model="form.check_in" id="check_in" type="date" />
@@ -36,7 +36,7 @@
             <InputError :message="form.errors.check_out" />
         </div>
     </div>
-    <div class="grid grid-cols-3 gap-4 mt-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
         <div>
             <InputLabel for="room_id" value="Room" />
             <select v-model="form.room_id" id="room_id" name="room_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
@@ -58,7 +58,7 @@
             <InputError :message="form.errors.total_guests" />
         </div>
     </div>
-    <div class="grid grid-cols-2 gap-4 mt-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         <div>
             <InputLabel for="status" value="Status" />
             <select v-model="form.booking_status_id" id="bookingStatus" name="bookingStatus" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
@@ -118,3 +118,18 @@ const updateCustomer = (customer) => {
   props.form.email = customer.email;
 };
 </script>
+
+<style scoped>
+@media (max-width: 768px) {
+  /* Increase touch targets on mobile */
+  select, input[type="date"], input[type="text"], input[type="email"], input[type="number"] {
+    min-height: 44px;
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+
+  /* Add more padding between form sections */
+  .mt-4 {
+    margin-top: 1.25rem;
+  }
+}
+</style>
