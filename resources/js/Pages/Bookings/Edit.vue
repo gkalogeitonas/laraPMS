@@ -5,6 +5,7 @@ import { useForm } from "@inertiajs/vue3";
 
 // Import the DangerButton component
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import DangerButton from "@/Components/DangerButton.vue";
 import NavLink from "@/Components/NavLink.vue";
 import BookingForm from "@/Pages/Bookings/BookingForm.vue";
 
@@ -33,6 +34,12 @@ let form = useForm({
 let submit = () => {
     form.put(route('bookings.update', props.booking.id));
 };
+
+const deleteBooking = () => {
+    if (confirm('Are you sure you want to delete this booking?')) {
+        form.delete(route('bookings.destroy', props.booking.id));
+    }
+};
 </script>
 
 <template>
@@ -48,17 +55,31 @@ let submit = () => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <form @submit.prevent="submit">
                     <BookingForm :form="form" :rooms="rooms" :bookingStatuses="bookingStatuses" :BookingSources="BookingSources" />
-                    <div class="flex items-center justify-end mt-4">
-                        <NavLink :href="route('bookings.index')" class=""
-                            >Cancel</NavLink
-                        >
-                        <PrimaryButton
-                            class="ms-4"
+                    <div class="flex items-center justify-between mt-4">
+                        <DangerButton
+                            type="button"
+                            @click="deleteBooking"
                             :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing"
+                            class="hidden md:block"
                         >
-                            Update Booking
-                        </PrimaryButton>
+                            Delete Booking
+                        </DangerButton>
+                        <!-- Empty div for small screens to ensure layout consistency -->
+                        <div class="md:hidden"></div>
+
+                        <div class="flex items-center">
+                            <NavLink :href="route('bookings.index')" class=""
+                                >Cancel</NavLink
+                            >
+                            <PrimaryButton
+                                class="ms-4"
+                                :class="{ 'opacity-25': form.processing }"
+                                :disabled="form.processing"
+                            >
+                                Update Booking
+                            </PrimaryButton>
+                        </div>
                     </div>
                 </form>
             </div>
