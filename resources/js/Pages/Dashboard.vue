@@ -209,7 +209,7 @@ const renderChart = () => {
                                         <div class="bg-red-100 text-red-800 px-2 py-1 rounded text-xs font-medium mr-2">
                                             {{ formatDate(checkout.check_out) }}
                                         </div>
-                                        <span class="font-medium">{{ checkout.customer_name }}</span>
+                                        <span class="font-medium">{{ checkout.name }}</span>
                                     </div>
                                     <div class="text-sm text-gray-600 mt-1">
                                         {{ checkout.room?.name }} in {{ checkout.room?.property?.name }}
@@ -237,7 +237,7 @@ const renderChart = () => {
                                         <div class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium mr-2">
                                             {{ formatDate(checkin.check_in) }}
                                         </div>
-                                        <span class="font-medium">{{ checkin.customer_name }}</span>
+                                        <span class="font-medium">{{ checkin.name }}</span>
                                     </div>
                                     <div class="text-sm text-gray-600 mt-1">
                                         {{ checkin.room?.name }} in {{ checkin.room?.property?.name }}
@@ -274,7 +274,7 @@ const renderChart = () => {
                             <div v-for="booking in recentBookings" :key="booking.id" class="border-b border-gray-200 pb-2 last:border-b-0 last:pb-0">
                                 <Link :href="`/bookings/${booking.id}`" class="block hover:bg-gray-50 py-2">
                                     <div class="flex justify-between">
-                                        <span class="font-medium">{{ booking.customer_name }}</span>
+                                        <span class="font-medium">{{ booking.name }}</span>
                                         <span :class="`px-2 py-1 rounded-full text-xs ${booking.booking_status?.color ? 'bg-[' + booking.booking_status.color + '10]' : 'bg-gray-100'}`">
                                             {{ booking.booking_status?.name || 'Unknown' }}
                                         </span>
