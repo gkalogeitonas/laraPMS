@@ -8,12 +8,14 @@ const props = defineProps({
     recentBookings: Array,
     propertyStatistics: Array,
     upcomingCheckouts: Array,
+    upcomingCheckins: Array,
     occupancyRate: Number,
     totalRevenue: Number,
     totalProperties: Number,
     totalRooms: Number,
     totalCustomers: Number,
     bookingsChart: Array,
+    roomStatistics: Array,
     hasActiveTenant: Boolean
 });
 
@@ -191,8 +193,67 @@ const renderChart = () => {
                 </div>
             </div>
 
+            <!-- Upcoming Checkouts & Check-ins -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <!-- Upcoming Checkouts -->
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-4">Upcoming Checkouts</h3>
+                        <div class="space-y-3">
+                            <div v-if="upcomingCheckouts.length === 0" class="text-gray-500">
+                                No upcoming checkouts in the next 7 days
+                            </div>
+                            <div v-for="checkout in upcomingCheckouts" :key="checkout.id" class="border-b border-gray-200 pb-2 last:border-b-0 last:pb-0">
+                                <Link :href="`/bookings/${checkout.id}`" class="block hover:bg-gray-50 py-2">
+                                    <div class="flex items-center">
+                                        <div class="bg-red-100 text-red-800 px-2 py-1 rounded text-xs font-medium mr-2">
+                                            {{ formatDate(checkout.check_out) }}
+                                        </div>
+                                        <span class="font-medium">{{ checkout.customer_name }}</span>
+                                    </div>
+                                    <div class="text-sm text-gray-600 mt-1">
+                                        {{ checkout.room?.name }} in {{ checkout.room?.property?.name }}
+                                    </div>
+                                </Link>
+                            </div>
+                        </div>
+                        <Link href="/bookings" class="text-blue-600 hover:text-blue-800 text-sm font-medium block text-center mt-4">
+                            View All Bookings
+                        </Link>
+                    </div>
+                </div>
+
+                <!-- Upcoming Check-ins -->
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-4">Upcoming Check-ins</h3>
+                        <div class="space-y-3">
+                            <div v-if="upcomingCheckins.length === 0" class="text-gray-500">
+                                No upcoming check-ins in the next 7 days
+                            </div>
+                            <div v-for="checkin in upcomingCheckins" :key="checkin.id" class="border-b border-gray-200 pb-2 last:border-b-0 last:pb-0">
+                                <Link :href="`/bookings/${checkin.id}`" class="block hover:bg-gray-50 py-2">
+                                    <div class="flex items-center">
+                                        <div class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium mr-2">
+                                            {{ formatDate(checkin.check_in) }}
+                                        </div>
+                                        <span class="font-medium">{{ checkin.customer_name }}</span>
+                                    </div>
+                                    <div class="text-sm text-gray-600 mt-1">
+                                        {{ checkin.room?.name }} in {{ checkin.room?.property?.name }}
+                                    </div>
+                                </Link>
+                            </div>
+                        </div>
+                        <Link href="/bookings" class="text-blue-600 hover:text-blue-800 text-sm font-medium block text-center mt-4">
+                            View All Bookings
+                        </Link>
+                    </div>
+                </div>
+            </div>
+
             <!-- Graph & Recent Bookings -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-6">
                 <!-- Bookings Chart -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg lg:col-span-2">
                     <div class="p-6">
@@ -235,10 +296,9 @@ const renderChart = () => {
                 </div>
             </div>
 
-            <!-- Property Statistics & Upcoming Checkouts -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <!-- Property Statistics -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg lg:col-span-2">
+            <!-- Property Statistics -->
+            <div class="grid grid-cols-1 gap-4 mt-6">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <h3 class="text-lg font-semibold mb-4">Property Statistics</h3>
                         <div class="overflow-x-auto">
@@ -297,32 +357,93 @@ const renderChart = () => {
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Upcoming Checkouts -->
+            <!-- Room Statistics -->
+            <div class="grid grid-cols-1 gap-4 mt-6">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <h3 class="text-lg font-semibold mb-4">Upcoming Checkouts</h3>
-                        <div class="space-y-3">
-                            <div v-if="upcomingCheckouts.length === 0" class="text-gray-500">
-                                No upcoming checkouts in the next 7 days
-                            </div>
-                            <div v-for="checkout in upcomingCheckouts" :key="checkout.id" class="border-b border-gray-200 pb-2 last:border-b-0 last:pb-0">
-                                <Link :href="`/bookings/${checkout.id}`" class="block hover:bg-gray-50 py-2">
-                                    <div class="flex items-center">
-                                        <div class="bg-red-100 text-red-800 px-2 py-1 rounded text-xs font-medium mr-2">
-                                            {{ formatDate(checkout.check_out) }}
-                                        </div>
-                                        <span class="font-medium">{{ checkout.customer_name }}</span>
-                                    </div>
-                                    <div class="text-sm text-gray-600 mt-1">
-                                        {{ checkout.room?.name }} in {{ checkout.room?.property?.name }}
-                                    </div>
-                                </Link>
-                            </div>
+                        <h3 class="text-lg font-semibold mb-4">Room Statistics</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead>
+                                    <tr>
+                                        <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Room
+                                        </th>
+                                        <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Property
+                                        </th>
+                                        <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Type
+                                        </th>
+                                        <th class="px-4 py-3 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Rate
+                                        </th>
+                                        <th class="px-4 py-3 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Avg. Rate
+                                        </th>
+                                        <th class="px-4 py-3 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Status
+                                        </th>
+                                        <th class="px-4 py-3 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            30d Occupancy
+                                        </th>
+                                        <th class="px-4 py-3 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Next Booking
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr v-if="roomStatistics.length === 0">
+                                        <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
+                                            No rooms found
+                                        </td>
+                                    </tr>
+                                    <tr v-for="room in roomStatistics" :key="room.id">
+                                        <td class="px-4 py-4 whitespace-nowrap">
+                                            <Link :href="`/rooms/${room.id}`" class="text-blue-600 hover:text-blue-900">
+                                                {{ room.name }}
+                                            </Link>
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm">
+                                            {{ room.propertyName }}
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm">
+                                            {{ room.type }}
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-center text-sm">
+                                            {{ formatCurrency(room.price) }}
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-center text-sm">
+                                            {{ formatCurrency(room.averageRate) }}
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-center">
+                                            <span :class="room.currentlyOccupied ?
+                                                'bg-red-100 text-red-800' :
+                                                'bg-green-100 text-green-800'"
+                                                class="px-2 py-1 rounded-full text-xs">
+                                                {{ room.currentlyOccupied ? 'Occupied' : 'Available' }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-center">
+                                            <div class="flex items-center justify-center">
+                                                <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                                                    <div class="bg-blue-600 h-2 rounded-full" :style="`width: ${room.occupancyRate}%`"></div>
+                                                </div>
+                                                <span>{{ room.occupancyRate }}%</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-center text-sm">
+                                            <span v-if="room.nextBookingDate">
+                                                {{ formatDate(room.nextBookingDate) }}
+                                            </span>
+                                            <span v-else class="text-gray-500">-</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <Link href="/bookings" class="text-blue-600 hover:text-blue-800 text-sm font-medium block text-center mt-4">
-                            View All Bookings
-                        </Link>
                     </div>
                 </div>
             </div>

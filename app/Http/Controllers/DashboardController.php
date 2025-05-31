@@ -20,12 +20,14 @@ class DashboardController extends Controller
                 'recentBookings' => [],
                 'propertyStatistics' => [],
                 'upcomingCheckouts' => [],
+                'upcomingCheckins' => [],
                 'occupancyRate' => 0,
                 'totalRevenue' => 0,
                 'totalProperties' => 0,
                 'totalRooms' => 0,
                 'totalCustomers' => 0,
                 'bookingsChart' => [],
+                'roomStatistics' => [],
                 'hasActiveTenant' => false
             ]);
         }
@@ -73,6 +75,13 @@ class DashboardController extends Controller
             ->orderBy('check_out')
             ->get();
 
+        // Upcoming check-ins (next 7 days)
+        $upcomingCheckins = Booking::where('tenant_id', $tenant->id)
+            ->whereBetween('check_in', [$today, $nextWeek])
+            ->with(['room.property'])
+            ->orderBy('check_in')
+            ->get();
+
         // Overall statistics
         $totalProperties = $properties->count();
         $totalRooms = Room::where('tenant_id', $tenant->id)->count();
@@ -101,16 +110,21 @@ class DashboardController extends Controller
         // Bookings chart data (last 6 months)
         $bookingsChart = $this->getBookingsChartData($tenant->id);
 
+        // Room statistics
+        $roomStatistics = $this->getRoomStatistics($tenant->id);
+
         return Inertia::render('Dashboard', [
             'recentBookings' => $recentBookings,
             'propertyStatistics' => $propertyStatistics,
             'upcomingCheckouts' => $upcomingCheckouts,
+            'upcomingCheckins' => $upcomingCheckins,
             'occupancyRate' => $occupancyRate,
             'totalRevenue' => $totalRevenue,
             'totalProperties' => $totalProperties,
             'totalRooms' => $totalRooms,
             'totalCustomers' => $totalCustomers,
             'bookingsChart' => $bookingsChart,
+            'roomStatistics' => $roomStatistics,
             'hasActiveTenant' => true
         ]);
     }
@@ -137,5 +151,69 @@ class DashboardController extends Controller
         }
 
         return $data;
+    }
+
+    private function getRoomStatistics($tenantId)
+    {
+        // Get all rooms for the tenant
+        $rooms = Room::where('tenant_id', $tenantId)
+            ->with(['property', 'bookings' => function($query) {
+                $query->where('check_out', '>', Carbon::today());
+            }])
+            ->get();
+
+        $roomStats = [];
+        $today = Carbon::today();
+
+        foreach ($rooms as $room) {
+            // Calculate occupancy rate for the room over the last 30 days
+            $thirtyDaysAgo = Carbon::today()->subDays(30);
+            $daysOccupied = 0;
+
+            for ($date = $thirtyDaysAgo->copy(); $date->lte($today); $date->addDay()) {
+                $isOccupied = $room->bookings->contains(function($booking) use ($date) {
+                    $checkIn = Carbon::parse($booking->check_in);
+                    $checkOut = Carbon::parse($booking->check_out);
+                    return $date->between($checkIn, $checkOut->subDay());
+                });
+
+                if ($isOccupied) {
+                    $daysOccupied++;
+                }
+            }
+
+            $occupancyRate = round(($daysOccupied / 30) * 100);
+
+            // Calculate average nightly rate from bookings
+            $averageRate = $room->bookings->avg('price') ?? $room->price;
+
+            // Check if the room is currently occupied
+            $currentlyOccupied = $room->bookings->contains(function($booking) use ($today) {
+                $checkIn = Carbon::parse($booking->check_in);
+                $checkOut = Carbon::parse($booking->check_out);
+                return $today->between($checkIn, $checkOut->subDay());
+            });
+
+            // Get next booking if any
+            $nextBooking = $room->bookings
+                ->where('check_in', '>', $today->format('Y-m-d'))
+                ->sortBy('check_in')
+                ->first();
+
+            $roomStats[] = [
+                'id' => $room->id,
+                'name' => $room->name,
+                'propertyName' => $room->property->name,
+                'type' => $room->type,
+                'price' => $room->price,
+                'occupancyRate' => $occupancyRate,
+                'averageRate' => $averageRate,
+                'currentlyOccupied' => $currentlyOccupied,
+                'nextBookingDate' => $nextBooking ? $nextBooking->check_in : null,
+                'nextCheckoutDate' => $nextBooking ? $nextBooking->check_out : null,
+            ];
+        }
+
+        return collect($roomStats)->sortByDesc('occupancyRate')->values()->all();
     }
 }
