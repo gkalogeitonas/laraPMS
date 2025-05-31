@@ -18,9 +18,9 @@ function toggleSettingsMenu() {
         <ResponsiveNavLink :href="route('properties.index')" :active="route().current('properties')">
             Properties
         </ResponsiveNavLink>
-        <ResponsiveNavLink :href="route('rooms.index')" :active="route().current('rooms')">
+        <!-- <ResponsiveNavLink :href="route('rooms.index')" :active="route().current('rooms')">
             Rooms
-        </ResponsiveNavLink>
+        </ResponsiveNavLink> -->
         <ResponsiveNavLink :href="route('customers.index')" :active="route().current('rooms')">
             Customers
         </ResponsiveNavLink>
