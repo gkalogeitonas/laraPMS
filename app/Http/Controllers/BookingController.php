@@ -56,12 +56,22 @@ class BookingController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
+        // Check if room_id is provided and if it belongs to the active tenant
+        $preselectedRoom = null;
+        if ($request->has('room_id')) {
+            $preselectedRoom = Room::find($request->room_id);
+            if ($preselectedRoom && $preselectedRoom->tenant_id !== auth()->user()->getActiveTenant()->id) {
+                $preselectedRoom = null; // Reset if room doesn't belong to active tenant
+            }
+        }
+
         return Inertia::render('Bookings/Create', [
             'rooms' => auth()->user()->getActiveTenant()->rooms,
             'bookingStatuses' => BookingStatus::all(),
             'BookingSources' => BookingSource::all(),
+            'preselectedRoom' => $preselectedRoom, // Pass the preselected room to the view
         ]);
     }
 

@@ -57,7 +57,102 @@ class RoomController extends Controller
      */
     public function show(Room $room)
     {
-        return Inertia::render('Rooms/Show', ['room' => $room]);
+        // Load the room with the property and bookings
+        $room = $room->load(['property', 'bookings.bookingStatus', 'bookings.bookingSource']);
+
+        // Get current booking if the room is occupied
+        $today = now()->format('Y-m-d');
+        $currentBooking = $room->bookings()
+            ->where('check_in', '<=', $today)
+            ->where('check_out', '>', $today)
+            ->with(['bookingStatus'])
+            ->first();
+
+        // Get upcoming bookings
+        $upcomingBookings = $room->bookings()
+            ->where('check_in', '>', $today)
+            ->orderBy('check_in')
+            ->limit(5)
+            ->get()
+            ->map(function ($booking) {
+                // Ensure dates are in Y-m-d format for consistency
+                $booking->check_in = \Carbon\Carbon::parse($booking->check_in)->format('Y-m-d');
+                $booking->check_out = \Carbon\Carbon::parse($booking->check_out)->format('Y-m-d');
+                return $booking;
+            });
+
+        // Get recent bookings for this room
+        $recentBookings = $room->bookings()
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(function ($booking) {
+                // Ensure dates are in Y-m-d format for consistency
+                $booking->check_in = \Carbon\Carbon::parse($booking->check_in)->format('Y-m-d');
+                $booking->check_out = \Carbon\Carbon::parse($booking->check_out)->format('Y-m-d');
+                return $booking;
+            });
+
+        // Calculate occupancy rate for the last 30 days
+        $thirtyDaysAgo = \Carbon\Carbon::today()->subDays(30);
+        $totalDaysOccupied = 0;
+
+        for ($date = $thirtyDaysAgo->copy(); $date->lte(\Carbon\Carbon::today()); $date->addDay()) {
+            $isOccupied = $room->bookings->contains(function($booking) use ($date) {
+                $checkIn = \Carbon\Carbon::parse($booking->check_in);
+                $checkOut = \Carbon\Carbon::parse($booking->check_out);
+                return $date->between($checkIn, $checkOut->subDay());
+            });
+
+            if ($isOccupied) {
+                $totalDaysOccupied++;
+            }
+        }
+
+        $occupancyRate = round(($totalDaysOccupied / 30) * 100);
+
+        // Calculate average rate from bookings in the last 6 months
+        $sixMonthsAgo = now()->subMonths(6);
+        $averageRate = $room->bookings()
+            ->where('created_at', '>=', $sixMonthsAgo)
+            ->avg('price') ?? 0;
+
+        // Calculate total revenue from this room
+        $totalRevenue = $room->bookings()->sum('price');
+
+        // Calculate revenue for current month
+        $currentMonthRevenue = $room->bookings()
+            ->whereYear('created_at', now()->year)
+            ->whereMonth('created_at', now()->month)
+            ->sum('price');
+
+        // Get booking trends for this room (monthly)
+        $bookingTrends = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $month = now()->subMonths($i);
+            $bookingsCount = $room->bookings()
+                ->whereYear('created_at', $month->year)
+                ->whereMonth('created_at', $month->month)
+                ->count();
+
+            $bookingTrends[] = [
+                'month' => $month->format('M'),
+                'count' => $bookingsCount
+            ];
+        }
+
+        return Inertia::render('Rooms/Show', [
+            'room' => $room,
+            'currentBooking' => $currentBooking,
+            'upcomingBookings' => $upcomingBookings,
+            'recentBookings' => $recentBookings,
+            'occupancyRate' => $occupancyRate,
+            'averageRate' => $averageRate,
+            'totalRevenue' => $totalRevenue,
+            'currentMonthRevenue' => $currentMonthRevenue,
+            'bookingTrends' => $bookingTrends,
+            'isOccupied' => $currentBooking !== null
+        ]);
     }
 
     /**
