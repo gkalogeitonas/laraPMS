@@ -19,7 +19,7 @@ class PropertySeeder extends Seeder
             'id' => 1,
             'name' => 'gkalog',
             'email' => 'gkalog2@gmail.com',
-            'password' => Hash::make('37014'),
+            'password' => Hash::make('password'),
         ]);
         $myUser->tenants()->attach($tenant->id);
         echo "User created with id: " . $myUser->id . "\n";
