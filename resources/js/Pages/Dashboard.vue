@@ -1,8 +1,9 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { Link } from '@inertiajs/vue3';
+import Chart from 'chart.js/auto';
 
 const props = defineProps({
     recentBookings: Array,
@@ -42,60 +43,69 @@ onMounted(() => {
     }
 });
 
+onBeforeUnmount(() => {
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+});
+
 const renderChart = () => {
     const ctx = document.getElementById('bookingsChart');
     if (!ctx) return;
 
-    // If you're using Chart.js or any other charting library,
-    // you would initialize it here with the data from props.bookingsChart
-    // For this example, we'll just use a simple representation
-
     const months = props.bookingsChart.map(item => item.month);
     const counts = props.bookingsChart.map(item => item.count);
 
-    // This is a placeholder for actual chart rendering
-    const chartContainer = document.getElementById('chartContainer');
-    if (chartContainer) {
-        chartContainer.innerHTML = '';
-
-        const chartHeader = document.createElement('div');
-        chartHeader.className = 'flex justify-between items-center mb-2';
-        chartHeader.innerHTML = '<h3 class="text-lg font-semibold">Bookings by Month</h3>';
-        chartContainer.appendChild(chartHeader);
-
-        const chartBars = document.createElement('div');
-        chartBars.className = 'flex items-end h-40 space-x-2';
-
-        const maxCount = Math.max(...counts);
-
-        counts.forEach((count, index) => {
-            const height = count > 0 ? (count / maxCount) * 100 : 5;
-
-            const barContainer = document.createElement('div');
-            barContainer.className = 'flex flex-col items-center flex-1';
-
-            const bar = document.createElement('div');
-            bar.className = 'bg-blue-500 w-full rounded-t';
-            bar.style.height = `${height}%`;
-            bar.title = `${count} bookings in ${months[index]}`;
-
-            const label = document.createElement('div');
-            label.className = 'text-xs mt-1';
-            label.innerText = months[index];
-
-            const value = document.createElement('div');
-            value.className = 'text-xs font-semibold';
-            value.innerText = count;
-
-            barContainer.appendChild(value);
-            barContainer.appendChild(bar);
-            barContainer.appendChild(label);
-
-            chartBars.appendChild(barContainer);
-        });
-
-        chartContainer.appendChild(chartBars);
+    // Destroy any existing chart
+    if (chartInstance) {
+        chartInstance.destroy();
     }
+
+    // Create new chart
+    chartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: months,
+            datasets: [{
+                label: 'Number of Bookings',
+                data: counts,
+                backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                borderColor: 'rgba(59, 130, 246, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Monthly Bookings'
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItem) {
+                            return tooltipItem[0].label;
+                        },
+                        label: function(context) {
+                            return `${context.parsed.y} bookings`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        }
+    });
 };
 </script>
 
@@ -257,8 +267,9 @@ const renderChart = () => {
                 <!-- Bookings Chart -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg lg:col-span-2">
                     <div class="p-6">
-                        <div id="chartContainer" class="h-64">
-                            <!-- Chart will be rendered here by the JavaScript -->
+                        <h3 class="text-lg font-semibold mb-4">Monthly Bookings</h3>
+                        <div class="h-64">
+                            <canvas id="bookingsChart"></canvas>
                         </div>
                     </div>
                 </div>

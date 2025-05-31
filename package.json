@@ -20,6 +20,7 @@
     },
     "dependencies": {
         "@heroicons/vue": "^2.1.5",
+        "chart.js": "^4.4.9",
         "daypilot-pro-vue": "https://npm.daypilot.org/daypilot-pro-vue/trial/2023.4.5801.tar.gz",
         "element-plus": "^2.8.4"
     }
