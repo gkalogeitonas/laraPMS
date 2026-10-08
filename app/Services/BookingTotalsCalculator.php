@@ -30,7 +30,7 @@ class BookingTotalsCalculator
             $effectiveStartDate = $this->getEffectiveStartDate($bookingStartDate);
             $effectiveEndDate = $this->getEffectiveEndDate($bookingEndDate);
 
-            $daysInRange = $effectiveStartDate->diffInDays($effectiveEndDate, false);
+            $daysInRange = (int) $effectiveStartDate->diffInDays($effectiveEndDate, false);
 
             if ($daysInRange > 0) {
                 $totalDays += $daysInRange;
