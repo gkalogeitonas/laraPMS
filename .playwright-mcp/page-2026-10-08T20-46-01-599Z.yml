@@ -1,0 +1,188 @@
+- generic [active] [ref=f1e1]:
+  - generic [ref=f1e3]:
+    - generic [ref=f1e4]:
+      - button [ref=f1e5] [cursor=pointer]
+      - generic [ref=f1e8]:
+        - link [ref=f1e10] [cursor=pointer]:
+          - /url: https://larapms.ddev.site/dashboard
+        - generic [ref=f1e13]:
+          - link "Dashboard" [ref=f1e14] [cursor=pointer]:
+            - /url: https://larapms.ddev.site/dashboard
+          - link "Properties" [ref=f1e15] [cursor=pointer]:
+            - /url: https://larapms.ddev.site/properties
+          - link "Customers" [ref=f1e16] [cursor=pointer]:
+            - /url: https://larapms.ddev.site/customers
+          - link "Calendar" [ref=f1e17] [cursor=pointer]:
+            - /url: https://larapms.ddev.site/calendar
+          - link "Bookings" [ref=f1e18] [cursor=pointer]:
+            - /url: https://larapms.ddev.site/bookings
+          - generic [ref=f1e19] [cursor=pointer]: Settings
+    - generic [ref=f1e21]:
+      - banner [ref=f1e22]:
+        - generic [ref=f1e25]:
+          - text: "Switch Company:"
+          - combobox "Switch Company:" [ref=f1e26]:
+            - option "Chrisanthi Studios" [selected]
+        - button "gkalog" [ref=f1e31] [cursor=pointer]
+      - generic [ref=f1e34]:
+        - heading "Bookings" [level=2] [ref=f1e35]
+        - link "Create Booking" [ref=f1e36] [cursor=pointer]:
+          - /url: https://larapms.ddev.site/bookings/create
+      - generic [ref=f1e40]:
+        - generic [ref=f1e42]:
+          - generic [ref=f1e43]:
+            - generic [ref=f1e44]:
+              - generic [ref=f1e45]: Search
+              - textbox "Name..." [ref=f1e46]
+            - generic [ref=f1e47]:
+              - generic [ref=f1e48]: Status
+              - combobox "Status" [ref=f1e49]:
+                - option "Select a status" [selected]
+                - option "pending"
+                - option "confirmed"
+                - option "checked in"
+                - option "checked out"
+            - generic [ref=f1e50]:
+              - generic [ref=f1e51]: Source
+              - combobox "Source" [ref=f1e52]:
+                - option "Select a source" [selected]
+                - option "Booking.com"
+                - option "Individual"
+            - generic [ref=f1e53]:
+              - generic [ref=f1e54]: Room
+              - combobox [ref=f1e55]:
+                - option "Select a room" [selected]
+                - option "Room 64"
+                - option "Room 76"
+                - option "Room 38"
+                - option "Room 96"
+                - option "Room 72"
+                - option "Room 23"
+                - option "Room 37"
+                - option "Room 21"
+          - generic [ref=f1e57]:
+            - generic [ref=f1e58]: Date Range
+            - generic [ref=f1e59]:
+              - textbox "Start date" [ref=f1e63]
+              - generic [ref=f1e64]: To
+              - textbox "End date" [ref=f1e65]
+        - generic [ref=f1e66]:
+          - generic [ref=f1e67]:
+            - generic [ref=f1e68]:
+              - generic [ref=f1e69]: ID
+              - generic [ref=f1e70]: Room
+              - generic [ref=f1e71]: Guest Name
+              - generic [ref=f1e72]: Status
+              - generic [ref=f1e73]: Source
+              - generic [ref=f1e74]: Check In
+              - generic [ref=f1e75]: Check Out
+              - generic [ref=f1e76]: Nights
+              - generic [ref=f1e77]: Price
+              - generic [ref=f1e78]: Total
+              - generic [ref=f1e79]: Actions
+            - generic [ref=f1e80]:
+              - generic [ref=f1e81]: "#1"
+              - generic [ref=f1e83]: Room 64
+              - generic [ref=f1e85]: Dr. Andy Dach
+              - generic [ref=f1e86]: pending
+              - generic [ref=f1e89]: 2026-10-15
+              - generic [ref=f1e91]: 2026-11-05
+              - generic [ref=f1e93]: "21"
+              - generic [ref=f1e95]: "49.30"
+              - generic [ref=f1e97]: "1035.3"
+              - link [ref=f1e102] [cursor=pointer]:
+                - /url: https://larapms.ddev.site/bookings/1/edit
+            - generic [ref=f1e105]:
+              - generic [ref=f1e106]: "#2"
+              - generic [ref=f1e108]: Room 64
+              - generic [ref=f1e110]: Miss Aleen Flatley III
+              - generic [ref=f1e111]: pending
+              - generic [ref=f1e114]: 2026-10-17
+              - generic [ref=f1e116]: 2026-10-28
+              - generic [ref=f1e118]: "11"
+              - generic [ref=f1e120]: "8.05"
+              - generic [ref=f1e122]: "88.55"
+              - link [ref=f1e127] [cursor=pointer]:
+                - /url: https://larapms.ddev.site/bookings/2/edit
+            - generic [ref=f1e130]:
+              - generic [ref=f1e131]: "#3"
+              - generic [ref=f1e133]: Room 38
+              - generic [ref=f1e135]: Dr. Emmitt Sauer
+              - generic [ref=f1e136]: checked out
+              - generic [ref=f1e139]: 2026-10-25
+              - generic [ref=f1e141]: 2026-10-28
+              - generic [ref=f1e143]: "3"
+              - generic [ref=f1e145]: "9.33"
+              - generic [ref=f1e147]: "27.99"
+              - link [ref=f1e152] [cursor=pointer]:
+                - /url: https://larapms.ddev.site/bookings/3/edit
+            - generic [ref=f1e155]:
+              - generic [ref=f1e156]: "#4"
+              - generic [ref=f1e158]: Room 38
+              - generic [ref=f1e160]: Reva Weissnat
+              - generic [ref=f1e161]: checked out
+              - generic [ref=f1e164]: 2026-09-09
+              - generic [ref=f1e166]: 2026-10-07
+              - generic [ref=f1e168]: "28"
+              - generic [ref=f1e170]: "43.66"
+              - generic [ref=f1e172]: "1222.48"
+              - link [ref=f1e177] [cursor=pointer]:
+                - /url: https://larapms.ddev.site/bookings/4/edit
+            - generic [ref=f1e180]:
+              - generic [ref=f1e181]: "#5"
+              - generic [ref=f1e183]: Room 72
+              - generic [ref=f1e185]: Moises Fisher
+              - generic [ref=f1e186]: pending
+              - generic [ref=f1e189]: 2026-10-27
+              - generic [ref=f1e191]: 2026-11-08
+              - generic [ref=f1e193]: "12"
+              - generic [ref=f1e195]: "70.86"
+              - generic [ref=f1e197]: "850.32"
+              - link [ref=f1e202] [cursor=pointer]:
+                - /url: https://larapms.ddev.site/bookings/5/edit
+            - generic [ref=f1e205]:
+              - generic [ref=f1e206]: "#6"
+              - generic [ref=f1e208]: Room 72
+              - generic [ref=f1e210]: Ms. Adele Romaguera II
+              - generic [ref=f1e211]: pending
+              - generic [ref=f1e214]: 2026-10-26
+              - generic [ref=f1e216]: 2026-11-07
+              - generic [ref=f1e218]: "12"
+              - generic [ref=f1e220]: "70.76"
+              - generic [ref=f1e222]: "849.12"
+              - link [ref=f1e227] [cursor=pointer]:
+                - /url: https://larapms.ddev.site/bookings/6/edit
+          - generic [ref=f1e230]:
+            - 'heading "Total Amount: 4073.7599999999993" [level=3] [ref=f1e231]'
+            - 'heading "Total Days: 87" [level=3] [ref=f1e232]'
+          - generic [ref=f1e233]:
+            - generic [ref=f1e234]: « Previous
+            - link "1" [ref=f1e235] [cursor=pointer]:
+              - /url: https://larapms.ddev.site/bookings?page=1
+            - generic [ref=f1e236]: Next »
+  - generic [ref=f1e239]:
+    - generic [ref=f1e240] [cursor=pointer]
+    - generic [ref=f1e241]:
+      - generic [ref=f1e242] [cursor=pointer]: Request
+      - generic [ref=f1e243] [cursor=pointer]: Timeline
+      - generic [ref=f1e244] [cursor=pointer]:
+        - generic: Views
+        - generic [ref=f1e245]: "1"
+      - generic [ref=f1e246] [cursor=pointer]:
+        - generic: Queries
+        - generic [ref=f1e247]: "14"
+      - generic [ref=f1e248] [cursor=pointer]:
+        - generic: Models
+        - generic [ref=f1e249]: "40"
+      - generic [ref=f1e250] [cursor=pointer]:
+        - generic: Inertia
+        - generic [ref=f1e251]: "1"
+    - generic [ref=f1e252]:
+      - generic [ref=f1e253] [cursor=pointer]
+      - generic [ref=f1e254] [cursor=pointer]
+      - generic [ref=f1e255] [cursor=pointer]
+      - generic [ref=f1e257] [cursor=pointer]
+      - generic [ref=f1e258]: GET /bookings
+      - generic [ref=f1e261] [cursor=pointer]: 135ms
+      - generic [ref=f1e263] [cursor=pointer]: 3MB
+      - generic [ref=f1e265] [cursor=pointer]: 13.x

@@ -1,0 +1,41 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e5] [cursor=pointer]:
+      - /url: /
+    - generic [ref=e9]:
+      - generic [ref=e10]:
+        - generic [ref=e11]: Email
+        - textbox "Email" [active] [ref=e12]
+      - generic [ref=e13]:
+        - generic [ref=e14]: Password
+        - textbox "Password" [ref=e15]
+      - generic [ref=e17]:
+        - checkbox "Remember me" [ref=e18]
+        - generic [ref=e19]: Remember me
+      - generic [ref=e20]:
+        - link "Forgot your password?" [ref=e21] [cursor=pointer]:
+          - /url: https://larapms.ddev.site/forgot-password
+        - button "Log in" [ref=e22] [cursor=pointer]
+  - generic [ref=e25]:
+    - generic [ref=e26] [cursor=pointer]
+    - generic [ref=e27]:
+      - generic [ref=e28] [cursor=pointer]: Request
+      - generic [ref=e29] [cursor=pointer]:
+        - generic: Messages
+        - generic [ref=e30]: "1"
+      - generic [ref=e31] [cursor=pointer]: Timeline
+      - generic [ref=e32] [cursor=pointer]:
+        - generic: Views
+        - generic [ref=e33]: "1"
+      - generic [ref=e34] [cursor=pointer]:
+        - generic: Inertia
+        - generic [ref=e35]: "1"
+    - generic [ref=e36]:
+      - generic [ref=e37] [cursor=pointer]
+      - generic [ref=e38] [cursor=pointer]
+      - generic [ref=e39] [cursor=pointer]
+      - generic [ref=e41] [cursor=pointer]
+      - generic [ref=e42]: GET /login
+      - generic [ref=e45] [cursor=pointer]: 386ms
+      - generic [ref=e47] [cursor=pointer]: 7MB
+      - generic [ref=e49] [cursor=pointer]: 13.x

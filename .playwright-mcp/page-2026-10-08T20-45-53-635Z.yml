@@ -1,0 +1,263 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e51]:
+    - generic [ref=e52]:
+      - button [ref=e53] [cursor=pointer]
+      - generic [ref=e56]:
+        - link [ref=e58] [cursor=pointer]:
+          - /url: https://larapms.ddev.site/dashboard
+        - generic [ref=e61]:
+          - link "Dashboard" [ref=e62] [cursor=pointer]:
+            - /url: https://larapms.ddev.site/dashboard
+          - link "Properties" [ref=e63] [cursor=pointer]:
+            - /url: https://larapms.ddev.site/properties
+          - link "Customers" [ref=e64] [cursor=pointer]:
+            - /url: https://larapms.ddev.site/customers
+          - link "Calendar" [ref=e65] [cursor=pointer]:
+            - /url: https://larapms.ddev.site/calendar
+          - link "Bookings" [ref=e66] [cursor=pointer]:
+            - /url: https://larapms.ddev.site/bookings
+          - generic [ref=e67] [cursor=pointer]: Settings
+    - generic [ref=e69]:
+      - banner [ref=e70]:
+        - generic [ref=e73]:
+          - text: "Switch Company:"
+          - combobox "Switch Company:" [ref=e74]:
+            - option "Chrisanthi Studios" [selected]
+        - button "gkalog" [ref=e79] [cursor=pointer]
+      - heading "Dashboard" [level=2] [ref=e83]
+      - generic [ref=e86]:
+        - generic [ref=e87]:
+          - generic [ref=e89]:
+            - generic [ref=e91]:
+              - paragraph [ref=e92]: Occupancy Rate
+              - paragraph [ref=e93]: 0%
+            - paragraph [ref=e97]: Current room occupancy
+          - generic [ref=e99]:
+            - generic [ref=e101]:
+              - paragraph [ref=e102]: Monthly Revenue
+              - paragraph [ref=e103]: €251.96
+            - paragraph [ref=e107]: Current month
+          - generic [ref=e109]:
+            - generic [ref=e111]:
+              - paragraph [ref=e112]: Properties
+              - paragraph [ref=e113]: "1"
+            - paragraph [ref=e117]: Total properties managed
+          - generic [ref=e119]:
+            - generic [ref=e121]:
+              - paragraph [ref=e122]: Rooms
+              - paragraph [ref=e123]: "8"
+            - paragraph [ref=e127]: Total rooms available
+        - generic [ref=e128]:
+          - generic [ref=e130]:
+            - heading "Upcoming Check-ins" [level=3] [ref=e131]
+            - link "Oct 15, 2026 Dr. Andy Dach Room 64 in Chrisanthi Studios" [ref=e134] [cursor=pointer]:
+              - /url: /bookings/1
+              - generic [ref=e135]:
+                - generic [ref=e136]: Oct 15, 2026
+                - generic [ref=e137]: Dr. Andy Dach
+              - generic [ref=e138]: Room 64 in Chrisanthi Studios
+            - link "View All Bookings" [ref=e139] [cursor=pointer]:
+              - /url: /bookings
+          - generic [ref=e141]:
+            - heading "Upcoming Checkouts" [level=3] [ref=e142]
+            - generic [ref=e143]: No upcoming checkouts in the next 7 days
+            - link "View All Bookings" [ref=e145] [cursor=pointer]:
+              - /url: /bookings
+        - generic [ref=e146]:
+          - heading "Monthly Bookings" [level=3] [ref=e149]
+          - generic [ref=e153]:
+            - heading "Recent Bookings" [level=3] [ref=e154]
+            - generic [ref=e155]:
+              - link "Dr. Emmitt Sauer checked out Room 38 in Chrisanthi Studios Oct 25, 2026 - Oct 28, 2026 €9.33" [ref=e157] [cursor=pointer]:
+                - /url: /bookings/3
+                - generic [ref=e158]:
+                  - generic [ref=e159]: Dr. Emmitt Sauer
+                  - generic [ref=e160]: checked out
+                - generic [ref=e161]: Room 38 in Chrisanthi Studios
+                - generic [ref=e162]:
+                  - generic [ref=e163]: Oct 25, 2026 - Oct 28, 2026
+                  - generic [ref=e164]: €9.33
+              - link "Reva Weissnat checked out Room 38 in Chrisanthi Studios Sep 9, 2026 - Oct 7, 2026 €43.66" [ref=e166] [cursor=pointer]:
+                - /url: /bookings/4
+                - generic [ref=e167]:
+                  - generic [ref=e168]: Reva Weissnat
+                  - generic [ref=e169]: checked out
+                - generic [ref=e170]: Room 38 in Chrisanthi Studios
+                - generic [ref=e171]:
+                  - generic [ref=e172]: Sep 9, 2026 - Oct 7, 2026
+                  - generic [ref=e173]: €43.66
+              - link "Moises Fisher pending Room 72 in Chrisanthi Studios Oct 27, 2026 - Nov 8, 2026 €70.86" [ref=e175] [cursor=pointer]:
+                - /url: /bookings/5
+                - generic [ref=e176]:
+                  - generic [ref=e177]: Moises Fisher
+                  - generic [ref=e178]: pending
+                - generic [ref=e179]: Room 72 in Chrisanthi Studios
+                - generic [ref=e180]:
+                  - generic [ref=e181]: Oct 27, 2026 - Nov 8, 2026
+                  - generic [ref=e182]: €70.86
+              - link "Ms. Adele Romaguera II pending Room 72 in Chrisanthi Studios Oct 26, 2026 - Nov 7, 2026 €70.76" [ref=e184] [cursor=pointer]:
+                - /url: /bookings/6
+                - generic [ref=e185]:
+                  - generic [ref=e186]: Ms. Adele Romaguera II
+                  - generic [ref=e187]: pending
+                - generic [ref=e188]: Room 72 in Chrisanthi Studios
+                - generic [ref=e189]:
+                  - generic [ref=e190]: Oct 26, 2026 - Nov 7, 2026
+                  - generic [ref=e191]: €70.76
+              - link "Dr. Andy Dach pending Room 64 in Chrisanthi Studios Oct 15, 2026 - Nov 5, 2026 €49.30" [ref=e193] [cursor=pointer]:
+                - /url: /bookings/1
+                - generic [ref=e194]:
+                  - generic [ref=e195]: Dr. Andy Dach
+                  - generic [ref=e196]: pending
+                - generic [ref=e197]: Room 64 in Chrisanthi Studios
+                - generic [ref=e198]:
+                  - generic [ref=e199]: Oct 15, 2026 - Nov 5, 2026
+                  - generic [ref=e200]: €49.30
+            - link "View All Bookings" [ref=e201] [cursor=pointer]:
+              - /url: /bookings
+        - generic [ref=e204]:
+          - heading "Property Statistics" [level=3] [ref=e205]
+          - table [ref=e207]:
+            - rowgroup [ref=e208]:
+              - row [ref=e209]:
+                - columnheader "Property" [ref=e210]
+                - columnheader "Total Rooms" [ref=e211]
+                - columnheader "Occupied" [ref=e212]
+                - columnheader "Available" [ref=e213]
+                - columnheader "Occupancy" [ref=e214]
+            - rowgroup [ref=e215]:
+              - row [ref=e216]:
+                - cell [ref=e217]:
+                  - link "Chrisanthi Studios" [ref=e218] [cursor=pointer]:
+                    - /url: /properties/1
+                - cell "8" [ref=e219]
+                - cell "0" [ref=e220]
+                - cell "8" [ref=e221]
+                - cell "0%" [ref=e222]
+        - generic [ref=e228]:
+          - heading "Room Statistics" [level=3] [ref=e229]
+          - table [ref=e231]:
+            - rowgroup [ref=e232]:
+              - row [ref=e233]:
+                - columnheader "Room" [ref=e234]
+                - columnheader "Property" [ref=e235]
+                - columnheader "Type" [ref=e236]
+                - columnheader "Rate" [ref=e237]
+                - columnheader "Avg. Rate" [ref=e238]
+                - columnheader "Status" [ref=e239]
+                - columnheader "30d Occupancy" [ref=e240]
+                - columnheader "Next Booking" [ref=e241]
+            - rowgroup [ref=e242]:
+              - row [ref=e243]:
+                - cell [ref=e244]:
+                  - link "Room 64" [ref=e245] [cursor=pointer]:
+                    - /url: /rooms/1
+                - cell "Chrisanthi Studios" [ref=e246]
+                - cell "apartment" [ref=e247]
+                - cell "€28.67" [ref=e248]
+                - cell "€28.67" [ref=e249]
+                - cell "Available" [ref=e250]
+                - cell "0%" [ref=e251]
+                - cell "Oct 15, 2026" [ref=e255]
+              - row [ref=e256]:
+                - cell [ref=e257]:
+                  - link "Room 76" [ref=e258] [cursor=pointer]:
+                    - /url: /rooms/2
+                - cell "Chrisanthi Studios" [ref=e259]
+                - cell "apartment" [ref=e260]
+                - cell "€0.00" [ref=e261]
+                - cell "€0.00" [ref=e262]
+                - cell "Available" [ref=e263]
+                - cell "0%" [ref=e264]
+                - cell "-" [ref=e268]
+              - row [ref=e269]:
+                - cell [ref=e270]:
+                  - link "Room 38" [ref=e271] [cursor=pointer]:
+                    - /url: /rooms/3
+                - cell "Chrisanthi Studios" [ref=e272]
+                - cell "apartment" [ref=e273]
+                - cell "€9.33" [ref=e274]
+                - cell "€9.33" [ref=e275]
+                - cell "Available" [ref=e276]
+                - cell "0%" [ref=e277]
+                - cell "Oct 25, 2026" [ref=e281]
+              - row [ref=e282]:
+                - cell [ref=e283]:
+                  - link "Room 96" [ref=e284] [cursor=pointer]:
+                    - /url: /rooms/4
+                - cell "Chrisanthi Studios" [ref=e285]
+                - cell "apartment" [ref=e286]
+                - cell "€0.00" [ref=e287]
+                - cell "€0.00" [ref=e288]
+                - cell "Available" [ref=e289]
+                - cell "0%" [ref=e290]
+                - cell "-" [ref=e294]
+              - row [ref=e295]:
+                - cell [ref=e296]:
+                  - link "Room 72" [ref=e297] [cursor=pointer]:
+                    - /url: /rooms/5
+                - cell "Chrisanthi Studios" [ref=e298]
+                - cell "double" [ref=e299]
+                - cell "€70.81" [ref=e300]
+                - cell "€70.81" [ref=e301]
+                - cell "Available" [ref=e302]
+                - cell "0%" [ref=e303]
+                - cell "Oct 26, 2026" [ref=e307]
+              - row [ref=e308]:
+                - cell [ref=e309]:
+                  - link "Room 23" [ref=e310] [cursor=pointer]:
+                    - /url: /rooms/6
+                - cell "Chrisanthi Studios" [ref=e311]
+                - cell "triple" [ref=e312]
+                - cell "€0.00" [ref=e313]
+                - cell "€0.00" [ref=e314]
+                - cell "Available" [ref=e315]
+                - cell "0%" [ref=e316]
+                - cell "-" [ref=e320]
+              - row [ref=e321]:
+                - cell [ref=e322]:
+                  - link "Room 37" [ref=e323] [cursor=pointer]:
+                    - /url: /rooms/7
+                - cell "Chrisanthi Studios" [ref=e324]
+                - cell "apartment" [ref=e325]
+                - cell "€0.00" [ref=e326]
+                - cell "€0.00" [ref=e327]
+                - cell "Available" [ref=e328]
+                - cell "0%" [ref=e329]
+                - cell "-" [ref=e333]
+              - row [ref=e334]:
+                - cell [ref=e335]:
+                  - link "Room 21" [ref=e336] [cursor=pointer]:
+                    - /url: /rooms/8
+                - cell "Chrisanthi Studios" [ref=e337]
+                - cell "double" [ref=e338]
+                - cell "€0.00" [ref=e339]
+                - cell "€0.00" [ref=e340]
+                - cell "Available" [ref=e341]
+                - cell "0%" [ref=e342]
+                - cell "-" [ref=e346]
+  - generic [ref=e25]:
+    - generic [ref=e26] [cursor=pointer]
+    - generic [ref=e27]:
+      - generic [ref=e28] [cursor=pointer]: Request
+      - generic [ref=e31] [cursor=pointer]: Timeline
+      - generic [ref=e347] [cursor=pointer]:
+        - generic: Queries
+        - generic [ref=e348]: "29"
+      - generic [ref=e349] [cursor=pointer]:
+        - generic: Models
+        - generic [ref=e350]: "33"
+      - generic [ref=e34] [cursor=pointer]:
+        - generic: Inertia
+        - generic [ref=e35]: "1"
+    - generic [ref=e36]:
+      - generic [ref=e37] [cursor=pointer]
+      - generic [ref=e38] [cursor=pointer]
+      - generic [ref=e39] [cursor=pointer]
+      - generic [ref=e41] [cursor=pointer]
+      - generic [ref=e43] [cursor=pointer]:
+        - generic [ref=e351]: "3"
+        - generic [ref=e44]: GET /dashboard
+      - generic [ref=e45] [cursor=pointer]: 95.76ms
+      - generic [ref=e47] [cursor=pointer]: 3MB
+      - generic [ref=e49] [cursor=pointer]: 13.x
