@@ -4,7 +4,7 @@ LARAPMS is a web application designed to help you manage properties, tenants, an
 
 ## Running the Development Environment
 
-To set up and run the development environment, follow these steps:
+The project runs on [DDEV](https://ddev.readthedocs.io/) (PHP 8.5, MariaDB 11.8, nginx-fpm). Laravel 13.
 
 1. **Clone the repository**:
     ```sh
@@ -12,40 +12,32 @@ To set up and run the development environment, follow these steps:
     cd laraPMS
     ```
 
-2. **Install dependencies**:
+2. **Start DDEV and install dependencies**:
     ```sh
-    composer install
-    npm install
+    ddev start
+    ddev composer install
+    ddev npm install
     ```
 
-3. **Copy the example environment file and set up your environment variables**:
+3. **Copy the example environment file and generate the application key**:
     ```sh
     cp .env.example .env
+    ddev artisan key:generate
     ```
 
-4. **Generate an application key**:
+4. **Run the database migrations and seed the database**:
     ```sh
-    php artisan key:generate
+    ddev artisan migrate:fresh --seed
     ```
 
-5. **Run the database migrations and seed the database**:
+5. **Compile the front-end assets**:
     ```sh
-    php artisan migrate:fresh --seed
+    ddev npm run dev
     ```
 
-6. **Start the development server**:
-    ```sh
-    php artisan serve
-    ```
+Now, you can access the application at `https://larapms.ddev.site`.
 
-7. **Compile the front-end assets**:
-    ```sh
-    npm run dev
-    ```
-
-Now, you can access the application at `http://localhost:8000`.
-
-
+Run the tests with `ddev artisan test`.
 
 Deploy with docker
 
@@ -103,7 +95,7 @@ This project uses [Pest](https://pestphp.com/) for Laravel backend tests, offeri
 You can run the backend tests with:
 
 ```sh
-php artisan test
+ddev artisan test
 ```
 
 If you have any frontend tests, you can run them with:
