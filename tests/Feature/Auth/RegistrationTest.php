@@ -1,6 +1,5 @@
 <?php
 
-use App\Providers\RouteServiceProvider;
 
 test('registration screen can be rendered', function () {
     $response = $this->get('/register');
@@ -17,7 +16,7 @@ test('new users can register', function () {
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(RouteServiceProvider::HOME);
+    $response->assertRedirect(route('dashboard', absolute: false));
 });
 
 test('when new users provide also a tenant name, the tenant is created and attache to the user', function () {
@@ -31,7 +30,7 @@ test('when new users provide also a tenant name, the tenant is created and attac
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(RouteServiceProvider::HOME);
+    $response->assertRedirect(route('dashboard', absolute: false));
     // Check that the tenant was created
     $this->assertDatabaseHas('tenants', [
         'name' => 'Test Tenant',
