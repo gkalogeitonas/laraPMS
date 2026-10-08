@@ -6,7 +6,7 @@
 # ---------------------------------------------------------------------------
 # base: PHP runtime shared by all stages
 # ---------------------------------------------------------------------------
-FROM serversideup/php:8.4-fpm-nginx AS base
+FROM serversideup/php:8.5-fpm-nginx AS base
 
 ENV AUTORUN_ENABLED=true \
     PHP_OPCACHE_ENABLE=1 \
