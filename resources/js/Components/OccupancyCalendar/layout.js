@@ -18,23 +18,42 @@ export function toDayNumber(date) {
 }
 
 /**
+ * @param {string} date `YYYY-MM-DD`
+ * @returns {Date} midnight UTC of that date, for `Intl` formatting with `timeZone: 'UTC'`
+ */
+export function toUtcDate(date) {
+    return new Date(toDayNumber(date) * MS_PER_DAY);
+}
+
+/**
  * @param {number} dayNumber days since the Unix epoch
  * @returns {string} `YYYY-MM-DD`
  */
-export function fromDayNumber(dayNumber) {
+function fromDayNumber(dayNumber) {
     return new Date(dayNumber * MS_PER_DAY).toISOString().slice(0, 10);
+}
+
+/**
+ * @returns {string} today's date in the viewer's time zone, `YYYY-MM-DD`
+ */
+export function localToday() {
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+
+    return `${now.getFullYear()}-${month}-${day}`;
 }
 
 /**
  * The days of the window, one per column.
  *
- * @param {{ start: string, days: number }} window
+ * @param {{ start: string, days: number }} dateWindow
  * @returns {Array<{ date: string, index: number, utcDate: Date, isWeekend: boolean }>}
  */
-export function windowDays(window) {
-    const first = toDayNumber(window.start);
+export function windowDays(dateWindow) {
+    const first = toDayNumber(dateWindow.start);
 
-    return Array.from({ length: window.days }, (_, index) => {
+    return Array.from({ length: dateWindow.days }, (_, index) => {
         const utcDate = new Date((first + index) * MS_PER_DAY);
         const weekday = utcDate.getUTCDay();
 
@@ -58,15 +77,15 @@ export function windowDays(window) {
  * Bookings of unknown Rooms and Bookings with no Night inside the window are
  * left out.
  *
- * @param {{ start: string, days: number }} window
+ * @param {{ start: string, days: number }} dateWindow
  * @param {Array<{ id: number }>} rooms
  * @param {Array<{ id: number, roomId: number, checkIn: string, checkOut: string }>} bookings
  * @returns {Array<{ booking: object, roomId: number, start: number, end: number, clippedStart: boolean, clippedEnd: boolean }>}
  */
-export function layoutBars(window, rooms, bookings) {
+export function layoutBars(dateWindow, rooms, bookings) {
     const roomIds = new Set(rooms.map((room) => room.id));
-    const first = toDayNumber(window.start);
-    const windowEnd = window.days;
+    const first = toDayNumber(dateWindow.start);
+    const dayCount = dateWindow.days;
 
     return bookings
         .filter((booking) => roomIds.has(booking.roomId))
@@ -76,16 +95,16 @@ export function layoutBars(window, rooms, bookings) {
 
             return { booking, checkIn, checkOut };
         })
-        .filter(({ checkIn, checkOut }) => checkOut > checkIn && checkIn < windowEnd && checkOut > 0)
+        .filter(({ checkIn, checkOut }) => checkOut > checkIn && checkIn < dayCount && checkOut > 0)
         .map(({ booking, checkIn, checkOut }) => {
             const clippedStart = checkIn < 0;
-            const clippedEnd = checkOut >= windowEnd;
+            const clippedEnd = checkOut >= dayCount;
 
             return {
                 booking,
                 roomId: booking.roomId,
                 start: clippedStart ? 0 : checkIn + 0.5,
-                end: clippedEnd ? windowEnd : checkOut + 0.5,
+                end: clippedEnd ? dayCount : checkOut + 0.5,
                 clippedStart,
                 clippedEnd,
             };

@@ -1,7 +1,7 @@
 <script setup>
 import { computed, reactive, ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
-import { layoutBars, toDayNumber, windowDays } from './layout.js';
+import { layoutBars, localToday, toDayNumber, toUtcDate, windowDays } from './layout.js';
 
 const props = defineProps({
     /** @type {Array<{ id: number, name: string, rooms: Array<{ id: number, name: string }> }>} */
@@ -39,14 +39,6 @@ const months = computed(() => {
 
     return spans;
 });
-
-function localToday() {
-    const now = new Date();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-
-    return `${now.getFullYear()}-${month}-${day}`;
-}
 
 const todayIndex = computed(() => toDayNumber(localToday()) - toDayNumber(props.window.start));
 const showTodayLine = computed(() => todayIndex.value >= 0 && todayIndex.value < props.window.days);
@@ -108,26 +100,25 @@ function barStyle(bar) {
 }
 
 function formatDate(date) {
-    return longDateFormatter.format(new Date(toDayNumber(date) * 86400000));
+    return longDateFormatter.format(toUtcDate(date));
 }
 
-function guestsLabel(guests) {
-    return `${guests} ${guests === 1 ? 'guest' : 'guests'}`;
+function countLabel(count, singular, plural) {
+    return `${count} ${count === 1 ? singular : plural}`;
 }
 
-function nightsLabel(nights) {
-    return `${nights} ${nights === 1 ? 'night' : 'nights'}`;
-}
+const NO_SOURCE = 'No source';
+const NO_STATUS = 'No status';
 
 function barLabel(booking) {
     return [
         booking.guestName,
-        guestsLabel(booking.guests),
+        countLabel(booking.guests, 'guest', 'guests'),
         `${formatDate(booking.checkIn)} to ${formatDate(booking.checkOut)}`,
-        nightsLabel(booking.nights),
+        countLabel(booking.nights, 'night', 'nights'),
         costFormatter.format(booking.totalCost),
-        `Source: ${booking.sourceName ?? 'none'}`,
-        `Status: ${booking.statusName ?? 'none'}`,
+        `Source: ${booking.sourceName ?? NO_SOURCE}`,
+        `Status: ${booking.statusName ?? NO_STATUS}`,
     ].join(', ');
 }
 
@@ -218,7 +209,7 @@ function hideTooltip() {
                         </button>
                         <div class="flex items-center px-2 text-xs text-gray-500" :style="{ width: `${timelineWidth}px` }">
                             <span v-if="collapsed.has(group.id)" class="sticky left-[calc(var(--room-column)+0.5rem)]">
-                                {{ group.rooms.length }} {{ group.rooms.length === 1 ? 'room' : 'rooms' }} hidden
+                                {{ countLabel(group.rooms.length, 'room', 'rooms') }} hidden
                             </span>
                         </div>
                     </div>
@@ -304,11 +295,11 @@ function hideTooltip() {
                 <dt class="text-gray-400">Total cost</dt>
                 <dd>{{ costFormatter.format(tooltip.booking.totalCost) }}</dd>
                 <dt class="text-gray-400">Source</dt>
-                <dd>{{ tooltip.booking.sourceName ?? '—' }}</dd>
+                <dd>{{ tooltip.booking.sourceName ?? NO_SOURCE }}</dd>
                 <dt class="text-gray-400">Status</dt>
                 <dd class="flex items-center gap-1">
                     <span class="inline-block h-2.5 w-2.5 rounded-full" :style="{ backgroundColor: barColor(tooltip.booking) }" />
-                    {{ tooltip.booking.statusName ?? 'No status' }}
+                    {{ tooltip.booking.statusName ?? NO_STATUS }}
                 </dd>
             </dl>
         </div>

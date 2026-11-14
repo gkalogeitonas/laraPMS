@@ -78,42 +78,45 @@ it('renders the calendar with property groups, bookings and the window', functio
         );
 });
 
-it('prevent renders  events and resources for other users', function () {
+it('does not show the property groups or bookings of another tenant', function () {
     $data = createOwnerAndProperty();
-    $owner = $data['owner'];
-    $property = $data['property'];
-    $tenant = $data['tenant'];
-
-    // Create a room and a booking
     $room = Room::factory()->create([
-        'property_id' => $property->id,
-        'tenant_id' => $tenant->id,
+        'property_id' => $data['property']->id,
+        'tenant_id' => $data['tenant']->id,
     ]);
-    $booking = Booking::factory()->create([
+    Booking::factory()->create([
         'room_id' => $room->id,
-        'tenant_id' => $tenant->id,
+        'tenant_id' => $data['tenant']->id,
         'check_in' => now()->toDateString(),
         'check_out' => now()->addDays(2)->toDateString(),
     ]);
 
-    $otherTenant = Tenant::factory()->create();
-    $nonOwner = User::factory()->create();
-    $nonOwner->tenants()->attach($otherTenant->id);
-    $nonOwner->setActiveTenant($otherTenant);
-    actingAs($nonOwner);
-    // Make a request to the calendar index route
-    $response = $this->get(route('calendar'));
-    // dd($response);
-    // Assert the response
-    $response->assertStatus(200)
+    $other = createOwnerAndProperty();
+    $otherRoom = Room::factory()->create([
+        'property_id' => $other['property']->id,
+        'tenant_id' => $other['tenant']->id,
+    ]);
+    $otherBooking = Booking::factory()->create([
+        'room_id' => $otherRoom->id,
+        'tenant_id' => $other['tenant']->id,
+        'check_in' => now()->toDateString(),
+        'check_out' => now()->addDays(2)->toDateString(),
+    ]);
+
+    actingAs($other['owner']);
+
+    $this->get(route('calendar'))
+        ->assertStatus(200)
         ->assertInertia(fn (Assert $page) => $page
             ->component('Calendar')
-            ->has('groups', 0)
-            ->has('bookings', 0)
+            ->has('groups', 1)
+            ->where('groups.0.id', $other['property']->id)
+            ->has('bookings', 1)
+            ->where('bookings.0.id', $otherBooking->id)
         );
 });
 
-test('a user without tenant can not view the bookings or Resources on Calendar', function () {
+test('a user without an active tenant gets empty property groups and bookings', function () {
     $owner = User::factory()->create();
     $tenant = Tenant::factory()->create();
     $owner->tenants()->attach($tenant->id);
@@ -121,7 +124,6 @@ test('a user without tenant can not view the bookings or Resources on Calendar',
         'tenant_id' => $tenant->id,
     ]);
 
-    // Create a room and a booking
     $room = Room::factory()->create([
         'property_id' => $property->id,
         'tenant_id' => $tenant->id,
@@ -155,7 +157,7 @@ it('returns only the bookings whose nights intersect the window', function () {
         'property_id' => $data['property']->id,
         'tenant_id' => $tenant->id,
     ]);
-    $bookingFor = fn (string $checkIn, string $checkOut) => Booking::factory()->create([
+    $bookingFor = fn (string $checkIn, string $checkOut): Booking => Booking::factory()->create([
         'room_id' => $room->id,
         'tenant_id' => $tenant->id,
         'check_in' => $checkIn,
