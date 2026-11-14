@@ -34,6 +34,15 @@ function fromDayNumber(dayNumber) {
 }
 
 /**
+ * @param {string} date `YYYY-MM-DD`
+ * @param {number} days may be negative
+ * @returns {string} the date `days` later, `YYYY-MM-DD`
+ */
+export function addDays(date, days) {
+    return fromDayNumber(toDayNumber(date) + days);
+}
+
+/**
  * @returns {string} today's date in the viewer's time zone, `YYYY-MM-DD`
  */
 export function localToday() {

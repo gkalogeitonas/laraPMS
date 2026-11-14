@@ -208,3 +208,88 @@ it('gives a booking without a status no colour and no status name', function () 
             ->where('bookings.0.sourceName', null)
         );
 });
+
+it('uses an explicit window from the start and days query parameters', function (int $days) {
+    $this->travelTo('2026-03-10 09:00:00');
+
+    actingAs(createOwnerAndProperty()['owner']);
+
+    $this->get(route('calendar', ['start' => '2026-05-01', 'days' => $days]))
+        ->assertStatus(200)
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('window', ['start' => '2026-05-01', 'days' => $days])
+        );
+})->with([14, 30, 90]);
+
+it('falls back to the default window for invalid query parameters', function (array $query, array $window) {
+    $this->travelTo('2026-03-10 09:00:00');
+
+    actingAs(createOwnerAndProperty()['owner']);
+
+    $this->get(route('calendar', $query))
+        ->assertStatus(200)
+        ->assertInertia(fn (Assert $page) => $page->where('window', $window));
+})->with([
+    'unsupported days' => [['start' => '2026-05-01', 'days' => 7], ['start' => '2026-05-01', 'days' => 30]],
+    'non-numeric days' => [['days' => 'abc'], ['start' => '2026-03-08', 'days' => 30]],
+    'malformed start' => [['start' => 'not-a-date', 'days' => 14], ['start' => '2026-03-08', 'days' => 14]],
+    'impossible start' => [['start' => '2026-02-30'], ['start' => '2026-03-08', 'days' => 30]],
+]);
+
+it('returns only the bookings whose nights intersect an explicit window', function () {
+    $data = createOwnerAndProperty();
+    $tenant = $data['tenant'];
+    $room = Room::factory()->create([
+        'property_id' => $data['property']->id,
+        'tenant_id' => $tenant->id,
+    ]);
+    $bookingFor = fn (string $checkIn, string $checkOut): Booking => Booking::factory()->create([
+        'room_id' => $room->id,
+        'tenant_id' => $tenant->id,
+        'check_in' => $checkIn,
+        'check_out' => $checkOut,
+    ]);
+
+    // The window covers the nights of 2026-06-01 up to and including 2026-06-14.
+    $bookingFor('2026-05-25', '2026-06-01');
+    $startsBefore = $bookingFor('2026-05-25', '2026-06-02');
+    $spansWindow = $bookingFor('2026-05-30', '2026-06-20');
+    $inside = $bookingFor('2026-06-05', '2026-06-08');
+    $endsAfter = $bookingFor('2026-06-14', '2026-06-18');
+    $bookingFor('2026-06-15', '2026-06-18');
+
+    actingAs($data['owner']);
+
+    $this->get(route('calendar', ['start' => '2026-06-01', 'days' => 14]))
+        ->assertStatus(200)
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('window', ['start' => '2026-06-01', 'days' => 14])
+            ->has('bookings', 4)
+            ->where('bookings.0.id', $startsBefore->id)
+            ->where('bookings.1.id', $spansWindow->id)
+            ->where('bookings.2.id', $inside->id)
+            ->where('bookings.3.id', $endsAfter->id)
+        );
+});
+
+it('does not show bookings of another tenant inside an explicit window', function () {
+    $data = createOwnerAndProperty();
+    $room = Room::factory()->create([
+        'property_id' => $data['property']->id,
+        'tenant_id' => $data['tenant']->id,
+    ]);
+    Booking::factory()->create([
+        'room_id' => $room->id,
+        'tenant_id' => $data['tenant']->id,
+        'check_in' => '2026-06-03',
+        'check_out' => '2026-06-05',
+    ]);
+
+    $other = createOwnerAndProperty();
+
+    actingAs($other['owner']);
+
+    $this->get(route('calendar', ['start' => '2026-06-01', 'days' => 14]))
+        ->assertStatus(200)
+        ->assertInertia(fn (Assert $page) => $page->has('bookings', 0));
+});

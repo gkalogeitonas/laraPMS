@@ -12,9 +12,14 @@ use Inertia\Response;
 class CalendarController extends Controller
 {
     /**
-     * Number of days shown by the Occupancy Calendar.
+     * Window sizes, in days, the Occupancy Calendar can show.
      */
-    private const WINDOW_DAYS = 30;
+    private const ALLOWED_WINDOW_DAYS = [14, 30, 90];
+
+    /**
+     * Number of days shown when no valid window size is requested.
+     */
+    private const DEFAULT_WINDOW_DAYS = 30;
 
     /**
      * Days before today at which the window starts.
@@ -23,12 +28,13 @@ class CalendarController extends Controller
 
     public function index(Request $request): Response
     {
-        $windowStart = Carbon::today()->subDays(self::DAYS_BEFORE_TODAY);
-        $windowEnd = $windowStart->copy()->addDays(self::WINDOW_DAYS);
+        $windowStart = $this->windowStart($request->query('start'));
+        $windowDays = $this->windowDays($request->query('days'));
+        $windowEnd = $windowStart->copy()->addDays($windowDays);
 
         $window = [
             'start' => $windowStart->toDateString(),
-            'days' => self::WINDOW_DAYS,
+            'days' => $windowDays,
         ];
 
         $tenant = $request->user()->hasActiveTenant() ? $request->user()->getActiveTenant() : null;
@@ -55,5 +61,33 @@ class CalendarController extends Controller
             'bookings' => BookingCalendarResource::collection($bookings)->resolve($request),
             'window' => $window,
         ]);
+    }
+
+    /**
+     * The requested window start, or today minus a couple of days when it is missing or invalid.
+     */
+    private function windowStart(mixed $start): Carbon
+    {
+        if (is_string($start) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $start)) {
+            $date = Carbon::createFromFormat('!Y-m-d', $start);
+
+            if ($date !== null && $date->toDateString() === $start) {
+                return $date;
+            }
+        }
+
+        return Carbon::today()->subDays(self::DAYS_BEFORE_TODAY);
+    }
+
+    /**
+     * The requested window size, normalised to the default when it is not an allowed size.
+     */
+    private function windowDays(mixed $days): int
+    {
+        if (is_string($days) && ctype_digit($days) && in_array((int) $days, self::ALLOWED_WINDOW_DAYS, true)) {
+            return (int) $days;
+        }
+
+        return self::DEFAULT_WINDOW_DAYS;
     }
 }
