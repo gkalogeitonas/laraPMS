@@ -15,6 +15,15 @@ Uses the five default triage labels: `needs-triage`, `needs-info`, `ready-for-ag
 
 Single-context: one `GLOSSARY.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
 
+=== .ai/before-pr rules ===
+
+## Before opening a PR
+
+Run these checks locally and fix everything they report before pushing:
+- `ddev artisan test --compact`
+- `ddev exec vendor/bin/pint --test` (fix with `ddev exec vendor/bin/pint`)
+- `ddev npm run build`, so Vue and import errors fail here and not in production
+
 === .ai/project rules ===
 
 ## laraPMS project conventions
