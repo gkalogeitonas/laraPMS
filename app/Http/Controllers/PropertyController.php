@@ -2,28 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Property;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use App\Models\User;
-use App\Models\Tenant;
 
 class PropertyController extends Controller
 {
-
     public function __construct()
     {
         $this->authorizeResource(Property::class, 'property');
     }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         $properties = Auth::user()->getActiveProperties();
+
         return Inertia::render('Properties/Index', [
-            'properties' => $properties
+            'properties' => $properties,
         ]);
     }
 
@@ -58,7 +58,7 @@ class PropertyController extends Controller
         return redirect()->route('properties.index')->with('success', 'Property created successfully.');
 
         // If the user is not associated with any tenants, return an error response
-        //return redirect()->route('properties.index')->with('error', 'User is not associated with any tenants.');
+        // return redirect()->route('properties.index')->with('error', 'User is not associated with any tenants.');
     }
 
     /**
@@ -69,10 +69,9 @@ class PropertyController extends Controller
 
         return Inertia::render('Properties/Show', [
             'property' => $property,
-            'rooms' => $property->rooms
+            'rooms' => $property->rooms,
         ]);
     }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -80,7 +79,7 @@ class PropertyController extends Controller
     public function edit(Property $property)
     {
         return Inertia::render('Properties/Edit', [
-            'property' => $property
+            'property' => $property,
         ]);
 
     }
@@ -90,11 +89,12 @@ class PropertyController extends Controller
      */
     public function update(Request $request, Property $property)
     {
-        //validate the request
+        // validate the request
         $attributes = $this->validateProperty($request);
 
-        //update the property
+        // update the property
         $property->update($attributes);
+
         return redirect()->route('properties.index')->with('success', 'Property updated successfully.');
     }
 
@@ -105,6 +105,7 @@ class PropertyController extends Controller
     {
 
         Property::destroy($property->id);
+
         return redirect()->route('properties.index')->with('success', 'Property deleted successfully.');
     }
 

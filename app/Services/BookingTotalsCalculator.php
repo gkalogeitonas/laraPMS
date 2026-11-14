@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Collection;
 class BookingTotalsCalculator
 {
     protected $bookings;
+
     protected $startDate;
+
     protected $endDate;
 
     public function __construct(Collection $bookings, $startDate, $endDate)
@@ -45,17 +47,20 @@ class BookingTotalsCalculator
     }
 
     private function getEffectiveStartDate($bookingStartDate)
-    {   if (!$this->startDate) {
+    {
+        if (! $this->startDate) {
             return $bookingStartDate;
         }
+
         return $bookingStartDate->greaterThan($this->startDate) ? $bookingStartDate : $this->startDate;
     }
 
     private function getEffectiveEndDate($bookingEndDate)
     {
-        if (!$this->endDate) {
+        if (! $this->endDate) {
             return $bookingEndDate;
         }
+
         return $bookingEndDate->lessThan($this->endDate) ? $bookingEndDate : $this->endDate;
     }
 }

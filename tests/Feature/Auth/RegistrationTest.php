@@ -1,6 +1,5 @@
 <?php
 
-
 test('registration screen can be rendered', function () {
     $response = $this->get('/register');
 
@@ -36,4 +35,3 @@ test('when new users provide also a tenant name, the tenant is created and attac
         'name' => 'Test Tenant',
     ]);
 });
-

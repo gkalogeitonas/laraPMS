@@ -1,12 +1,13 @@
 <?php
 
 namespace Database\Factories;
-use App\Models\Tenant;
 
+use App\Models\BookingStatus;
+use App\Models\Tenant;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\BookingStatus>
+ * @extends Factory<BookingStatus>
  */
 class BookingStatusFactory extends Factory
 {

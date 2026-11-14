@@ -4,12 +4,12 @@ namespace App\Policies;
 
 use App\Models\BookingSource;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class BookingSourcePolicy
 {
     use HandlesAuthorization;
+
     /**
      * Determine whether the user can view any models.
      */

@@ -6,9 +6,8 @@ use App\Models\Tenant;
 it('can create a Room', function () {
     $room = Room::factory()->create();
 
-    expect($room)->toBeInstanceOf(room::class);
+    expect($room)->toBeInstanceOf(Room::class);
 });
-
 
 test('a Room belongs to a tenant', function () {
     $tenant = Tenant::factory()->create();

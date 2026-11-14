@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\Customer;
 use App\Models\Property;
 use App\Models\Room;
-use App\Models\Customer;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -15,7 +14,7 @@ class DashboardController extends Controller
     public function index()
     {
         // If user has no active tenant, return empty dashboard
-        if (!auth()->user()->hasActiveTenant()) {
+        if (! auth()->user()->hasActiveTenant()) {
             return Inertia::render('Dashboard', [
                 'recentBookings' => [],
                 'propertyStatistics' => [],
@@ -28,7 +27,7 @@ class DashboardController extends Controller
                 'totalCustomers' => 0,
                 'bookingsChart' => [],
                 'roomStatistics' => [],
-                'hasActiveTenant' => false
+                'hasActiveTenant' => false,
             ]);
         }
 
@@ -44,6 +43,7 @@ class DashboardController extends Controller
                 // Ensure dates are in Y-m-d format for test consistency
                 $booking->check_in = Carbon::parse($booking->check_in)->format('Y-m-d');
                 $booking->check_out = Carbon::parse($booking->check_out)->format('Y-m-d');
+
                 return $booking;
             });
 
@@ -67,7 +67,7 @@ class DashboardController extends Controller
                 'totalRooms' => $totalRooms,
                 'occupiedRooms' => $occupiedRooms,
                 'availableRooms' => $totalRooms - $occupiedRooms,
-                'occupancyRate' => $totalRooms > 0 ? round(($occupiedRooms / $totalRooms) * 100) : 0
+                'occupancyRate' => $totalRooms > 0 ? round(($occupiedRooms / $totalRooms) * 100) : 0,
             ];
         }
 
@@ -84,6 +84,7 @@ class DashboardController extends Controller
                 // Ensure dates are in Y-m-d format for test consistency
                 $booking->check_in = Carbon::parse($booking->check_in)->format('Y-m-d');
                 $booking->check_out = Carbon::parse($booking->check_out)->format('Y-m-d');
+
                 return $booking;
             });
 
@@ -97,6 +98,7 @@ class DashboardController extends Controller
                 // Ensure dates are in Y-m-d format for test consistency
                 $booking->check_in = Carbon::parse($booking->check_in)->format('Y-m-d');
                 $booking->check_out = Carbon::parse($booking->check_out)->format('Y-m-d');
+
                 return $booking;
             });
 
@@ -144,7 +146,7 @@ class DashboardController extends Controller
             'totalCustomers' => $totalCustomers,
             'bookingsChart' => $bookingsChart,
             'roomStatistics' => $roomStatistics,
-            'hasActiveTenant' => true
+            'hasActiveTenant' => true,
         ]);
     }
 
@@ -165,7 +167,7 @@ class DashboardController extends Controller
 
             $data[] = [
                 'month' => $month->format('M'),
-                'count' => $bookingsCount
+                'count' => $bookingsCount,
             ];
         }
 
@@ -176,7 +178,7 @@ class DashboardController extends Controller
     {
         // Get all rooms for the tenant
         $rooms = Room::where('tenant_id', $tenantId)
-            ->with(['property', 'bookings' => function($query) {
+            ->with(['property', 'bookings' => function ($query) {
                 $query->where('check_out', '>', Carbon::today());
             }])
             ->get();
@@ -190,9 +192,10 @@ class DashboardController extends Controller
             $daysOccupied = 0;
 
             for ($date = $thirtyDaysAgo->copy(); $date->lte($today); $date->addDay()) {
-                $isOccupied = $room->bookings->contains(function($booking) use ($date) {
+                $isOccupied = $room->bookings->contains(function ($booking) use ($date) {
                     $checkIn = Carbon::parse($booking->check_in);
                     $checkOut = Carbon::parse($booking->check_out);
+
                     return $date->between($checkIn, $checkOut->subDay());
                 });
 
@@ -207,9 +210,10 @@ class DashboardController extends Controller
             $averageRate = $room->bookings->avg('price') ?? 0;
 
             // Check if the room is currently occupied
-            $currentlyOccupied = $room->bookings->contains(function($booking) use ($today) {
+            $currentlyOccupied = $room->bookings->contains(function ($booking) use ($today) {
                 $checkIn = Carbon::parse($booking->check_in);
                 $checkOut = Carbon::parse($booking->check_out);
+
                 return $today->between($checkIn, $checkOut->subDay());
             });
 
@@ -224,9 +228,9 @@ class DashboardController extends Controller
                 'name' => $room->name,
                 'propertyName' => $room->property->name,
                 'type' => $room->type,
-                'price' => number_format((float)$averageRate, 2, '.', ''), // Format for consistency
+                'price' => number_format((float) $averageRate, 2, '.', ''), // Format for consistency
                 'occupancyRate' => $occupancyRate,
-                'averageRate' => number_format((float)$averageRate, 2, '.', ''), // Format for consistency
+                'averageRate' => number_format((float) $averageRate, 2, '.', ''), // Format for consistency
                 'currentlyOccupied' => $currentlyOccupied,
                 'nextBookingDate' => $nextBooking ? Carbon::parse($nextBooking->check_in)->format('Y-m-d') : null,
                 'nextCheckoutDate' => $nextBooking ? Carbon::parse($nextBooking->check_out)->format('Y-m-d') : null,

@@ -7,19 +7,17 @@ use App\Models\User;
 it('can create a Customer', function () {
     $Customer = Customer::factory()->create();
 
-    expect($Customer)->toBeInstanceOf(customer::class);
+    expect($Customer)->toBeInstanceOf(Customer::class);
 });
-
 
 test('a customer belongs to a tenant', function () {
     $tenant = Tenant::factory()->create();
-    $customer = customer::factory()->create(['tenant_id' => $tenant->id]);
+    $customer = Customer::factory()->create(['tenant_id' => $tenant->id]);
 
     expect($customer->tenant)->toBeInstanceOf(Tenant::class);
     expect($customer->tenant->id)->toBe($tenant->id);
 
 });
-
 
 test('a customer can be accessed through a tenant', function () {
     // Create a tenant
@@ -38,7 +36,6 @@ test('a customer can be accessed through a tenant', function () {
     expect($tenant->customers->contains($customer))->toBeTrue();
 });
 
-
 it('returns customers of the active tenant', function () {
     // Create customers for another tenant
     $otherTenant = Tenant::factory()->create();
@@ -48,8 +45,6 @@ it('returns customers of the active tenant', function () {
     $user = createAsUserWithActiveTenant($tenant);
     // Create customers for the active tenant
     $customersOfActiveTenant = Customer::factory()->count(3)->create(['tenant_id' => $tenant->id]);
-
-
 
     // Get customers of the active tenant
     $customers = Customer::ofActiveTenant()->paginate(10);

@@ -4,11 +4,9 @@ namespace App\Policies;
 
 use App\Models\Booking;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class BookingPolicy
 {
-
     /**
      * Determine whether the user can view the model.
      */
@@ -16,7 +14,6 @@ class BookingPolicy
     {
         return true;
     }
-
 
     /**
      * Determine whether the user can update the model.
@@ -33,5 +30,4 @@ class BookingPolicy
     {
         return $user->tenants->contains($booking->tenant_id);
     }
-
 }

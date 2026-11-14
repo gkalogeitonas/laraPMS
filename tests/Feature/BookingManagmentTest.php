@@ -1,32 +1,31 @@
 <?php
 
-use App\Models\User;
+use App\Models\Booking;
+use App\Models\BookingSource;
+use App\Models\BookingStatus;
+use App\Models\Customer;
 use App\Models\Room;
 use App\Models\Tenant;
-use App\Models\Customer;
-use App\Models\Booking;
-use App\Models\Property;
-use App\Models\BookingStatus;
-use App\Models\BookingSource;
-use function Pest\Laravel\get;
-use function Pest\Laravel\actingAs;
-use function Pest\Laravel\post;
-use function Pest\Laravel\delete;
-use function Pest\Laravel\patch;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
+
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
-use Inertia\Testing\AssertableInertia as Assert;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use function Pest\Laravel\delete;
+use function Pest\Laravel\get;
+use function Pest\Laravel\patch;
+use function Pest\Laravel\post;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->tenant = Tenant::factory()->create();
     $this->BookingStatus = BookingStatus::factory()->create([
-        'tenant_id' => $this->tenant->id
+        'tenant_id' => $this->tenant->id,
     ]);
     $this->BookingSource = BookingSource::factory()->create([
-        'tenant_id' => $this->tenant->id
+        'tenant_id' => $this->tenant->id,
     ]);
     $this->user = User::factory()->create();
     $this->user->tenants()->attach($this->tenant);
@@ -73,7 +72,7 @@ it('prevents user to create a booking on others tenant room', function () {
     ];
 
     $response = post(route('bookings.store'), $bookingData);
-    //return an error on room_id
+    // return an error on room_id
     $response->assertStatus(302);
     assertDatabaseMissing('bookings', $bookingData);
 
@@ -143,7 +142,7 @@ it('prevents non tenant members to update a booking', function () {
         'room_id' => $this->room->id,
     ]);
 
-    $response = patch('/bookings/' . $booking->id, [
+    $response = patch('/bookings/'.$booking->id, [
         'name' => 'New Name',
         'room_id' => $booking->room->id,
         'customer_id' => $booking->customer,
@@ -179,7 +178,7 @@ it('prevents non tenant members to delete a booking', function () {
         'room_id' => $this->room->id,
     ]);
 
-    $response = delete('/bookings/' . $booking->id);
+    $response = delete('/bookings/'.$booking->id);
 
     $response->assertStatus(403);
 });
@@ -266,8 +265,3 @@ it('calculates the total sum of selected bookings', function () {
         ->where('totals.total_days', 18)
     );
 });
-
-
-
-
-

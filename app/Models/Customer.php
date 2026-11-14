@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BelongsToTenant;
 
 class Customer extends Model
 {
-    use HasFactory, BelongsToTenant;
+    use BelongsToTenant, HasFactory;
 
     protected $fillable = [
-        'name', 'email', 'phone', 'address', 'tenant_id'
+        'name', 'email', 'phone', 'address', 'tenant_id',
     ];
 
     public function bookings()
@@ -19,13 +19,15 @@ class Customer extends Model
         return $this->hasMany(Booking::class);
     }
 
-    public function tenant(){
+    public function tenant()
+    {
         return $this->belongsTo(Tenant::class);
     }
 
     public static function ofActiveTenant()
     {
         $tenantId = auth()->user()->getActiveTenant()->id;
+
         return self::where('tenant_id', $tenantId);
     }
 }

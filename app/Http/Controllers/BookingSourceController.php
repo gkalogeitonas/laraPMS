@@ -8,18 +8,18 @@ use Inertia\Inertia;
 
 class BookingSourceController extends Controller
 {
-
     public function __construct()
     {
         $this->authorizeResource(BookingSource::class, 'bookingSource');
     }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         return Inertia::render('BookingSources/Index', [
-            'bookingSources' => BookingSource::all()
+            'bookingSources' => BookingSource::all(),
         ]);
     }
 
@@ -37,14 +37,15 @@ class BookingSourceController extends Controller
      */
     public function store(Request $request)
     {
-        if (!auth()->user()->hasActiveTenant()) {
+        if (! auth()->user()->hasActiveTenant()) {
             return redirect()->route('booking-sources.index')->with('error', 'No active tenant.');
         }
-        $attributes  = $request->validate([
+        $attributes = $request->validate([
             'name' => 'required|string|max:255',
         ]);
 
         BookingSource::create($attributes);
+
         return redirect()->route('booking-sources.index')->with('success', 'Booking Source created.');
     }
 
@@ -62,7 +63,7 @@ class BookingSourceController extends Controller
     public function edit(BookingSource $bookingSource)
     {
         return Inertia::render('BookingSources/Edit', [
-            'bookingSource' => $bookingSource
+            'bookingSource' => $bookingSource,
         ]);
     }
 
@@ -71,11 +72,12 @@ class BookingSourceController extends Controller
      */
     public function update(Request $request, BookingSource $bookingSource)
     {
-        $attributes  = $request->validate([
+        $attributes = $request->validate([
             'name' => 'required|string|max:255',
         ]);
 
         $bookingSource->update($attributes);
+
         return redirect()->route('booking-sources.index')->with('success', 'Booking Source updated.');
     }
 
@@ -85,6 +87,7 @@ class BookingSourceController extends Controller
     public function destroy(BookingSource $bookingSource)
     {
         $bookingSource->delete();
+
         return redirect()->route('booking-sources.index')->with('success', 'Booking Source deleted.');
     }
 }

@@ -1,9 +1,10 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use App\Models\Property;
 use App\Models\Tenant;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,7 +17,7 @@ use App\Models\User;
 |
 */
 
-uses(TestCase::class, RefreshDatabase::class)->in('Feature','Unit');
+uses(TestCase::class, RefreshDatabase::class)->in('Feature', 'Unit');
 
 /*
 |--------------------------------------------------------------------------
@@ -52,16 +53,16 @@ function something()
 function createOwnerAndProperty()
 {
     // Create a tenant
-    $tenant = \App\Models\Tenant::factory()->create();
+    $tenant = Tenant::factory()->create();
 
     // Create an owner (user) and associate them with the tenant
-    $owner = \App\Models\User::factory()->create();
+    $owner = User::factory()->create();
     $owner->tenants()->attach($tenant->id);
     // Set the owner's active tenant
     $owner->setActiveTenant($tenant);
 
     // Create a property for the tenant
-    $property = \App\Models\Property::factory()->create(['tenant_id' => $tenant->id]);
+    $property = Property::factory()->create(['tenant_id' => $tenant->id]);
 
     return compact('tenant', 'owner', 'property');
 }
@@ -69,10 +70,10 @@ function createOwnerAndProperty()
 function createUserWithTenant()
 {
     // Create a tenant
-    $tenant = \App\Models\Tenant::factory()->create();
+    $tenant = Tenant::factory()->create();
 
     // Create a user and associate them with the tenant
-    $user = \App\Models\User::factory()->create();
+    $user = User::factory()->create();
     $user->tenants()->attach($tenant->id);
     // Set the user's active tenant
     $user->setActiveTenant($tenant);

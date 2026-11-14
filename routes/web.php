@@ -1,17 +1,18 @@
 <?php
 
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\BookingSourceController;
+use App\Http\Controllers\BookingStatusController;
+use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\RoomController;
+use App\Http\Controllers\TenantSwitchController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\RoomController;
-use App\Http\Controllers\PropertyController;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\TenantSwitchController;
-use App\Http\Controllers\BookingController;
-use App\Http\Controllers\CalendarController;
-use App\Http\Controllers\BookingStatusController;
-use App\Http\Controllers\BookingSourceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,10 +34,9 @@ Route::get('/', function () {
     ]);
 })->name('homepage');
 
-Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])
+Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
-
 
 Route::get('/calendar', [CalendarController::class, 'index'])->middleware(['auth', 'verified'])->name('calendar');
 
@@ -46,8 +46,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Room routes
-    //Route::get('/rooms/create', [RoomController::class, 'create'])->name('rooms.create');
-    //Route::post('/rooms', [RoomController::class, 'store'])->name('rooms.store');
+    // Route::get('/rooms/create', [RoomController::class, 'create'])->name('rooms.create');
+    // Route::post('/rooms', [RoomController::class, 'store'])->name('rooms.store');
     Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');
     Route::get('properties/{property}/rooms/create', [RoomController::class, 'create'])->name('properties.rooms.create');
     Route::post('properties/{property}/rooms', [RoomController::class, 'store'])->name('properties.rooms.store');
@@ -55,7 +55,6 @@ Route::middleware('auth')->group(function () {
     Route::get('rooms/{room}/edit', [RoomController::class, 'edit'])->name('rooms.edit');
     Route::patch('rooms/{room}', [RoomController::class, 'update'])->name('rooms.update');
     Route::delete('rooms/{room}', [RoomController::class, 'destroy'])->name('rooms.destroy');
-
 
     Route::get('/properties', [PropertyController::class, 'index'])->name('properties.index');
     Route::get('/properties/create', [PropertyController::class, 'create'])->name('properties.create');
@@ -79,7 +78,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/booking-statuses/{bookingStatus}', [BookingStatusController::class, 'update'])->name('booking-statuses.update');
     Route::post('/booking-statuses', [BookingStatusController::class, 'store'])->name('booking-statuses.store');
 
-
     Route::get('/booking-sources', [BookingSourceController::class, 'index'])->name('booking-sources.index');
     Route::get('/booking-sources/create', [BookingSourceController::class, 'create'])->name('booking-sources.create');
     Route::get('/booking-sources/{bookingSource}/edit', [BookingSourceController::class, 'edit'])->name('booking-sources.edit');
@@ -87,8 +85,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/booking-sources/{bookingSource}', [BookingSourceController::class, 'update'])->name('booking-sources.update');
     Route::post('/booking-sources', [BookingSourceController::class, 'store'])->name('booking-sources.store');
 
-
 });
-
 
 require __DIR__.'/auth.php';

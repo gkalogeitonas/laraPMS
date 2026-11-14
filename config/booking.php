@@ -6,5 +6,5 @@ return [
         'confirmed',
         'checked in',
         'checked out',
-    ]
+    ],
 ];

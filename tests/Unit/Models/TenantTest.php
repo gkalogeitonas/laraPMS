@@ -1,17 +1,16 @@
 <?php
 
-use App\Models\Tenant;
-use App\Models\Room;
-use App\Models\Property;
-use App\Models\Customer;
 use App\Models\Booking;
 use App\Models\BookingStatus;
+use App\Models\Customer;
+use App\Models\Property;
+use App\Models\Room;
+use App\Models\Tenant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-
-it('can have many Properties', function() {
+it('can have many Properties', function () {
     // Create a tenant
     $tenant = Tenant::factory()->create();
 
@@ -22,7 +21,6 @@ it('can have many Properties', function() {
     expect($tenant->properties)->toHaveCount(3);
     expect($tenant->properties->pluck('id')->toArray())->toEqual($properties->pluck('id')->toArray());
 });
-
 
 it('can have many rooms', function () {
     // Create a tenant
