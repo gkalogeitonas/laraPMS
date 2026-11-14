@@ -1,7 +1,8 @@
 <script setup>
-import { computed, reactive, ref } from 'vue';
+import { computed, nextTick, reactive, ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
-import { layoutBars, localToday, toDayNumber, toUtcDate, windowDays } from './layout.js';
+import { ExclamationTriangleIcon } from '@heroicons/vue/20/solid';
+import { layoutCalendar, localToday, toDayNumber, toUtcDate, windowDays } from './layout.js';
 
 const props = defineProps({
     /** @type {Array<{ id: number, name: string, rooms: Array<{ id: number, name: string }> }>} */
@@ -13,7 +14,9 @@ const props = defineProps({
 });
 
 const DAY_WIDTH = 44;
-const ROW_HEIGHT = 44;
+const ROW_PADDING = 6;
+const BAR_HEIGHT = 32;
+const LANE_GAP = 4;
 const BAR_INSET = 2;
 const NEUTRAL_COLOR = '#9ca3af';
 
@@ -43,18 +46,65 @@ const months = computed(() => {
 const todayIndex = computed(() => toDayNumber(localToday()) - toDayNumber(props.window.start));
 const showTodayLine = computed(() => todayIndex.value >= 0 && todayIndex.value < props.window.days);
 
-const barsByRoom = computed(() => {
-    const rooms = props.groups.flatMap((group) => group.rooms);
-    const byRoom = new Map();
-    for (const bar of layoutBars(props.window, rooms, props.bookings)) {
-        if (!byRoom.has(bar.roomId)) {
-            byRoom.set(bar.roomId, []);
+const layout = computed(() => layoutCalendar(props.window, props.groups.flatMap((group) => group.rooms), props.bookings));
+
+/** Groups items that have a `roomId` by Room. */
+function byRoom(items) {
+    const grouped = new Map();
+    for (const item of items) {
+        if (!grouped.has(item.roomId)) {
+            grouped.set(item.roomId, []);
         }
-        byRoom.get(bar.roomId).push(bar);
+        grouped.get(item.roomId).push(item);
     }
 
-    return byRoom;
-});
+    return grouped;
+}
+
+const barsByRoom = computed(() => byRoom(layout.value.bars));
+const overbookingsByRoom = computed(() => byRoom(layout.value.overbookings));
+const overbookingCount = computed(() => layout.value.overbookings.length);
+const overbookingCountLabel = computed(() => countLabel(overbookingCount.value, 'Overbooking', 'Overbookings'));
+
+function groupHasOverbooking(group) {
+    return group.rooms.some((room) => overbookingsByRoom.value.has(room.id));
+}
+
+/** Identifies an Overbooking's highlight in the DOM, for scrolling to it. */
+function overbookingKey(overbooking) {
+    return `${overbooking.roomId}-${overbooking.start}`;
+}
+
+function rowHeight(roomId) {
+    const lanes = layout.value.laneCounts.get(roomId) ?? 1;
+
+    return 2 * ROW_PADDING + lanes * BAR_HEIGHT + (lanes - 1) * LANE_GAP;
+}
+
+function overbookingStyle(overbooking) {
+    return {
+        left: `${overbooking.start * DAY_WIDTH}px`,
+        width: `${(overbooking.end - overbooking.start) * DAY_WIDTH}px`,
+    };
+}
+
+const scroller = ref(null);
+
+/** Scrolls the first Overbooking of the window into view, expanding its Property group if needed. */
+async function scrollToFirstOverbooking() {
+    const first = layout.value.overbookings[0];
+    if (!first) {
+        return;
+    }
+    const group = props.groups.find((candidate) => candidate.rooms.some((room) => room.id === first.roomId));
+    if (group) {
+        collapsed.delete(group.id);
+    }
+    await nextTick();
+    scroller.value
+        ?.querySelector(`[data-overbooking="${overbookingKey(first)}"]`)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+}
 
 const collapsed = reactive(new Set());
 
@@ -92,6 +142,8 @@ function barStyle(bar) {
     const right = bar.end * DAY_WIDTH - (bar.clippedEnd ? 0 : BAR_INSET);
 
     return {
+        top: `${ROW_PADDING + bar.lane * (BAR_HEIGHT + LANE_GAP)}px`,
+        height: `${BAR_HEIGHT}px`,
         left: `${left}px`,
         width: `${Math.max(right - left, 4)}px`,
         backgroundColor: background,
@@ -145,14 +197,28 @@ function hideTooltip() {
 <template>
     <div class="relative [--room-column:7rem] sm:[--room-column:10rem]">
         <div
+            ref="scroller"
             class="max-h-[75vh] overflow-auto overscroll-contain rounded-lg border border-gray-200 bg-white"
             @scroll.passive="hideTooltip"
         >
             <div class="relative" :style="{ width: `calc(var(--room-column) + ${timelineWidth}px)` }">
                 <!-- Date header -->
                 <div class="sticky top-0 z-30 flex border-b border-gray-200 bg-white">
-                    <div class="sticky left-0 z-10 flex w-[var(--room-column)] shrink-0 items-end border-r border-gray-200 bg-white px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                        Rooms
+                    <div class="sticky left-0 z-10 flex w-[var(--room-column)] shrink-0 flex-col items-start justify-between gap-1 border-r border-gray-200 bg-white px-3 py-2">
+                        <button
+                            v-if="overbookingCount > 0"
+                            type="button"
+                            class="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700 ring-1 ring-red-300 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                            :aria-label="`${overbookingCountLabel} in this window. Scroll to the first one.`"
+                            :title="`${overbookingCountLabel} in this window`"
+                            @click="scrollToFirstOverbooking"
+                        >
+                            <ExclamationTriangleIcon class="h-3.5 w-3.5" aria-hidden="true" />
+                            {{ overbookingCount }}
+                            <span class="hidden sm:inline">{{ overbookingCount === 1 ? 'overbooking' : 'overbookings' }}</span>
+                        </button>
+                        <span v-else class="text-xs text-gray-400">No overbookings</span>
+                        <span class="text-xs font-semibold uppercase tracking-wide text-gray-500">Rooms</span>
                     </div>
                     <div :style="{ width: `${timelineWidth}px` }">
                         <div class="flex border-b border-gray-100">
@@ -206,6 +272,12 @@ function hideTooltip() {
                                 <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.17l3.71-3.94a.75.75 0 1 1 1.08 1.04l-4.25 4.5a.75.75 0 0 1-1.08 0l-4.25-4.5a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd" />
                             </svg>
                             <span class="truncate">{{ group.name }}</span>
+                            <ExclamationTriangleIcon
+                                v-if="collapsed.has(group.id) && groupHasOverbooking(group)"
+                                class="h-4 w-4 shrink-0 text-red-600"
+                                role="img"
+                                aria-label="Overbooked in this window"
+                            />
                         </button>
                         <div class="flex items-center px-2 text-xs text-gray-500" :style="{ width: `${timelineWidth}px` }">
                             <span v-if="collapsed.has(group.id)" class="sticky left-[calc(var(--room-column)+0.5rem)]">
@@ -223,12 +295,18 @@ function hideTooltip() {
                         <div v-for="room in group.rooms" :key="room.id" class="flex border-b border-gray-100">
                             <div
                                 class="sticky left-0 z-20 flex w-[var(--room-column)] shrink-0 items-center truncate border-r border-gray-200 bg-white px-3 pl-7 text-sm text-gray-700"
-                                :style="{ height: `${ROW_HEIGHT}px` }"
+                                :style="{ height: `${rowHeight(room.id)}px` }"
                                 :title="room.name"
                             >
                                 <span class="truncate">{{ room.name }}</span>
+                                <ExclamationTriangleIcon
+                                    v-if="overbookingsByRoom.has(room.id)"
+                                    class="ml-1 h-4 w-4 shrink-0 text-red-600"
+                                    role="img"
+                                    aria-label="Overbooked in this window"
+                                />
                             </div>
-                            <div class="relative" :style="{ width: `${timelineWidth}px`, height: `${ROW_HEIGHT}px` }">
+                            <div class="relative" :style="{ width: `${timelineWidth}px`, height: `${rowHeight(room.id)}px` }">
                                 <!-- Day cells -->
                                 <div class="absolute inset-0 flex" aria-hidden="true">
                                     <div
@@ -245,7 +323,7 @@ function hideTooltip() {
                                     v-for="bar in barsByRoom.get(room.id) ?? []"
                                     :key="bar.booking.id"
                                     :href="bar.booking.editUrl"
-                                    class="absolute top-1.5 z-10 flex h-8 items-center gap-1 overflow-hidden whitespace-nowrap px-2 text-xs font-medium shadow-sm ring-1 ring-black/10 hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                                    class="absolute z-10 flex items-center gap-1 overflow-hidden whitespace-nowrap px-2 text-xs font-medium shadow-sm ring-1 ring-black/10 hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
                                     :class="[
                                         bar.clippedStart ? 'rounded-l-none' : 'rounded-l-md',
                                         bar.clippedEnd ? 'rounded-r-none' : 'rounded-r-md',
@@ -260,6 +338,16 @@ function hideTooltip() {
                                     <span class="truncate">{{ bar.booking.guestName }}</span>
                                     <span class="shrink-0 opacity-80">· {{ bar.booking.guests }}</span>
                                 </Link>
+
+                                <!-- Shared Nights of Overbookings -->
+                                <div
+                                    v-for="overbooking in overbookingsByRoom.get(room.id) ?? []"
+                                    :key="overbooking.start"
+                                    :data-overbooking="overbookingKey(overbooking)"
+                                    class="overbooking-pattern pointer-events-none absolute inset-y-0 z-[12] border-x-2 border-red-600"
+                                    :style="overbookingStyle(overbooking)"
+                                    aria-hidden="true"
+                                />
                             </div>
                         </div>
                     </template>
@@ -305,3 +393,15 @@ function hideTooltip() {
         </div>
     </div>
 </template>
+
+<style scoped>
+.overbooking-pattern {
+    background-image: repeating-linear-gradient(
+        135deg,
+        rgb(220 38 38 / 0.45) 0,
+        rgb(220 38 38 / 0.45) 3px,
+        transparent 3px,
+        transparent 8px
+    );
+}
+</style>

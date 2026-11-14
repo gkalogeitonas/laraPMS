@@ -30,10 +30,11 @@ The project runs on [DDEV](https://ddev.readthedocs.io/) (PHP 8.5, MariaDB 11.8,
     ddev artisan migrate:fresh --seed
     ```
 
-5. **Compile the front-end assets**:
+5. **Start the Vite dev server** (hot reload; stop it with Ctrl+C):
     ```sh
-    ddev npm run dev
+    ddev composer run dev
     ```
+    Or build the assets once with `ddev npm run build`.
 
 Now, you can access the application at `https://larapms.ddev.site`.
 
