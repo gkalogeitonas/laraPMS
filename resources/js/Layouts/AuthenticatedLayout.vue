@@ -15,7 +15,7 @@ import UserProfile from '@/Components/UserProfile.vue';
 
 
         <!-- Main Content -->
-        <div class="flex-1">
+        <div class="flex-1 min-w-0">
 
             <header class="bg-white shadow flex justify-end pr-4">
                 <div class=" py-2 px-4 sm:px-6 lg:px-8 text-gray-900">

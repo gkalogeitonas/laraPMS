@@ -20,7 +20,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'password'
+        'password',
     ];
 
     /**
@@ -46,16 +46,17 @@ class User extends Authenticatable
     public function properties()
     {
         return $this->belongsToMany(Property::class, 'tenant_user', 'user_id', 'tenant_id')
-                    ->withPivot('tenant_id')
-                    ->join('properties as p', 'tenant_user.tenant_id', '=', 'p.tenant_id')
-                    ->select('p.*', 'tenant_user.user_id as pivot_user_id', 'tenant_user.tenant_id as pivot_tenant_id');
+            ->withPivot('tenant_id')
+            ->join('properties as p', 'tenant_user.tenant_id', '=', 'p.tenant_id')
+            ->select('p.*', 'tenant_user.user_id as pivot_user_id', 'tenant_user.tenant_id as pivot_tenant_id');
     }
 
     public function getActiveProperties()
     {
-        if (!$this->getActiveTenant()) {
+        if (! $this->getActiveTenant()) {
             return collect();
         }
+
         return $this->getActiveTenant()->properties;
     }
 
@@ -72,6 +73,7 @@ class User extends Authenticatable
     public function getActiveTenant()
     {
         $tenantId = session('active_tenant_id');
+
         return Tenant::find($tenantId);
     }
 
@@ -79,5 +81,4 @@ class User extends Authenticatable
     {
         return session()->has('active_tenant_id');
     }
-
 }

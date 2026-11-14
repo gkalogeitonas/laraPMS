@@ -4,25 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\BookingSource;
-use App\Models\Room;
 use App\Models\BookingStatus;
-use Illuminate\Http\Request;
+use App\Models\Room;
 use App\Services\BookingTotalsCalculator;
-use Inertia\Inertia;
 use App\Traits\BookingFilters;
-
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class BookingController extends Controller
 {
-
     use BookingFilters;
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-         //check if user has active tenant
-        if (!auth()->user()->hasActiveTenant()) {
+        // check if user has active tenant
+        if (! auth()->user()->hasActiveTenant()) {
             return Inertia::render('Bookings/Index', [
                 'bookings' => [],
                 'totals' => [
@@ -87,6 +86,7 @@ class BookingController extends Controller
         // $attributes['tenant_id'] = auth()->user()->getActiveTenant()->id;
 
         Booking::create($attributes);
+
         return redirect()->route('bookings.index')->with('success', 'Booking created.');
     }
 
@@ -103,8 +103,9 @@ class BookingController extends Controller
      */
     public function edit(Booking $booking)
     {
-        //return  $booking->load(['room', 'bookingStatus', 'bookingSource']);
+        // return  $booking->load(['room', 'bookingStatus', 'bookingSource']);
         $this->authorize('update', $booking);
+
         return Inertia::render('Bookings/Edit', [
             'booking' => $booking->load(['room', 'bookingStatus', 'bookingSource']),
             'rooms' => auth()->user()->getActiveTenant()->rooms,
@@ -121,6 +122,7 @@ class BookingController extends Controller
         $this->authorize('update', $booking);
         $attributes = $this->validateBooking($request);
         $booking->update($attributes);
+
         return redirect()->route('bookings.index')->with('success', 'Booking updated.');
     }
 
@@ -131,6 +133,7 @@ class BookingController extends Controller
     {
         $this->authorize('delete', $booking);
         $booking->delete();
+
         return redirect()->route('bookings.index')->with('success', 'Booking deleted.');
     }
 
@@ -141,13 +144,13 @@ class BookingController extends Controller
         $rooms = Room::all();                     // The global scope will filter by tenant
 
         return $request->validate([
-            'room_id' => 'required|in:' . $rooms->pluck('id')->join(','),
+            'room_id' => 'required|in:'.$rooms->pluck('id')->join(','),
             'name' => 'required|string|min:3|max:255',
             'customer_id' => 'nullable',
             'check_in' => 'required|date',
             'check_out' => 'required|date|after:check_in',
-            'booking_status_id' => 'nullable|in:' . $booking_statuses->pluck('id')->join(','),
-            'booking_source_id' => 'nullable|in:' . $booking_sources->pluck('id')->join(','),
+            'booking_status_id' => 'nullable|in:'.$booking_statuses->pluck('id')->join(','),
+            'booking_source_id' => 'nullable|in:'.$booking_sources->pluck('id')->join(','),
             'total_guests' => 'required|integer',
             'price' => 'required|numeric',
         ]);

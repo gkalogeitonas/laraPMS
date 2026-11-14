@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Property;
 use App\Models\Room; // Import the Room model
-use App\Models\Property; // Import the Property model
+use Carbon\Carbon; // Import the Property model
+use Illuminate\Http\Request;
 use Inertia\Inertia;
-
 
 class RoomController extends Controller
 {
-
     public function __construct()
     {
         $this->authorizeResource(Room::class, 'room');
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -22,6 +22,7 @@ class RoomController extends Controller
     {
         if (auth()->user()->hasActiveTenant()) {
             $rooms = Room::all(); // Global scope will filter by active tenant automatically
+
             return Inertia::render('Rooms/Index', ['rooms' => $rooms]);
         } else {
             return Inertia::render('Rooms/Index', ['rooms' => []]);
@@ -34,6 +35,7 @@ class RoomController extends Controller
     public function create(Property $property)
     {
         $this->authorize('update', $property);
+
         return Inertia::render('Rooms/Create', [
             'property' => $property,
             'types' => config('room.types'),
@@ -52,6 +54,7 @@ class RoomController extends Controller
 
         return redirect()->route('properties.show', $property)->with('success', 'Room created successfully.');
     }
+
     /**
      * Display the specified resource.
      */
@@ -76,8 +79,9 @@ class RoomController extends Controller
             ->get()
             ->map(function ($booking) {
                 // Ensure dates are in Y-m-d format for consistency
-                $booking->check_in = \Carbon\Carbon::parse($booking->check_in)->format('Y-m-d');
-                $booking->check_out = \Carbon\Carbon::parse($booking->check_out)->format('Y-m-d');
+                $booking->check_in = Carbon::parse($booking->check_in)->format('Y-m-d');
+                $booking->check_out = Carbon::parse($booking->check_out)->format('Y-m-d');
+
                 return $booking;
             });
 
@@ -88,19 +92,21 @@ class RoomController extends Controller
             ->get()
             ->map(function ($booking) {
                 // Ensure dates are in Y-m-d format for consistency
-                $booking->check_in = \Carbon\Carbon::parse($booking->check_in)->format('Y-m-d');
-                $booking->check_out = \Carbon\Carbon::parse($booking->check_out)->format('Y-m-d');
+                $booking->check_in = Carbon::parse($booking->check_in)->format('Y-m-d');
+                $booking->check_out = Carbon::parse($booking->check_out)->format('Y-m-d');
+
                 return $booking;
             });
 
         // Calculate occupancy rate for the last 30 days
-        $thirtyDaysAgo = \Carbon\Carbon::today()->subDays(30);
+        $thirtyDaysAgo = Carbon::today()->subDays(30);
         $totalDaysOccupied = 0;
 
-        for ($date = $thirtyDaysAgo->copy(); $date->lte(\Carbon\Carbon::today()); $date->addDay()) {
-            $isOccupied = $room->bookings->contains(function($booking) use ($date) {
-                $checkIn = \Carbon\Carbon::parse($booking->check_in);
-                $checkOut = \Carbon\Carbon::parse($booking->check_out);
+        for ($date = $thirtyDaysAgo->copy(); $date->lte(Carbon::today()); $date->addDay()) {
+            $isOccupied = $room->bookings->contains(function ($booking) use ($date) {
+                $checkIn = Carbon::parse($booking->check_in);
+                $checkOut = Carbon::parse($booking->check_out);
+
                 return $date->between($checkIn, $checkOut->subDay());
             });
 
@@ -137,7 +143,7 @@ class RoomController extends Controller
 
             $bookingTrends[] = [
                 'month' => $month->format('M'),
-                'count' => $bookingsCount
+                'count' => $bookingsCount,
             ];
         }
 
@@ -151,7 +157,7 @@ class RoomController extends Controller
             'totalRevenue' => $totalRevenue,
             'currentMonthRevenue' => $currentMonthRevenue,
             'bookingTrends' => $bookingTrends,
-            'isOccupied' => $currentBooking !== null
+            'isOccupied' => $currentBooking !== null,
         ]);
     }
 
@@ -174,6 +180,7 @@ class RoomController extends Controller
     {
         $attributes = $this->validateRoom($request);
         $room->update($attributes);
+
         return redirect()->route('properties.show', $room->property)->with('success', 'Room updated successfully.');
     }
 
@@ -184,18 +191,17 @@ class RoomController extends Controller
     {
         $property = $room->property;
         $room->delete();
+
         return redirect()->route('properties.show', $property)->with('success', 'Room deleted successfully.');
     }
-
 
     private function validateRoom(Request $request)
     {
         return $request->validate([
             'name' => 'required|string|min:3|max:255',
             'description' => 'nullable|string|min:5|max:255',
-            'type' => 'required|in:' . implode(',', config('room.types')),
+            'type' => 'required|in:'.implode(',', config('room.types')),
             'price' => 'nullable|numeric|min:0', // Add price validation
         ]);
     }
-
 }

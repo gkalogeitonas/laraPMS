@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
 class TenantSwitchController extends Controller
@@ -16,7 +15,7 @@ class TenantSwitchController extends Controller
 
         $tenant = $request->user()->tenants()->find($request->tenant_id);
 
-        if (!$tenant) {
+        if (! $tenant) {
             return response()->json(['error' => 'Tenant not found or does not belong to the user'], Response::HTTP_FORBIDDEN);
         }
 

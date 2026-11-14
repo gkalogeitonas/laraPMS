@@ -10,9 +10,8 @@ class Property extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'name', 'address', 'description', 'type', 'tenant_id'
+        'user_id', 'name', 'address', 'description', 'type', 'tenant_id',
     ];
-
 
     public function rooms()
     {

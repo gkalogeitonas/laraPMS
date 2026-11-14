@@ -1,32 +1,26 @@
 <?php
 
-use App\Models\User;
+use App\Models\Booking;
+use App\Models\BookingSource;
+use App\Models\BookingStatus;
+use App\Models\Customer;
 use App\Models\Room;
 use App\Models\Tenant;
-use App\Models\Customer;
-use App\Models\Booking;
-use App\Models\Property;
-use App\Models\BookingStatus;
-use App\Models\BookingSource;
-use function Pest\Laravel\get;
-use function Pest\Laravel\actingAs;
-use function Pest\Laravel\post;
-use function Pest\Laravel\delete;
-use function Pest\Laravel\patch;
-use function Pest\Laravel\assertDatabaseHas;
-use function Pest\Laravel\assertDatabaseMissing;
-use Inertia\Testing\AssertableInertia as Assert;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
+
+use function Pest\Laravel\get;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->tenant = Tenant::factory()->create();
     $this->BookingStatus = BookingStatus::factory()->create([
-        'tenant_id' => $this->tenant->id
+        'tenant_id' => $this->tenant->id,
     ]);
     $this->BookingSource = BookingSource::factory()->create([
-        'tenant_id' => $this->tenant->id
+        'tenant_id' => $this->tenant->id,
     ]);
     $this->user = User::factory()->create();
     $this->user->tenants()->attach($this->tenant);
@@ -36,8 +30,6 @@ beforeEach(function () {
     $this->room = Room::factory()->create(['tenant_id' => $this->tenant->id]);
     $this->customer = Customer::factory()->create(['tenant_id' => $this->tenant->id]);
 });
-
-
 
 it('can filter booking by dates', function () {
     $booking1 = Booking::factory()->create([
@@ -99,7 +91,6 @@ it('can filter booking by dates', function () {
 
 });
 
-
 it('can filter booking by name', function () {
     $booking1 = Booking::factory()->create([
         'tenant_id' => $this->tenant->id,
@@ -136,7 +127,6 @@ it('can filter booking by name', function () {
         ->missing('bookings.data.0')
     );
 });
-
 
 it('can filter booking by both name and dates', function () {
     $booking1 = Booking::factory()->create([
@@ -176,7 +166,6 @@ it('can filter booking by both name and dates', function () {
         ->missing('bookings.data.0')
     );
 });
-
 
 it('can filter bookings by booking status', function () {
     $bookingStatus1 = BookingStatus::factory()->create([
@@ -225,7 +214,6 @@ it('can filter bookings by booking status', function () {
     );
 });
 
-
 it('can filter bookings by bookings status and dates', function () {
     $bookingStatus1 = BookingStatus::factory()->create([
         'tenant_id' => $this->tenant->id,
@@ -243,7 +231,6 @@ it('can filter bookings by bookings status and dates', function () {
         'check_out' => '2024-01-10',
     ]);
 
-
     $booking2 = Booking::factory()->create([
         'tenant_id' => $this->tenant->id,
         'room_id' => $this->room->id,
@@ -251,7 +238,6 @@ it('can filter bookings by bookings status and dates', function () {
         'check_in' => '2024-02-15',
         'check_out' => '2024-02-20',
     ]);
-
 
     $response = get(route('bookings.index', ['start_date' => '2024-01-01', 'end_date' => '2024-01-10', 'booking_status_id' => $bookingStatus1->id]));
     $response->assertInertia(fn (Assert $page) => $page
@@ -277,8 +263,7 @@ it('can filter bookings by bookings status and dates', function () {
     );
 });
 
-
-it('can filter bookings by booking source', function(){
+it('can filter bookings by booking source', function () {
     $bookingSource1 = BookingSource::factory()->create([
         'tenant_id' => $this->tenant->id,
     ]);
@@ -286,7 +271,6 @@ it('can filter bookings by booking source', function(){
     $bookingSource2 = BookingSource::factory()->create([
         'tenant_id' => $this->tenant->id,
     ]);
-
 
     $booking1 = Booking::factory()->create([
         'tenant_id' => $this->tenant->id,
@@ -339,7 +323,7 @@ it('can filter bookings by booking source', function(){
     );
 });
 
-it('can filter bookings by rooms', function(){
+it('can filter bookings by rooms', function () {
     $room1 = Room::factory()->create(['tenant_id' => $this->tenant->id]);
     $room2 = Room::factory()->create(['tenant_id' => $this->tenant->id]);
 
@@ -382,7 +366,6 @@ it('can filter bookings by rooms', function(){
         ->missing('bookings.data.0')
     );
 });
-
 
 it('calculates the total sum of selected dates period', function () {
     $booking1 = Booking::factory()->create([
@@ -433,9 +416,9 @@ it('calculates the total sum of selected dates period', function () {
     ]));
 
     $response->assertInertia(fn (Assert $page) => $page
-    ->component('Bookings/Index')
-    ->has('bookings.data', 2)
-    ->where('totals.total_days', 12)
-    ->where('totals.total_amount', 900)
+        ->component('Bookings/Index')
+        ->has('bookings.data', 2)
+        ->where('totals.total_days', 12)
+        ->where('totals.total_amount', 900)
     );
 });

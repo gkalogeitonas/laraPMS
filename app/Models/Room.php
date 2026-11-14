@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Room extends Model
 {
-    use HasFactory, BelongsToTenant;
+    use BelongsToTenant, HasFactory;
 
     protected $fillable = [
         'name',
@@ -28,5 +28,4 @@ class Room extends Model
     {
         return $this->hasMany(Booking::class);
     }
-
 }

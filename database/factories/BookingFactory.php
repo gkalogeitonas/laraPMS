@@ -2,15 +2,15 @@
 
 namespace Database\Factories;
 
+use App\Models\Booking;
+use App\Models\Customer;
+use App\Models\Room;
+use App\Models\Tenant;
 use Carbon\Carbon;
-use \App\Models\Room;
-use \App\Models\Tenant;
-use \App\Models\Customer;
-use \App\Models\BookingStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Booking>
+ * @extends Factory<Booking>
  */
 class BookingFactory extends Factory
 {
@@ -23,6 +23,7 @@ class BookingFactory extends Factory
     {
         $check_in = Carbon::instance($this->faker->dateTimeBetween('-1 month', '+1 month'));
         $check_out = $check_in->copy()->addDays($this->faker->numberBetween(1, 30));
+
         return [
             'room_id' => Room::factory(),
             'tenant_id' => Tenant::factory(),

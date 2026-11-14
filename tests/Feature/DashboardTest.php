@@ -1,20 +1,20 @@
 <?php
 
-use App\Models\User;
-use App\Models\Tenant;
+use App\Models\Booking;
+use App\Models\BookingSource;
+use App\Models\BookingStatus;
+use App\Models\Customer;
 use App\Models\Property;
 use App\Models\Room;
-use App\Models\Booking;
-use App\Models\Customer;
-use App\Models\BookingStatus;
-use App\Models\BookingSource;
+use App\Models\Tenant;
+use App\Models\User;
 use Carbon\Carbon;
-use Inertia\Testing\AssertableInertia as Assert;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
 
-beforeEach(function() {
+beforeEach(function () {
     // Create booking status and source
     $this->bookingStatus = BookingStatus::factory()->create();
     $this->bookingSource = BookingSource::factory()->create();
@@ -62,12 +62,12 @@ beforeEach(function() {
     ]);
 });
 
-it('redirects unauthenticated users from dashboard', function() {
+it('redirects unauthenticated users from dashboard', function () {
     $this->get(route('dashboard'))
         ->assertRedirect(route('login'));
 });
 
-it('shows dashboard to authenticated users', function() {
+it('shows dashboard to authenticated users', function () {
     $this->actingAs($this->user)
         ->get(route('dashboard'))
         ->assertStatus(200)
@@ -87,7 +87,7 @@ it('shows dashboard to authenticated users', function() {
         );
 });
 
-it('displays empty dashboard when user has no active tenant', function() {
+it('displays empty dashboard when user has no active tenant', function () {
     // Remove active tenant
     session()->forget('active_tenant_id');
 
@@ -110,7 +110,7 @@ it('displays empty dashboard when user has no active tenant', function() {
         );
 });
 
-it('shows correct property statistics', function() {
+it('shows correct property statistics', function () {
     $this->actingAs($this->user)
         ->get(route('dashboard'))
         ->assertStatus(200)
@@ -123,7 +123,7 @@ it('shows correct property statistics', function() {
         );
 });
 
-it('shows correct room statistics', function() {
+it('shows correct room statistics', function () {
     $this->actingAs($this->user)
         ->get(route('dashboard'))
         ->assertStatus(200)
@@ -134,7 +134,7 @@ it('shows correct room statistics', function() {
         );
 });
 
-it('shows correct bookings in the upcoming checkouts section', function() {
+it('shows correct bookings in the upcoming checkouts section', function () {
     // Create a booking that checks out in the next 7 days
     $checkout = Carbon::today()->addDays(3);
     Booking::factory()->create([
@@ -146,7 +146,7 @@ it('shows correct bookings in the upcoming checkouts section', function() {
         'booking_status_id' => $this->bookingStatus->id,
         'booking_source_id' => $this->bookingSource->id,
         'price' => 200.00,
-        'total_guests' => 2
+        'total_guests' => 2,
     ]);
 
     $this->actingAs($this->user)
@@ -160,7 +160,7 @@ it('shows correct bookings in the upcoming checkouts section', function() {
         );
 });
 
-it('shows correct bookings in the upcoming check-ins section', function() {
+it('shows correct bookings in the upcoming check-ins section', function () {
     // Create a booking that checks in in the next 7 days
     $checkin = Carbon::today()->addDays(2);
     Booking::factory()->create([
@@ -172,7 +172,7 @@ it('shows correct bookings in the upcoming check-ins section', function() {
         'booking_status_id' => $this->bookingStatus->id,
         'booking_source_id' => $this->bookingSource->id,
         'price' => 250.00,
-        'total_guests' => 2
+        'total_guests' => 2,
     ]);
 
     $this->actingAs($this->user)
@@ -186,7 +186,7 @@ it('shows correct bookings in the upcoming check-ins section', function() {
         );
 });
 
-it('shows correct occupancy rate', function() {
+it('shows correct occupancy rate', function () {
     // Create a booking for today to simulate occupied room
     Booking::factory()->create([
         'tenant_id' => $this->tenant->id,
@@ -197,7 +197,7 @@ it('shows correct occupancy rate', function() {
         'booking_status_id' => $this->bookingStatus->id,
         'booking_source_id' => $this->bookingSource->id,
         'price' => 200.00,
-        'total_guests' => 2
+        'total_guests' => 2,
     ]);
 
     $this->actingAs($this->user)
@@ -209,7 +209,7 @@ it('shows correct occupancy rate', function() {
         );
 });
 
-it('shows correct revenue for current month', function() {
+it('shows correct revenue for current month', function () {
     // Create several bookings in the current month
     Booking::factory()->create([
         'tenant_id' => $this->tenant->id,
@@ -221,7 +221,7 @@ it('shows correct revenue for current month', function() {
         'booking_source_id' => $this->bookingSource->id,
         'created_at' => Carbon::now(),
         'price' => 600.00,
-        'total_guests' => 2
+        'total_guests' => 2,
     ]);
 
     Booking::factory()->create([
@@ -234,7 +234,7 @@ it('shows correct revenue for current month', function() {
         'booking_source_id' => $this->bookingSource->id,
         'created_at' => Carbon::now(),
         'price' => 1250.00,
-        'total_guests' => 3
+        'total_guests' => 3,
     ]);
 
     // Calculate the expected total revenue
@@ -247,7 +247,7 @@ it('shows correct revenue for current month', function() {
         ->assertStatus(200);
 });
 
-it('shows recent bookings ordered by creation date', function() {
+it('shows recent bookings ordered by creation date', function () {
     // Create bookings with different creation dates
     $oldBooking = Booking::factory()->create([
         'tenant_id' => $this->tenant->id,
@@ -259,7 +259,7 @@ it('shows recent bookings ordered by creation date', function() {
         'booking_source_id' => $this->bookingSource->id,
         'created_at' => Carbon::now()->subDays(10),
         'price' => 1000.00,
-        'total_guests' => 2
+        'total_guests' => 2,
     ]);
 
     $newBooking = Booking::factory()->create([
@@ -272,7 +272,7 @@ it('shows recent bookings ordered by creation date', function() {
         'booking_source_id' => $this->bookingSource->id,
         'created_at' => Carbon::now()->subDays(1),
         'price' => 1250.00,
-        'total_guests' => 2
+        'total_guests' => 2,
     ]);
 
     $this->actingAs($this->user)
@@ -286,7 +286,7 @@ it('shows recent bookings ordered by creation date', function() {
         );
 });
 
-it('calculates room statistics correctly', function() {
+it('calculates room statistics correctly', function () {
     // Create a booking for today to simulate occupied room
     Booking::factory()->create([
         'tenant_id' => $this->tenant->id,
@@ -297,7 +297,7 @@ it('calculates room statistics correctly', function() {
         'booking_status_id' => $this->bookingStatus->id,
         'booking_source_id' => $this->bookingSource->id,
         'price' => 220.00, // For testing average rate
-        'total_guests' => 2
+        'total_guests' => 2,
     ]);
 
     $this->actingAs($this->user)

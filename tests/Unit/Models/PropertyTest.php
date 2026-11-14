@@ -1,4 +1,5 @@
 <?php
+
 use App\Models\Property;
 use App\Models\Tenant;
 use App\Models\User;
@@ -16,7 +17,6 @@ it('a property belongs to a tenant', function () {
     expect($property->tenant)->toBeInstanceOf(Tenant::class);
     expect($property->tenant->id)->toBe($tenant->id);
 });
-
 
 it('a property can be accessed through a user', function () {
     // Create a tenant

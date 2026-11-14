@@ -6,14 +6,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-
 it('belongs to a tenant', function () {
     $data = createUserWithTenant();
     $tenant = $data['tenant'];
 
     $bookingStatus = BookingStatus::create([
         'tenant_id' => $tenant->id,
-        'name' => 'Confirmed'
+        'name' => 'Confirmed',
     ]);
 
     expect($bookingStatus->tenant)->toBeInstanceOf(Tenant::class);
