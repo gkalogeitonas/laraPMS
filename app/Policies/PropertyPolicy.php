@@ -4,10 +4,7 @@ namespace App\Policies;
 
 use App\Models\Property;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Access\HandlesAuthorization;
-
 
 class PropertyPolicy
 {
@@ -18,7 +15,7 @@ class PropertyPolicy
      */
     public function viewAny(User $user): bool
     {
-        //dd($user->tenant->id);
+        // dd($user->tenant->id);
         return true;
     }
 

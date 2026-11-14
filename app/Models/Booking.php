@@ -8,12 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
 {
-    use HasFactory, BelongsToTenant;
+    use BelongsToTenant, HasFactory;
 
     protected $guarded = [];
+
     protected $appends = ['total_days', 'total_cost'];
-
-
 
     public function room()
     {
@@ -30,17 +29,17 @@ class Booking extends Model
         return $this->belongsTo(BookingSource::class);
     }
 
-
     public function getTotalDaysAttribute()
     {
         $check_in = new \DateTime($this->check_in);
         $check_out = new \DateTime($this->check_out);
+
         return $check_in->diff($check_out)->days;
     }
 
     public function getTotalCostAttribute()
     {
-        return round($this->total_days * $this->price,2);
+        return round($this->total_days * $this->price, 2);
     }
 
     // public function customer()
@@ -52,6 +51,5 @@ class Booking extends Model
     // {
     //     return $this->hasMany(Payment::class);
     // }
-
 
 }

@@ -6,8 +6,6 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 
-
-
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
@@ -41,7 +39,7 @@ it('allows a user to create a customer for the active tenant', function () {
 
 it('prevents a user to create a customer to other tenant', function () {
     $otherTenant = Tenant::factory()->create();
-    $customerData = Customer::factory()->make(['tenant_id'=>$otherTenant->id])->toArray();
+    $customerData = Customer::factory()->make(['tenant_id' => $otherTenant->id])->toArray();
 
     $response = $this->post(route('customers.store'), $customerData);
     $this->assertDatabaseMissing('customers', [
@@ -68,7 +66,7 @@ it('allows a user to update a customer of the active tenant', function () {
     $response->assertStatus(302);
     $this->assertDatabaseHas('customers', [
         'id' => $customer->id,
-        'name' => 'Updated Name'
+        'name' => 'Updated Name',
     ]);
 });
 
@@ -101,7 +99,6 @@ it('prevents a user from managing others tenants customer', function () {
     $response->assertStatus(404);
 });
 
-
 it('allows a user to view a customer of the active tenant', function () {
     $customer = Customer::factory()->create(['tenant_id' => $this->tenant->id]);
 
@@ -112,7 +109,6 @@ it('allows a user to view a customer of the active tenant', function () {
     $response->assertSee($customer->email); // Assuming the customer has an email field
 });
 
-
 it('allows a user to edit a customer of the active tenant', function () {
     $customer = Customer::factory()->create(['tenant_id' => $this->tenant->id]);
 
@@ -122,7 +118,6 @@ it('allows a user to edit a customer of the active tenant', function () {
     $response->assertSee($customer->name);
     $response->assertSee($customer->email); // Assuming the customer has an email field
 });
-
 
 it('returns paginated customers of the active tenant', function () {
     // Create a user and set the active tenant
@@ -179,7 +174,6 @@ it('filters customers by search query', function () {
     );
 });
 
-
 test('a user can view the create customer page', function () {
     $response = $this->get(route('customers.create'));
 
@@ -189,17 +183,16 @@ test('a user can view the create customer page', function () {
     );
 });
 
-
 it('can search for customers', function () {
     Customer::factory()->createMany([
         ['tenant_id' => $this->tenant->id, 'name' => 'John Doe'],
         ['tenant_id' => $this->tenant->id, 'name' => 'Jane Doe'],
-        ['tenant_id' => $this->tenant->id, 'name' => 'Alice Smith']
+        ['tenant_id' => $this->tenant->id, 'name' => 'Alice Smith'],
     ]);
 
     $response = $this->get('/customer/search?search=John');
     // Assert: Check the response
     $response->assertStatus(200)
-             ->assertJsonCount(1)
-             ->assertJsonFragment(['name' => 'John Doe']);
+        ->assertJsonCount(1)
+        ->assertJsonFragment(['name' => 'John Doe']);
 });

@@ -1,10 +1,11 @@
 <?php
+
 // tests/Feature/SetInitialTenantTest.php
 
-use App\Models\User;
 use App\Models\Tenant;
-use Illuminate\Support\Facades\Session;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
 
 uses(RefreshDatabase::class);
@@ -26,7 +27,6 @@ it('sets the initial tenant when user logs in', function () {
     // Assert that the tenant ID is stored in the session
     expect(Session::get('active_tenant_id'))->toBe($tenant->id);
 });
-
 
 it('requires authentication to switch tenant', function () {
     $tenant = Tenant::factory()->create();
@@ -54,7 +54,6 @@ it('allows an authenticated user to switch tenant', function () {
     $tenant = Tenant::factory()->create();
     $user->tenants()->attach($tenant->id);
     $this->actingAs($user);
-
 
     $response = $this->post('/switch-tenant', [
         'tenant_id' => $tenant->id,
@@ -89,6 +88,3 @@ it('returns 403 if tenant does not belong to the user', function () {
     $response->assertStatus(Response::HTTP_FORBIDDEN);
     $response->assertJson(['error' => 'Tenant not found or does not belong to the user']);
 });
-
-
-

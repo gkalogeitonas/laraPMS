@@ -1,7 +1,8 @@
 <?php
-use App\Models\User;
+
 use App\Models\Property;
 use App\Models\Tenant;
+use App\Models\User;
 use Illuminate\Support\Facades\Session;
 
 it('can create a user', function () {
@@ -9,8 +10,6 @@ it('can create a user', function () {
 
     expect($user)->toBeInstanceOf(User::class);
 });
-
-
 
 test('a user has properties through tenant', function () {
     // Create a tenant
@@ -29,7 +28,6 @@ test('a user has properties through tenant', function () {
     expect($user->properties->contains($property))->toBeTrue();
 });
 
-
 test('a user has an active tenant stored in session', function () {
     // Create a tenant
     $tenant = Tenant::factory()->create();
@@ -47,7 +45,6 @@ test('a user has an active tenant stored in session', function () {
     expect($activeTenant->id)->toBe($tenant->id);
 });
 
-
 test('setActiveTenant stores the tenant in the session', function () {
     // Create a tenant
     $tenant = Tenant::factory()->create();
@@ -61,8 +58,6 @@ test('setActiveTenant stores the tenant in the session', function () {
     // Assert that the tenant ID is stored in the session
     $this->assertEquals(Session::get('active_tenant_id'), $tenant->id);
 });
-
-
 
 test('a user has active properities', function () {
     // Create a tenant
@@ -84,8 +79,6 @@ test('a user has active properities', function () {
     expect($activeProperties->contains($property))->toBeTrue();
 });
 
-
-
 it('returns true if the user has an active tenant', function () {
     $user = User::factory()->create();
     $tenant = Tenant::factory()->create();
@@ -99,4 +92,3 @@ it('returns false if the user does not have an active tenant', function () {
 
     expect($user->hasActiveTenant())->toBeFalse();
 });
-

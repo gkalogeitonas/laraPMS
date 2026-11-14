@@ -5,17 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Validation\Rule;
-
-
 
 class CustomerController extends Controller
 {
-
     public function __construct()
     {
         $this->authorizeResource(Customer::class, 'customer');
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -24,14 +21,15 @@ class CustomerController extends Controller
         if (auth()->user()->hasActiveTenant()) {
             $customers = Customer::ofActiveTenant()
                 ->when($request->search, function ($query, $search) {
-                    $query->where('name', 'like', '%' . $search . '%');
+                    $query->where('name', 'like', '%'.$search.'%');
                 })
                 ->paginate(10);
+
             return Inertia::render('Customers/Index', [
                 'customers' => $customers,
                 'filters' => request()->all('search'),
             ]);
-        }else{
+        } else {
             return Inertia::render('Customers/Index', ['customers' => []]);
         }
     }
@@ -52,6 +50,7 @@ class CustomerController extends Controller
         $attributes = $this->validateCustomer($request);
         $attributes['tenant_id'] = auth()->user()->getActiveTenant()->id;
         Customer::create($attributes);
+
         return redirect()->route('customers.index')->with('success', 'Customer created successfully.');
 
     }
@@ -79,6 +78,7 @@ class CustomerController extends Controller
     {
         $attributes = $this->validateCustomer($request, $customer);
         $customer->update($attributes);
+
         return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
     }
 
@@ -93,19 +93,18 @@ class CustomerController extends Controller
     public function search(Request $request)
     {
         $customers = Customer::ofActiveTenant()
-            ->where('name', 'like', '%' . $request->search . '%')
+            ->where('name', 'like', '%'.$request->search.'%')
             ->limit(20)
             ->get();
+
         return response()->json($customers);
     }
 
-
-
-    private function validateCustomer(Request $request, Customer $customer = null)
+    private function validateCustomer(Request $request, ?Customer $customer = null)
     {
         $attributes = $this->validate($request, [
             'name' => 'required|string|min:3|max:255',
-            'email' => 'email|unique:users,email,' . $customer?->id ,
+            'email' => 'email|unique:users,email,'.$customer?->id,
             'phone' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:255',
         ]);

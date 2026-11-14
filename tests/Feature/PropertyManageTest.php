@@ -1,14 +1,13 @@
 <?php
 
 // tests/Feature/PropertyTest.php
-use App\Models\User;
 use App\Models\Property;
 use App\Models\Tenant;
-use function Pest\Laravel\get;
-use function Pest\Laravel\actingAs;
-use function Pest\Laravel\post;
-use function Pest\Laravel\delete;
+use App\Models\User;
 
+use function Pest\Laravel\actingAs;
+use function Pest\Laravel\delete;
+use function Pest\Laravel\post;
 
 it('allows owners to see a list of their current tenant properties', function () {
 
@@ -17,7 +16,6 @@ it('allows owners to see a list of their current tenant properties', function ()
     $property = $data['property'];
     $tenant = $data['tenant'];
     $owner->setActiveTenant($tenant);
-
 
     // Acting as the owner, they should be able to see the property
     $this->actingAs($owner)
@@ -32,7 +30,6 @@ it('prevents user to see a list  others tenants properties', function () {
     $owner = $data['owner'];
     $property = $data['property'];
     $tenant = $data['tenant'];
-
 
     // Create another user who is not the owner
     $nonOwner = User::factory()->create();
@@ -67,7 +64,6 @@ it('allows only the owner to view their tenant\'s property', function () {
         ->assertStatus(403);
 });
 
-
 it('allows a user to create a property and redirect to properties index', function () {
     $user = User::factory()->create();
     $tenant = Tenant::factory()->create();
@@ -79,16 +75,14 @@ it('allows a user to create a property and redirect to properties index', functi
         'name' => 'chrisanthi-studios',
         'address' => '123 Main St',
         'description' => 'Beautiful studios.',
-        'type' => 'bnb'
+        'type' => 'bnb',
     ]);
 
-    //$response->assertOk();
+    // $response->assertOk();
     $this->assertDatabaseHas('properties', ['name' => 'chrisanthi-studios']);
     $response->assertRedirect(route('properties.index'));
     $response->assertSessionHas('success', 'Property created successfully.');
 });
-
-
 
 it('allows only owner to delete their property', function () {
     $data = createOwnerAndProperty();
@@ -104,13 +98,11 @@ it('allows only owner to delete their property', function () {
 
     actingAs($owner);
     $response = delete(route('properties.destroy', $property));
-    //$response->assertStatus(200);
+    // $response->assertStatus(200);
     $response->assertRedirect(route('properties.index'));
     $response->assertSessionHas('success', 'Property deleted successfully.');
     $this->assertDatabaseMissing('properties', ['id' => $property->id]);
 });
-
-
 
 it('allows owner to update their properties', function () {
     // Create an owner (user) and a property for the tenant associated with that user
@@ -141,7 +133,6 @@ it('allows owner to update their properties', function () {
     expect($property->address)->toBe('Updated Property Address');
 
 });
-
 
 it('prevents non-owner from updating a property', function () {
     $data = createOwnerAndProperty();
@@ -176,10 +167,8 @@ it('requires a property to have a name', function () {
         'name' => '',
         'address' => '123 Main St',
         'description' => 'Beautiful studios.',
-        'type' => 'bnb'
+        'type' => 'bnb',
     ]);
 
     $response->assertSessionHasErrors('name');
 });
-
-

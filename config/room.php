@@ -6,5 +6,5 @@ return [
         'double',
         'triple',
         'apartment',
-    ]
+    ],
 ];

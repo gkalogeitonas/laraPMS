@@ -1,43 +1,36 @@
 <?php
 
-use App\Models\User;
+use App\Models\Booking;
+use App\Models\BookingSource;
+use App\Models\BookingStatus;
+use App\Models\Property;
 use App\Models\Room;
 use App\Models\Tenant;
-use App\Models\Customer;
-use App\Models\Booking;
-use App\Models\Property;
-use App\Models\BookingStatus;
-use App\Models\BookingSource;
-use function Pest\Laravel\get;
-use function Pest\Laravel\actingAs;
-use function Pest\Laravel\post;
-use function Pest\Laravel\delete;
-use function Pest\Laravel\patch;
-use function Pest\Laravel\assertDatabaseHas;
-use function Pest\Laravel\assertDatabaseMissing;
-use Inertia\Testing\AssertableInertia as Assert;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
+
+use function Pest\Laravel\actingAs;
+use function Pest\Laravel\get;
 
 uses(RefreshDatabase::class);
-
 
 test('a user without tenant can not view Bookings in  bookings index', function () {
     $owner = User::factory()->create();
     $tenant = Tenant::factory()->create();
     $owner->tenants()->attach($tenant->id);
     $property = Property::factory()->create([
-        'tenant_id' => $tenant->id
+        'tenant_id' => $tenant->id,
     ]);
-
 
     // Create a room and a booking
-	$room = Room::factory()->create([
+    $room = Room::factory()->create([
         'property_id' => $property->id,
-        'tenant_id' => $tenant->id
+        'tenant_id' => $tenant->id,
     ]);
-	$booking = Booking::factory()->create([
+    $booking = Booking::factory()->create([
         'room_id' => $room->id,
-        'tenant_id' => $tenant->id
+        'tenant_id' => $tenant->id,
     ]);
 
     $nonOwner = User::factory()->create();
@@ -46,21 +39,18 @@ test('a user without tenant can not view Bookings in  bookings index', function 
     $response = get(route('bookings.index'));
     $response->assertStatus(200)
         ->assertInertia(fn (Assert $page) => $page
-        ->component('Bookings/Index')
-        ->has('bookings')
-        ->has('bookings', 0)
-    );
+            ->component('Bookings/Index')
+            ->has('bookings')
+            ->has('bookings', 0)
+        );
 });
 
-
 it('can see only booking statuses and booking sources from own tenant in booking form', function () {
-
 
     // Create booking statuses and booking sources for another tenant
     $otherTenant = Tenant::factory()->create();
     $otherBookingStatus = BookingStatus::factory()->create(['tenant_id' => $otherTenant->id]);
     $otherBookingSource = BookingSource::factory()->create(['tenant_id' => $otherTenant->id]);
-
 
     // Create a tenant and a user
     $data = createUserWithTenant();

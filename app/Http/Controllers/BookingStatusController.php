@@ -2,30 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Booking;
-use Illuminate\Http\Request;
 use App\Models\BookingStatus;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class BookingStatusController extends Controller
 {
-
     public function __construct()
     {
         $this->authorizeResource(BookingStatus::class, 'bookingStatus');
     }
+
     /**
      * Display a listing of the resource.
      */
     public function Index()
     {
-        if (!auth()->user()->hasActiveTenant()) {
+        if (! auth()->user()->hasActiveTenant()) {
             return Inertia::render('bookingStatuses/Index', [
-                'bookingStatuses' => []
+                'bookingStatuses' => [],
             ])->with('error', 'No active tenant.');
         }
+
         return Inertia::render('bookingStatuses/Index', [
-            'bookingStatuses' => BookingStatus::all()
+            'bookingStatuses' => BookingStatus::all(),
         ]);
     }
 
@@ -42,14 +42,15 @@ class BookingStatusController extends Controller
      */
     public function store(Request $request)
     {
-        if (!auth()->user()->hasActiveTenant()) {
+        if (! auth()->user()->hasActiveTenant()) {
             return redirect()->route('booking-statuses.index')->with('error', 'No active tenant.');
         }
         $attributes = $this->validate($request, [
             'name' => 'required',
-            'color' => 'string|nullable'
+            'color' => 'string|nullable',
         ]);
         BookingStatus::create($attributes);
+
         return redirect()->route('booking-statuses.index')->with('success', 'Booking Status created.');
 
     }
@@ -68,9 +69,10 @@ class BookingStatusController extends Controller
     public function edit(BookingStatus $bookingStatus)
     {
         return Inertia::render('bookingStatuses/Edit', [
-            'bookingStatus' => $bookingStatus
+            'bookingStatus' => $bookingStatus,
         ]);
     }
+
     /**
      * Update the specified resource in storage.
      */
@@ -78,9 +80,10 @@ class BookingStatusController extends Controller
     {
         $attributes = $this->validate($request, [
             'name' => 'required',
-            'color' => 'string|nullable'
+            'color' => 'string|nullable',
         ]);
         $bookingStatus->update($attributes);
+
         return redirect()->route('booking-statuses.index')->with('success', 'Booking Status updated.');
     }
 
@@ -90,6 +93,7 @@ class BookingStatusController extends Controller
     public function destroy(BookingStatus $bookingStatus)
     {
         $bookingStatus->delete();
+
         return redirect()->route('booking-statuses.index')->with('error', 'Booking Status deleted.');
     }
 }

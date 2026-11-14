@@ -1,17 +1,17 @@
 <?php
 
-use App\Models\User;
-use App\Models\Property;
 use App\Models\Room;
-use function Pest\Laravel\get;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
+
 use function Pest\Laravel\actingAs;
-use function Pest\Laravel\post;
-use function Pest\Laravel\delete;
-use function Pest\Laravel\patch;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
-use Inertia\Testing\AssertableInertia as Assert;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use function Pest\Laravel\delete;
+use function Pest\Laravel\get;
+use function Pest\Laravel\patch;
+use function Pest\Laravel\post;
 
 uses(RefreshDatabase::class);
 
@@ -22,7 +22,7 @@ test('a user can see their active tenant rooms in rooms index', function () {
     $tenant = $data['tenant'];
     $room = Room::factory()->create([
         'property_id' => $property->id,
-        'tenant_id' => $tenant->id
+        'tenant_id' => $tenant->id,
     ]);
     $owner->setActiveTenant($tenant);
 
@@ -50,27 +50,24 @@ test('a user with no active tenant see empty rooms index', function () {
     $response = get(route('rooms.index'));
 
     $response->assertStatus(200);
-    $response->assertDontSee($room->name );
+    $response->assertDontSee($room->name);
 
 });
-
-
 
 it('allows the owner to create a room', function () {
     $data = createOwnerAndProperty();
     $owner = $data['owner'];
     $property = $data['property'];
 
-
     actingAs($owner);
 
     $response = post(route('properties.rooms.store', $property), [
         'name' => 'Room 101',
         'description' => 'A cozy room',
-        'type' => 'single'
+        'type' => 'single',
     ]);
 
-    //$response->assertRedirect(route('properties.show', $property));
+    // $response->assertRedirect(route('properties.show', $property));
     assertDatabaseHas('rooms', ['name' => 'Room 101']);
 });
 
@@ -98,7 +95,7 @@ test('The edit method returns the room edit form', function () {
     $tenant = $data['tenant'];
     $room = Room::factory()->create([
         'property_id' => $property->id,
-        'tenant_id' => $tenant->id
+        'tenant_id' => $tenant->id,
     ]);
 
     actingAs($owner);
@@ -131,7 +128,7 @@ it('prevents a user to access edit from of a rooms that is not owned by the user
     $nonOwner = User::factory()->create();
     $room = Room::factory()->create([
         'property_id' => $property->id,
-        'tenant_id' => $tenant->id
+        'tenant_id' => $tenant->id,
     ]);
 
     actingAs($nonOwner);
@@ -164,7 +161,7 @@ it('allows the owner to update a room', function () {
     $property = $data['property'];
     $room = Room::factory()->create([
         'property_id' => $property->id,
-        'tenant_id' => $property->tenant->id
+        'tenant_id' => $property->tenant->id,
     ]);
 
     actingAs($owner);
@@ -186,7 +183,7 @@ it('prevents a non-owner from updating a room', function () {
     $nonOwner = User::factory()->create();
     $room = Room::factory()->create([
         'property_id' => $property->id,
-        'tenant_id' => $property->tenant->id
+        'tenant_id' => $property->tenant->id,
     ]);
 
     actingAs($nonOwner);
@@ -206,7 +203,7 @@ it('allows the owner to delete a room', function () {
     $property = $data['property'];
     $room = Room::factory()->create([
         'property_id' => $property->id,
-        'tenant_id' => $property->tenant->id
+        'tenant_id' => $property->tenant->id,
     ]);
 
     actingAs($owner);
@@ -230,7 +227,6 @@ it('prevents a non-owner from deleting a room', function () {
     $response->assertStatus(403);
 });
 
-
 it('allows a user to view a room', function () {
     $data = createOwnerAndProperty();
     $owner = $data['owner'];
@@ -238,7 +234,7 @@ it('allows a user to view a room', function () {
     $tenant = $data['tenant'];
     $room = Room::factory()->create([
         'property_id' => $property->id,
-        'tenant_id' => $tenant->id
+        'tenant_id' => $tenant->id,
     ]);
 
     actingAs($owner);
@@ -259,7 +255,7 @@ it('prevents a user from viewing a room that is not owned by the user', function
     $nonOwner = User::factory()->create();
     $room = Room::factory()->create([
         'property_id' => $property->id,
-        'tenant_id' => $tenant->id
+        'tenant_id' => $tenant->id,
     ]);
 
     actingAs($nonOwner);
@@ -268,8 +264,6 @@ it('prevents a user from viewing a room that is not owned by the user', function
 
     $response->assertStatus(403);
 });
-
-
 
 it('allows a user to view rooms from the property show page', function () {
     $data = createOwnerAndProperty();
@@ -286,8 +280,8 @@ it('allows a user to view rooms from the property show page', function () {
     $response = get(route('properties.show', $property));
 
     $response->assertStatus(200)
-            ->assertSee($rooms[0]->name)
-            ->assertSee($rooms[1]->name)
-            ->assertSee($rooms[2]->name);
+        ->assertSee($rooms[0]->name)
+        ->assertSee($rooms[1]->name)
+        ->assertSee($rooms[2]->name);
 
 });

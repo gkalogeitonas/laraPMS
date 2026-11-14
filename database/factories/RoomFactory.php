@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Property;
-use App\Models\User;
+use App\Models\Room;
 use App\Models\Tenant;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Room>
+ * @extends Factory<Room>
  */
 class RoomFactory extends Factory
 {
@@ -30,10 +30,9 @@ class RoomFactory extends Factory
         return [
             'property_id' => $property->id,
             'tenant_id' => $property->tenant_id,
-            'name' => 'Room ' . $this->faker->unique()->numberBetween(1, 100),
+            'name' => 'Room '.$this->faker->unique()->numberBetween(1, 100),
             'description' => $this->faker->paragraph,
             'type' => $this->faker->randomElement(config('room.types')),
         ];
     }
 }
-
