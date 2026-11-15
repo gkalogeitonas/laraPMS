@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\Booking;
 use App\Models\Property;
+use App\Models\Room;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -89,4 +91,33 @@ function createAsUserWithActiveTenant(Tenant $tenant): User
     $user->setActiveTenant($tenant);
 
     return $user;
+}
+
+/**
+ * A Booking of the active tenant in the given Room, with the given dates.
+ */
+function bookingFor(Room $room, string $checkIn, string $checkOut, array $attributes = []): Booking
+{
+    return Booking::factory()->create([
+        'tenant_id' => $room->tenant_id,
+        'room_id' => $room->id,
+        'check_in' => $checkIn,
+        'check_out' => $checkOut,
+        ...$attributes,
+    ]);
+}
+
+/**
+ * Runs the callback without an active tenant, so the models it creates keep the tenant they are given.
+ */
+function outsideActiveTenant(Closure $create): mixed
+{
+    $activeTenantId = session('active_tenant_id');
+    session()->forget('active_tenant_id');
+
+    try {
+        return $create();
+    } finally {
+        session()->put('active_tenant_id', $activeTenantId);
+    }
 }

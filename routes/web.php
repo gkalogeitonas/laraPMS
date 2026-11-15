@@ -70,6 +70,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/customer/search', [CustomerController::class, 'search'])->name('customers.search');
 
     Route::resource('bookings', BookingController::class);
+    Route::patch('/bookings/{booking}/reschedule', [BookingController::class, 'reschedule'])->name('bookings.reschedule');
 
     Route::get('/booking-statuses', [BookingStatusController::class, 'index'])->name('booking-statuses.index');
     Route::get('/booking-statuses/create', [BookingStatusController::class, 'create'])->name('booking-statuses.create');

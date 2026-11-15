@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RescheduleBookingRequest;
 use App\Models\Booking;
 use App\Models\BookingSource;
 use App\Models\BookingStatus;
 use App\Models\Room;
 use App\Services\BookingTotalsCalculator;
 use App\Traits\BookingFilters;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -124,6 +126,17 @@ class BookingController extends Controller
         $booking->update($attributes);
 
         return redirect()->route('bookings.index')->with('success', 'Booking updated.');
+    }
+
+    /**
+     * Reschedule a Booking: change only its Room, check-in and check-out.
+     * The price per Night, guest, source and status stay the same.
+     */
+    public function reschedule(RescheduleBookingRequest $request, Booking $booking): RedirectResponse
+    {
+        $booking->update($request->safe()->only(['room_id', 'check_in', 'check_out']));
+
+        return back();
     }
 
     /**

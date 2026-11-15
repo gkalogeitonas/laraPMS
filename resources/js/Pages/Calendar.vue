@@ -1,9 +1,9 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import OccupancyCalendar from '@/Components/OccupancyCalendar/OccupancyCalendar.vue';
-import { addDays, toUtcDate } from '@/Components/OccupancyCalendar/layout.js';
-import { Head, Link } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { addDays, toDayNumber, toUtcDate } from '@/Components/OccupancyCalendar/layout.js';
+import { Head, Link, router } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
 
 const props = defineProps({
     groups: { type: Array, required: true },
@@ -34,6 +34,36 @@ const rangeLabel = computed(() => {
 
     return `${first} – ${last}`;
 });
+
+/** Why the last Reschedule was refused, shown until the next one or until dismissed. */
+const rescheduleError = ref(null);
+
+/**
+ * Saves a Reschedule. The bar moves at once (optimistic update) and Inertia moves it back
+ * if the server refuses the change; the server's message is then shown.
+ */
+function reschedule({ bookingId, roomId, checkIn, checkOut }) {
+    rescheduleError.value = null;
+
+    router.patch(
+        route('bookings.reschedule', bookingId),
+        { room_id: roomId, check_in: checkIn, check_out: checkOut },
+        {
+            preserveScroll: true,
+            preserveState: true,
+            optimistic: (pageProps) => ({
+                bookings: pageProps.bookings.map((booking) =>
+                    booking.id === bookingId
+                        ? { ...booking, roomId, checkIn, checkOut, nights: toDayNumber(checkOut) - toDayNumber(checkIn) }
+                        : booking,
+                ),
+            }),
+            onError: (errors) => {
+                rescheduleError.value = Object.values(errors)[0] ?? 'The Booking could not be rescheduled.';
+            },
+        },
+    );
+}
 
 const navButton = 'inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:z-10';
 </script>
@@ -80,7 +110,22 @@ const navButton = 'inline-flex items-center px-3 py-1.5 text-sm font-medium text
                 </nav>
             </div>
 
-            <OccupancyCalendar :groups="groups" :bookings="bookings" :window="window" />
+            <div
+                v-if="rescheduleError"
+                class="mb-3 flex items-start justify-between gap-3 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+                role="alert"
+            >
+                <p><span class="font-semibold">The Booking was not rescheduled.</span> {{ rescheduleError }}</p>
+                <button
+                    type="button"
+                    class="shrink-0 rounded font-medium text-red-700 hover:text-red-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                    @click="rescheduleError = null"
+                >
+                    Dismiss
+                </button>
+            </div>
+
+            <OccupancyCalendar :groups="groups" :bookings="bookings" :window="window" @reschedule="reschedule" />
         </div>
     </AuthenticatedLayout>
 </template>
