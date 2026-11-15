@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RescheduleBookingRequest;
 use App\Models\Booking;
 use App\Models\BookingSource;
 use App\Models\BookingStatus;
 use App\Models\Room;
 use App\Services\BookingTotalsCalculator;
 use App\Traits\BookingFilters;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 
 class BookingController extends Controller
@@ -124,6 +127,55 @@ class BookingController extends Controller
         $booking->update($attributes);
 
         return redirect()->route('bookings.index')->with('success', 'Booking updated.');
+    }
+
+    /**
+     * Reschedule a Booking: change only its Room, check-in and check-out.
+     * The price per Night, guest, source and status stay the same.
+     */
+    public function reschedule(RescheduleBookingRequest $request, Booking $booking): RedirectResponse
+    {
+        $previous = clone $booking->load('room.property');
+
+        $booking->update($request->safe()->only(['room_id', 'check_in', 'check_out']));
+        $booking->load('room.property');
+
+        $changes = $this->rescheduleChanges($previous, $booking);
+
+        if ($changes === []) {
+            return back();
+        }
+
+        return back()->with('success', "{$booking->name}'s Booking was rescheduled. ".implode(' ', $changes));
+    }
+
+    /**
+     * Describes, one sentence each, what a Reschedule changed: the Room, the check-in and the check-out.
+     * The Property is named only when the Booking moved to another Property.
+     *
+     * @return list<string>
+     */
+    private function rescheduleChanges(Booking $previous, Booking $current): array
+    {
+        $changes = [];
+
+        if ((int) $previous->room_id !== (int) $current->room_id) {
+            $otherProperty = (int) $previous->room->property_id !== (int) $current->room->property_id;
+            $roomLabel = fn (Room $room): string => $otherProperty ? "{$room->name} ({$room->property->name})" : $room->name;
+
+            $changes[] = "Room: {$roomLabel($previous->room)} → {$roomLabel($current->room)}.";
+        }
+
+        foreach (['check_in' => 'Check-in', 'check_out' => 'Check-out'] as $field => $label) {
+            $before = Carbon::parse($previous->{$field});
+            $after = Carbon::parse($current->{$field});
+
+            if (! $before->isSameDay($after)) {
+                $changes[] = "{$label}: {$before->format('D j M Y')} → {$after->format('D j M Y')}.";
+            }
+        }
+
+        return $changes;
     }
 
     /**

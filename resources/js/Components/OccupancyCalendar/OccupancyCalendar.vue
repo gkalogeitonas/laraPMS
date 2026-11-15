@@ -1,8 +1,8 @@
 <script setup>
-import { computed, nextTick, reactive, ref } from 'vue';
+import { computed, nextTick, onBeforeUnmount, reactive, ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import { ExclamationTriangleIcon } from '@heroicons/vue/20/solid';
-import { layoutCalendar, localToday, toDayNumber, toUtcDate, windowDays } from './layout.js';
+import { addDays, layoutCalendar, localToday, toDayNumber, toUtcDate, windowDays } from './layout.js';
 
 const props = defineProps({
     /** @type {Array<{ id: number, name: string, rooms: Array<{ id: number, name: string }> }>} */
@@ -11,6 +11,11 @@ const props = defineProps({
     bookings: { type: Array, required: true },
     /** @type {{ start: string, days: number }} */
     window: { type: Object, required: true },
+});
+
+const emit = defineEmits({
+    /** A Booking was dropped on another Room or other dates: `{ bookingId, roomId, checkIn, checkOut }`. */
+    reschedule: (change) => Boolean(change?.bookingId && change.roomId && change.checkIn && change.checkOut),
 });
 
 const DAY_WIDTH = 44;
@@ -43,10 +48,167 @@ const months = computed(() => {
     return spans;
 });
 
-const todayIndex = computed(() => toDayNumber(localToday()) - toDayNumber(props.window.start));
+const today = localToday();
+const todayIndex = computed(() => toDayNumber(today) - toDayNumber(props.window.start));
 const showTodayLine = computed(() => todayIndex.value >= 0 && todayIndex.value < props.window.days);
 
-const layout = computed(() => layoutCalendar(props.window, props.groups.flatMap((group) => group.rooms), props.bookings));
+/** Pixels the pointer must travel before a press on a bar becomes a drag instead of a click. */
+const DRAG_THRESHOLD = 4;
+
+/**
+ * The drag in progress, if any.
+ *
+ * @type {import('vue').Ref<null | { booking: object, pointerId: number, startX: number, startY: number, active: boolean, minDelta: number, maxDelta: number, dayDelta: number, roomId: number }>}
+ */
+const drag = ref(null);
+
+/** Set after a drag ends, so the click that follows the drop does not open the Booking. */
+let suppressNextClick = false;
+
+/**
+ * Only Bookings that have not started yet can be dragged: moving a bar changes its check-in,
+ * which is refused once the guest has checked in, and Bookings that have ended are locked.
+ */
+function canDrag(booking) {
+    return booking.checkIn >= today;
+}
+
+/** The Bookings as shown: the dragged Booking is drawn where it would be dropped. */
+const displayedBookings = computed(() => {
+    const current = drag.value;
+    if (!current?.active) {
+        return props.bookings;
+    }
+
+    return props.bookings.map((booking) => (booking.id === current.booking.id ? draggedBooking(current) : booking));
+});
+
+function draggedBooking(current) {
+    return {
+        ...current.booking,
+        roomId: current.roomId,
+        checkIn: addDays(current.booking.checkIn, current.dayDelta),
+        checkOut: addDays(current.booking.checkOut, current.dayDelta),
+    };
+}
+
+/** Mouse and pen are fine pointers; touch keeps scrolling the calendar and tapping opens the Booking. */
+function isFinePointer(event) {
+    return event.pointerType === 'mouse' || event.pointerType === 'pen';
+}
+
+function onBarPointerDown(event, booking) {
+    suppressNextClick = false;
+    if (!isFinePointer(event) || event.button !== 0 || !canDrag(booking)) {
+        return;
+    }
+    event.preventDefault();
+
+    const first = toDayNumber(props.window.start);
+    const checkIn = toDayNumber(booking.checkIn) - first;
+    const checkOut = toDayNumber(booking.checkOut) - first;
+    // The bar may move only inside the visible window (its check-out day included), and never
+    // further out than it already is.
+    const lastDay = props.window.days - 1;
+
+    drag.value = {
+        booking,
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        active: false,
+        minDelta: Math.min(0, -checkIn),
+        maxDelta: Math.max(0, lastDay - checkOut),
+        dayDelta: 0,
+        roomId: booking.roomId,
+    };
+
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUp);
+    window.addEventListener('pointercancel', cancelDrag);
+    window.addEventListener('keydown', onKeyDown);
+}
+
+function onPointerMove(event) {
+    const current = drag.value;
+    if (!current || event.pointerId !== current.pointerId) {
+        return;
+    }
+    const deltaX = event.clientX - current.startX;
+    if (!current.active) {
+        if (Math.abs(deltaX) < DRAG_THRESHOLD && Math.abs(event.clientY - current.startY) < DRAG_THRESHOLD) {
+            return;
+        }
+        current.active = true;
+        hideTooltip();
+    }
+
+    current.dayDelta = Math.min(current.maxDelta, Math.max(current.minDelta, Math.round(deltaX / DAY_WIDTH)));
+
+    const row = document.elementFromPoint(event.clientX, event.clientY)?.closest('[data-room-id]');
+    if (row && scroller.value?.contains(row)) {
+        current.roomId = Number(row.dataset.roomId);
+    }
+}
+
+function onPointerUp(event) {
+    const current = drag.value;
+    if (!current || event.pointerId !== current.pointerId) {
+        return;
+    }
+    if (current.active) {
+        suppressNextClick = true;
+        const dropped = draggedBooking(current);
+        const { booking } = current;
+        if (dropped.roomId !== booking.roomId || dropped.checkIn !== booking.checkIn) {
+            emit('reschedule', {
+                bookingId: booking.id,
+                roomId: dropped.roomId,
+                checkIn: dropped.checkIn,
+                checkOut: dropped.checkOut,
+            });
+        }
+    }
+    endDrag();
+}
+
+function onKeyDown(event) {
+    if (event.key === 'Escape') {
+        cancelDrag();
+    }
+}
+
+function cancelDrag() {
+    if (drag.value?.active) {
+        suppressNextClick = true;
+    }
+    endDrag();
+}
+
+function endDrag() {
+    drag.value = null;
+    window.removeEventListener('pointermove', onPointerMove);
+    window.removeEventListener('pointerup', onPointerUp);
+    window.removeEventListener('pointercancel', cancelDrag);
+    window.removeEventListener('keydown', onKeyDown);
+}
+
+/** Stops the click that ends a drag from opening the Booking. */
+function onClickCapture(event) {
+    if (suppressNextClick) {
+        suppressNextClick = false;
+        event.preventDefault();
+        event.stopPropagation();
+    }
+}
+
+onBeforeUnmount(endDrag);
+
+function isDragged(booking) {
+    return drag.value?.active === true && drag.value.booking.id === booking.id;
+}
+
+const layout = computed(() => layoutCalendar(props.window, props.groups.flatMap((group) => group.rooms), displayedBookings.value));
 
 /** Groups items that have a `roomId` by Room. */
 function byRoom(items) {
@@ -177,7 +339,7 @@ function barLabel(booking) {
 const tooltip = ref(null);
 
 function showTooltip(event, booking) {
-    if (event.pointerType && event.pointerType !== 'mouse' && event.pointerType !== 'pen') {
+    if (drag.value?.active || (event.pointerType && !isFinePointer(event))) {
         return;
     }
     const rect = event.currentTarget.getBoundingClientRect();
@@ -199,7 +361,9 @@ function hideTooltip() {
         <div
             ref="scroller"
             class="max-h-[75vh] overflow-auto overscroll-contain rounded-lg border border-gray-200 bg-white"
+            :class="drag?.active ? 'cursor-grabbing select-none' : ''"
             @scroll.passive="hideTooltip"
+            @click.capture="onClickCapture"
         >
             <div class="relative" :style="{ width: `calc(var(--room-column) + ${timelineWidth}px)` }">
                 <!-- Date header -->
@@ -292,7 +456,7 @@ function hideTooltip() {
                                 No rooms
                             </div>
                         </div>
-                        <div v-for="room in group.rooms" :key="room.id" class="flex border-b border-gray-100">
+                        <div v-for="room in group.rooms" :key="room.id" :data-room-id="room.id" class="flex border-b border-gray-100">
                             <div
                                 class="sticky left-0 z-20 flex w-[var(--room-column)] shrink-0 items-center truncate border-r border-gray-200 bg-white px-3 pl-7 text-sm text-gray-700"
                                 :style="{ height: `${rowHeight(room.id)}px` }"
@@ -323,13 +487,17 @@ function hideTooltip() {
                                     v-for="bar in barsByRoom.get(room.id) ?? []"
                                     :key="bar.booking.id"
                                     :href="bar.booking.editUrl"
-                                    class="absolute z-10 flex items-center gap-1 overflow-hidden whitespace-nowrap px-2 text-xs font-medium shadow-sm ring-1 ring-black/10 hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                                    draggable="false"
+                                    class="absolute flex items-center gap-1 overflow-hidden whitespace-nowrap px-2 text-xs font-medium shadow-sm ring-1 ring-black/10 hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
                                     :class="[
                                         bar.clippedStart ? 'rounded-l-none' : 'rounded-l-md',
                                         bar.clippedEnd ? 'rounded-r-none' : 'rounded-r-md',
+                                        isDragged(bar.booking) ? 'z-20 opacity-90 shadow-lg ring-2 ring-indigo-500' : 'z-10',
+                                        canDrag(bar.booking) && !drag?.active ? '[@media(pointer:fine)]:cursor-grab' : '',
                                     ]"
                                     :style="barStyle(bar)"
                                     :aria-label="barLabel(bar.booking)"
+                                    @pointerdown="onBarPointerDown($event, bar.booking)"
                                     @pointerenter="showTooltip($event, bar.booking)"
                                     @pointerleave="hideTooltip"
                                     @focus="showTooltip($event, bar.booking)"
